@@ -25,7 +25,7 @@ const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
   return (
-    <Tab.Navigator screenOptions = {({ route }) => ({
+    <Tab.Navigator style={styles.navbar} screenOptions = {({ route }) => ({
       tabBarIcon: ({ color, size}) => {
         let iconName= '';
 
@@ -79,4 +79,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  navbar:
+  {
+  backgroundColor:'red'  
+  }
 });
