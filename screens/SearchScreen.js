@@ -16,18 +16,19 @@ export default function SearchScreen({ navigation }) {
   const [filteredData, setFilteredData] = useState([]);
 
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await fetch("http://localhost:3000/recipes");
-  //       const data = await response.json();
-  //       setFilteredData(data);
-  //     } catch (error) {
-  //       console.error('Error fetching data:', error);
-  //     }
-  //   };
-  //   fetchData();
-  // }, [search]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("https://lifemiam-backend.vercel.app/recipes/?limit=10&sortBy=popularity");
+        const data = await response.json();
+        setFilteredData(data);
+        console.log(data)
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchData();
+  }, [search]);
 
 
   return (
