@@ -25,7 +25,7 @@ const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
   return (
-    <Tab.Navigator style={styles.navbar} screenOptions = {({ route }) => ({
+    <Tab.Navigator backBehavior='history' screenOptions = {({ route }) => ({
       tabBarIcon: ({ color, size}) => {
         let iconName= '';
 
@@ -50,6 +50,8 @@ const TabNavigator = () => {
       tabBarActiveTintColor: '#E7D37F',
       tabBarInactiveTintColor: '#81A263',
       headerShown: false,
+      tabBarStyle: {backgroundColor: "#365E32", height: 75, paddingBottom: 5},
+
     })}>
       <Tab.Screen name= "Menu" component={MenuScreen}/>
       <Tab.Screen name= "Search" component={SearchScreen}/>
@@ -59,7 +61,6 @@ const TabNavigator = () => {
     </Tab.Navigator>
   )
 }
-
 
 export default function App() {
   return (
@@ -81,8 +82,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  navbar:
-  {
-  backgroundColor:'red'  
-  }
+  
 });
