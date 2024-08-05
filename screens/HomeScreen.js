@@ -1,4 +1,5 @@
 import {
+  View,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -10,53 +11,33 @@ import {
 
 export default function HomeScreen({ navigation }) {
 
+  handleGo = () => {
+    navigation.navigate('TabNavigator');
+  }
 
   return (
-    <Provider store={store}>
-     <Head>
-       <title>Best friends</title>
-     </Head>
-     <Component {...pageProps} />
-   </Provider>
+    <View style={styles.container}>
+      <Text>HomeScreen</Text>
+      <TouchableOpacity style={styles.go} onPress={() => handleGo()}><Text style={styles.textButt}>Go To Search</Text></TouchableOpacity>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: 'green',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  image: {
-    width: '100%',
-    height: '50%',
-  },
-  title: {
-    width: '80%',
-    fontSize: 38,
-    fontWeight: '600',
-  },
-  input: {
-    width: '80%',
-    marginTop: 25,
-    borderBottomColor: '#ec6e5b',
-    borderBottomWidth: 1,
-    fontSize: 18,
-  },
-  button: {
+  go: {
+    backgroundColor: "red",
+    width: 200,
+    height: 200,
     alignItems: 'center',
-    paddingTop: 8,
-    width: '80%',
-    marginTop: 30,
-    backgroundColor: '#ec6e5b',
-    borderRadius: 10,
-    marginBottom: 80,
+    justifyContent: 'center'
   },
-  textButton: {
-    color: '#ffffff',
-    height: 30,
-    fontWeight: '600',
-    fontSize: 16,
-  },
+  textButt: {
+    color: "white"
+  }
 });
