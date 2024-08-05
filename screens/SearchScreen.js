@@ -23,12 +23,15 @@ import {
         onChangeText={text => setSearch(text)}
       />
       <Text style={styles.subtitle}>Les recettes populaires</Text>
-      <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={() => navigation.navigate('TabNavigator')}>
-      <Text style={styles.textButton}>Go to RecipeScreen</Text>
+      <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={() => navigation.navigate("Recipe")}>
+      <View style={styles.allResults}>
+      <Text style={styles.result1}><Image source={require("../assets/gateau_cerise.jpg")}/>Gâteau aux cerises</Text>
+      </View>
       </TouchableOpacity>
       </View>
     )
   }
+      
   
   const styles = StyleSheet.create({
     container: {
@@ -56,5 +59,9 @@ import {
       color: "green",
       fontSize: 20,
     },
+
+    allResults: {
+      
+    }
   });
   
