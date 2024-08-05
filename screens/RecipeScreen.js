@@ -9,10 +9,13 @@ import {
     TouchableOpacity,
     ScrollView
   } from 'react-native';
-  
+  import { useState } from 'react';
+
   export default function RecipeScreen({navigation}) {
-  
-    const ExRecipe = {
+    
+    
+
+    let ExRecipe = {
         "_id": 15,
         "name": "Gâteau au chocolat",
         "tags": ["dessert", "végétarien"],
@@ -56,17 +59,37 @@ import {
         "popularity": 5
     }
 
+    const [serving, setServing] = useState(ExRecipe.default_serving);
+
+    //press les deux boutons + et - 
+    const handleMinus = () => {
+        setServing(prevServing => Math.max(1, prevServing - 1))
+    }
+
+    const handlePlus = () => {
+        setServing(prevServing => prevServing + 1)
+    }
+
+    //Ajuster la quantité d'ingrédient en fonction du nombre de serving
+    const adjustedIngredients = ExRecipe['sub-doc ing'].map((data) =>{
+        return {
+            ...data,
+            quantity: (data.quantity/ExRecipe.default_serving) * serving
+        };
+    });
+
     returnButton = () => {
         navigation.navigate('Search');
       }
 
     //La recette ne précise pas l'unité de mesure de chaque ingrédient ni son nom.
-    const ingredient = ExRecipe['sub-doc ing'].map((data, i) => {
+    const ingredient = adjustedIngredients.map((data, i) => {
         return (
            <Text key={i} style={styles.H3} >{`- ${data.quantity}g de ${data.ingredient}`}</Text>
         )
     })
 
+    //Les différentes étapes de la recette
     const steps = ExRecipe.steps.map((data, i) => {
         return (
             <View>
@@ -101,9 +124,9 @@ import {
                 <View style={styles.ingredientList}>{ingredient}</View>
 
                 <View style={styles.selectorCont}>
-                    <TouchableOpacity style={styles.selectorButton}><Text style={styles.selectors}>-</Text></TouchableOpacity>
-                    <Text style={styles.H2}>{ExRecipe.default_serving}</Text> 
-                    <TouchableOpacity style={styles.selectorButton}><Text style={styles.selectors}>+</Text></TouchableOpacity>
+                    <TouchableOpacity onPress={handleMinus} style={styles.selectorButton}><Text style={styles.selectors}>-</Text></TouchableOpacity>
+                    <Text style={styles.H2}>{serving}</Text> 
+                    <TouchableOpacity onPress={handlePlus} style={styles.selectorButton}><Text style={styles.selectors}>+</Text></TouchableOpacity>
                 </View>
             </View>
 
