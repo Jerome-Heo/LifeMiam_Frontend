@@ -25,7 +25,7 @@ import {
       <Text style={styles.subtitle}>Les recettes populaires</Text>
       <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={() => navigation.navigate("Recipe")}>
       <View style={styles.allResults}>
-      <Text style={styles.result1}><Image source={require("../assets/gateau_cerise.jpg")}/>Gâteau aux cerises</Text>
+      <Text style={styles.result1}><Image source={require("../assets/gateau_chocolat.jpg")}/>Gâteau au chocolat</Text>
       </View>
       </TouchableOpacity>
       </View>
