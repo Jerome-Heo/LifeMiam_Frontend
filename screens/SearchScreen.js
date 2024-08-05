@@ -8,9 +8,11 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  FlatList,
 } from 'react-native';
 
 export default function SearchScreen({ navigation }) {
+  const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState([]);
 
 
@@ -37,7 +39,10 @@ export default function SearchScreen({ navigation }) {
         value={search}
         onChangeText={text => setSearch(text)}
       />
-    <View
+    <FlatList
+      data={filteredData}
+      keyExtractor={recipe => recipe._id}
+      renderItem={({ recipe }) => <Text style={styles.recipe}>{recipe.title}</Text>}
      />
       <Text style={styles.subtitle}>Les recettes populaires</Text>
       <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={() => navigation.navigate("Recipe")}>
@@ -77,6 +82,7 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     borderWidth: 1,
     paddingLeft: 8,
+    marginBottom: 10,
     width: 300,
   },
 
