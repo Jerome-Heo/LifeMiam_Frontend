@@ -54,6 +54,8 @@ const TabNavigator = () => {
       <Tab.Screen name= "Menu" component={MenuScreen}/>
       <Tab.Screen name= "Search" component={SearchScreen}/>
       <Tab.Screen name= "Profile" component={ProfileScreen}/>
+      <Tab.Screen name="Recipe" component={RecipeScreen} options={{tabBarButton: () => null}}/>
+      <Tab.Screen name="List" component={ListScreen} options= {{tabBarButton: () => null}}/>
     </Tab.Navigator>
   )
 }
@@ -65,8 +67,6 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Recipe" component={RecipeScreen}/>
-          <Stack.Screen name="List" component={ListScreen}/>
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
         </Stack.Navigator>
     </NavigationContainer>
