@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View,Image } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -29,15 +29,23 @@ const TabNavigator = () => {
       tabBarIcon: ({ color, size}) => {
         let iconName= '';
 
-        if(route.name === 'Menu'){
-          // iconName = 'faUtensils'; //L'icone n'est pas trouvée
-        } else if (route.name === 'Search') {
-          // iconName = 'faMagnifying-glass'; //L'icone n'est pas trouvée
-        } else if (route.name === 'Profile'){
-          iconName = 'user'
+        if(route.name === 'Menu')
+        {
+          iconName = './assets/menu.png'; //L'icone n'est pas trouvée
+          return <Image source={require('./assets/menu.png')} />;
+        } 
+        else if (route.name === 'Search') 
+        {
+          iconName = './assets/search.png'; //L'icone n'est pas trouvée
+          return <Image source={require('./assets/search.png')} />;
+        } else if (route.name === 'Profile')
+        {
+          iconName = './assets/profile.png'
+          return <Image source={require('./assets/profile.png')} />;
         }
 
-        return <FontAwesome name={iconName} size={size} color={color}/>;
+       
+        
       },
       tabBarActiveTintColor: '#E7D37F',
       tabBarInactiveTintColor: '#81A263',
