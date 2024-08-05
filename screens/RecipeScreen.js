@@ -63,7 +63,7 @@ import {
     //La recette ne précise pas l'unité de mesure de chaque ingrédient ni son nom.
     const ingredient = ExRecipe['sub-doc ing'].map((data, i) => {
         return (
-           <Text key={i} style={styles.H3} >{`${data.quantity}g de ${data.ingredient}`}</Text>
+           <Text key={i} style={styles.H3} >{`- ${data.quantity}g de ${data.ingredient}`}</Text>
         )
     })
 
@@ -71,7 +71,7 @@ import {
         return (
             <View>
                 <Text key={i} style={styles.H3} marginTop={10}>Etape {i}: </Text>
-                <Text style={styles.H3}>{data}</Text>
+                <Text style={styles.H3}>- {data}</Text>
            </View>
         )
     })

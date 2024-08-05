@@ -12,7 +12,7 @@ import {
 export default function HomeScreen({ navigation }) {
 
   handleGo = () => {
-    navigation.navigate('TabNavigator');
+    navigation.navigate('TabNavigator', {screen: 'Search'});
   }
 
   return (
