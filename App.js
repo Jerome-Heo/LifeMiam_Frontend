@@ -30,9 +30,9 @@ const TabNavigator = () => {
         let iconName= '';
 
         if(route.name === 'Menu'){
-          iconName = 'faUtensils'; //L'icone n'est pas trouvée
+          // iconName = 'faUtensils'; //L'icone n'est pas trouvée
         } else if (route.name === 'Search') {
-          iconName = 'faMagnifying-glass'; //L'icone n'est pas trouvée
+          // iconName = 'faMagnifying-glass'; //L'icone n'est pas trouvée
         } else if (route.name === 'Profile'){
           iconName = 'user'
         }
