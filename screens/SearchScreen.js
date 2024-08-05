@@ -13,8 +13,23 @@ import {
 export default function SearchScreen({ navigation }) {
   const [search, setSearch] = useState('');
 
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch();
+        const data = await response.json();
+        setFilteredData(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchData();
+  }, [search]);
+
+
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
       <Text style={styles.title}>Recettes</Text>
       <TextInput
         style={styles.searchBar}
@@ -25,7 +40,7 @@ export default function SearchScreen({ navigation }) {
       <Text style={styles.subtitle}>Les recettes populaires</Text>
       <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={() => navigation.navigate("Recipe")}>
         <View style={styles.allResults}></View>
-          <Text style={styles.result1}><Image source={require("../assets/gateau_chocolat.jpg")} />Gâteau au chocolat</Text>
+        <Text style={styles.result1}><Image source={require("../assets/gateau_chocolat.jpg")} />Gâteau au chocolat</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={() => navigation.navigate("Recipe")}>
         <Text style={styles.result2}><Image source={require("../assets/pates_carbonara.jpg")} />Pâtes à la carbonara</Text>
@@ -34,14 +49,14 @@ export default function SearchScreen({ navigation }) {
         <Text style={styles.result3}><Image style={styles.fruitsSalad} source={require("../assets/salade_fruits.jpg")} />Salade de fruits frais</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={() => navigation.navigate("Recipe")}>
-      <Text style={styles.result3}><Image style={styles.fruitsSalad} source={require("../assets/poulet_curry.jpg")} />Poulet au curry</Text>
+        <Text style={styles.result3}><Image style={styles.fruitsSalad} source={require("../assets/poulet_curry.jpg")} />Poulet au curry</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={() => navigation.navigate("Recipe")}>
-      <Text style={styles.result3}><Image style={styles.fruitsSalad} source={require("../assets/caesar_salad.jpg")} />Salade César</Text>
+        <Text style={styles.result3}><Image style={styles.fruitsSalad} source={require("../assets/caesar_salad.jpg")} />Salade César</Text>
       </TouchableOpacity>
-    </View>
-        
-    
+    </KeyboardAvoidingView>
+
+
   )
 }
 
@@ -88,7 +103,7 @@ const styles = StyleSheet.create({
   },
 
   result3: {
-    
+
   },
 
   fruitsSalad: {
