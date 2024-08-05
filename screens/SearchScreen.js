@@ -11,21 +11,21 @@ import {
 } from 'react-native';
 
 export default function SearchScreen({ navigation }) {
-  const [search, setSearch] = useState('');
+  const [filteredData, setFilteredData] = useState([]);
 
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch();
-        const data = await response.json();
-        setFilteredData(data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchData();
-  }, [search]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await fetch("http://localhost:3000/recipes");
+  //       const data = await response.json();
+  //       setFilteredData(data);
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, [search]);
 
 
   return (
@@ -37,6 +37,8 @@ export default function SearchScreen({ navigation }) {
         value={search}
         onChangeText={text => setSearch(text)}
       />
+    <View
+     />
       <Text style={styles.subtitle}>Les recettes populaires</Text>
       <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={() => navigation.navigate("Recipe")}>
         <View style={styles.allResults}></View>
@@ -75,7 +77,6 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     borderWidth: 1,
     paddingLeft: 8,
-    marginBottom: 10,
     width: 300,
   },
 
@@ -85,7 +86,6 @@ const styles = StyleSheet.create({
   },
 
   subtitle: {
-    marginTop: 70,
     color: "green",
     fontSize: 20,
   },
