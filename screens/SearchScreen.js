@@ -13,30 +13,49 @@ import {
   SafeAreaView,
 } from 'react-native';
 
-const recipePopularity = [
-  {id: 11, name: "Poulet au curry", popularity: 5},
-  {id: 2, name: "Salade de fruits frais", popularity: 4},
-  {id: 12, name: "Salade César", popularity: 5},
-  {id: 15, name: "Gâteau au chocolat", popularity: 5},
-  {id: 39, name: "Pâtes à la carbonara", popularity: 5},
-]
 
-export default function SearchScreen({ navigation }) {
-  const [recipes, setRecipes] = useState(recipePopularity);
+export default function SearchScreen({navigation}) {
+  const [recipes, setRecipes] = useState([]);
   const [SearchQuery, setSearchQuery] = useState('');
-  const [filteredRecipes, setFilteredRecipes] = useState(recipePopularity);
+  const [filteredRecipes, setFilteredRecipes] = useState([]);
+  
+  // const recipePopularity = [
+  //   { id: 11, name: "Poulet au curry", popularity: 5 },
+  //   { id: 2, name: "Salade de fruits frais", popularity: 4 },
+  //   { id: 12, name: "Salade César", popularity: 5 },
+  //   { id: 15, name: "Gâteau au chocolat", popularity: 5 },
+  //   { id: 39, name: "Pâtes à la carbonara", popularity: 5 },
+  // ]
+// console.log(recipes)
 
-  const filterByClicks = () => {
-    const sortedRecipes = [...filteredRecipes].sort((a, b) => b.clics - a.clics);
-    setFilteredRecipes(sortedRecipes);
-  };
+const fetchPopularRecipes = () => {
+  fetch('https://lifemiam-backend.vercel.app/recipes/?limit=10&sortBy=popularity')
+  .then((response) => response.json())
+  .then((data) => {
+    // const sortedData = data.sort((a, b) => b.popularity - a.popularity);
+    setRecipes(data.data);
+    setFilteredRecipes(data.data);
+    // console.log(data.data)
+  })
+  .catch((error) => {
+    console.error('Error fetching data:', error);
+  })
+}
+useEffect(() => {
+  fetchPopularRecipes();
+}, []);
+  
+  // const filterByClicks = () => {
+  //   const sortedRecipes = [...filteredRecipes].sort((a, b) => b.clics - a.clics);
+  //   setFilteredRecipes(sortedRecipes);
+  // };
 
   const handleSearch = (query) => {
-    setSearchQuery(query);
-    const filtered = recipes.filter((recipe) =>
-      recipe.name.toLowerCase().includes(query.toLowerCase())
-    );
-    setFilteredRecipes(filtered);
+  //   setSearchQuery(query);
+  //   const filtered = recipes.filter((recipe) =>
+  //     recipe.name.toLowerCase().includes(query.toLowerCase())
+  //   );
+  //   setFilteredRecipes(filtered);
   };
 
   const handleRecipeClick = (id) => {
@@ -45,26 +64,27 @@ export default function SearchScreen({ navigation }) {
     );
     setRecipes(updatedRecipes);
     setFilteredRecipes(updatedRecipes);
+    navigation.navigate("Recipe")
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("https://lifemiam-backend.vercel.app/recipes/?limit=10&sortBy=popularity");
-        const data = await response.json();
-        setFilteredRecipes(data);
-        console.log(data)
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchData();
-  }, [SearchQuery]);
 
 
+
+
+  const popularRecipes = recipes.map((element, i) => {
+    // console.log(element.image)
+    return (
+      <TouchableOpacity key={i} onPress={() => handleRecipeClick(element._id) }>
+      <View style={styles.recipes}>
+        <Image source={{uri: element.image}} style={styles.recipeImage} />
+        <Text>{element.name}</Text>
+      </View>
+    </TouchableOpacity>
+    )
+  })
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-      <StatusBar barStyle="dark-content" />
+    
       <Text style={styles.title}>Recettes</Text>
       <TextInput
         style={styles.searchBar}
@@ -72,37 +92,26 @@ export default function SearchScreen({ navigation }) {
         value={SearchQuery}
         onChangeText={handleSearch}
       />
-     <FlatList
-    //   data={filteredRecipe}
-    //   keyExtractor={recipe => recipe._id}
-    //   renderItem={({ recipe }) => <Text style={styles.recipe}>{recipe.title}</Text>}
-     />
-    
+      {/* <Image source={{uri: element.image}} style={styles.recipeImage} /> */}
       <Text style={styles.subtitle}>Les recettes populaires</Text>
-      <TouchableOpacity style={styles.button} onPress={filterByClicks}>
-        <Image style={styles.sort} source={require("../assets/trier.png")}/>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={() => navigation.navigate("Recipe")}>
-        <View style={styles.allResults}></View>
-        <Text style={styles.result1}><Image source={require("../assets/gateau_chocolat.jpg")} />Gâteau au chocolat</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={() => navigation.navigate("Recipe")}>
-        <Text style={styles.result2}><Image source={require("../assets/pates_carbonara.jpg")} />Pâtes à la carbonara</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={() => navigation.navigate("Recipe")}>
-        <Text style={styles.result3}><Image style={styles.fruitsSalad} source={require("../assets/salade_fruits.jpg")} />Salade de fruits frais</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={() => navigation.navigate("Recipe")}>
-        <Text style={styles.result3}><Image style={styles.fruitsSalad} source={require("../assets/poulet_curry.jpg")} />Poulet au curry</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={() => navigation.navigate("Recipe")}>
-        <Text style={styles.result3}><Image style={styles.fruitsSalad} source={require("../assets/caesar_salad.jpg")} />Salade César</Text>
-      </TouchableOpacity>
+      {popularRecipes}
+      {/* <FlatList
+        data={filteredRecipes}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id.toString()}
+      /> */}
     </KeyboardAvoidingView>
-   
-
   )
 }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -134,7 +143,7 @@ const styles = StyleSheet.create({
   },
 
   allResults: {
-paddingBottom: 150,
+    paddingBottom: 150,
   },
 
   result1: {
@@ -150,6 +159,11 @@ paddingBottom: 150,
   },
 
   fruitsSalad: {
+    height: 60,
+    width: 60,
+  },
+
+  recipeImage: {
     height: 60,
     width: 60,
   },
