@@ -8,16 +8,16 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  FlatList,
-  StatusBar,
-  SafeAreaView,
+
 } from 'react-native';
+import { useIsFocused } from "@react-navigation/native"; 
 
 
 export default function SearchScreen({navigation}) {
   const [recipes, setRecipes] = useState([]);
   const [SearchQuery, setSearchQuery] = useState('');
   const [filteredRecipes, setFilteredRecipes] = useState([]);
+  const isFocused = useIsFocused(); 
   
   // const recipePopularity = [
   //   { id: 11, name: "Poulet au curry", popularity: 5 },
@@ -43,7 +43,7 @@ const fetchPopularRecipes = () => {
 }
 useEffect(() => {
   fetchPopularRecipes();
-}, []);
+}, [isFocused]);
   
   // const filterByClicks = () => {
   //   const sortedRecipes = [...filteredRecipes].sort((a, b) => b.clics - a.clics);
