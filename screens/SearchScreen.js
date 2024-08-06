@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 
 
-export default function SearchScreen({}) {
+export default function SearchScreen({navigation}) {
   const [recipes, setRecipes] = useState([]);
   const [SearchQuery, setSearchQuery] = useState('');
   const [filteredRecipes, setFilteredRecipes] = useState([]);
@@ -26,7 +26,7 @@ export default function SearchScreen({}) {
   //   { id: 15, name: "Gâteau au chocolat", popularity: 5 },
   //   { id: 39, name: "Pâtes à la carbonara", popularity: 5 },
   // ]
-console.log(recipes)
+// console.log(recipes)
 
 const fetchPopularRecipes = () => {
   fetch('https://lifemiam-backend.vercel.app/recipes/?limit=10&sortBy=popularity')
@@ -64,15 +64,17 @@ useEffect(() => {
     );
     setRecipes(updatedRecipes);
     setFilteredRecipes(updatedRecipes);
+    navigation.navigate("Recipe")
   };
 
 
 
 
+
   const popularRecipes = recipes.map((element, i) => {
-    console.log(element.image)
+    // console.log(element.image)
     return (
-      <TouchableOpacity key={i} onPress={() => handleRecipeClick(element._id)}>
+      <TouchableOpacity key={i} onPress={() => handleRecipeClick(element._id) }>
       <View style={styles.recipes}>
         <Image source={{uri: element.image}} style={styles.recipeImage} />
         <Text>{element.name}</Text>
@@ -82,7 +84,7 @@ useEffect(() => {
   })
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-      <StatusBar barStyle="dark-content" />
+    
       <Text style={styles.title}>Recettes</Text>
       <TextInput
         style={styles.searchBar}
@@ -90,6 +92,7 @@ useEffect(() => {
         value={SearchQuery}
         onChangeText={handleSearch}
       />
+      {/* <Image source={{uri: element.image}} style={styles.recipeImage} /> */}
       <Text style={styles.subtitle}>Les recettes populaires</Text>
       {popularRecipes}
       {/* <FlatList
@@ -156,6 +159,11 @@ const styles = StyleSheet.create({
   },
 
   fruitsSalad: {
+    height: 60,
+    width: 60,
+  },
+
+  recipeImage: {
     height: 60,
     width: 60,
   },
