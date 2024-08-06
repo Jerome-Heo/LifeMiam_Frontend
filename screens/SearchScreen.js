@@ -64,7 +64,7 @@ useEffect(() => {
     );
     setRecipes(updatedRecipes);
     setFilteredRecipes(updatedRecipes);
-    navigation.navigate("Recipe")
+    navigation.navigate("Recipe", {RecetteID: id});
   };
 
 
