@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   FlatList,
   StatusBar,
+  SafeAreaView,
 } from 'react-native';
 
 const recipePopularity = [
@@ -23,27 +24,27 @@ const recipePopularity = [
 export default function SearchScreen({ navigation }) {
   const [recipes, setRecipes] = useState(recipePopularity);
   const [SearchQuery, setSearchQuery] = useState('');
-  const [filteredData, setFilteredData] = useState(recipePopularity);
+  const [filteredRecipes, setFilteredRecipes] = useState(recipePopularity);
 
   const filterByClicks = () => {
     const sortedRecipes = [...filteredRecipes].sort((a, b) => b.clics - a.clics);
-    setFilteredRecettes(sortedRecipes);
+    setFilteredRecipes(sortedRecipes);
   };
 
   const handleSearch = (query) => {
     setSearchQuery(query);
-    const filtered = recettes.filter((recipe) =>
+    const filtered = recipes.filter((recipe) =>
       recipe.name.toLowerCase().includes(query.toLowerCase())
     );
-    setFilteredRecettes(filtered);
+    setFilteredRecipes(filtered);
   };
 
   const handleRecipeClick = (id) => {
-    const updatedRecipes = recipe.map((recette) =>
-      recette.id === id ? { ...recipe, clics: recette.clics + 1 } : recipe
+    const updatedRecipes = recipes.map((recette) =>
+      recette.id === id ? { ...recipes, clics: recette.clics + 1 } : recipes
     );
-    setRecettes(updatedRecipes);
-    setFilteredRecettes(updatedRecipes);
+    setRecipes(updatedRecipes);
+    setFilteredRecipes(updatedRecipes);
   };
 
   useEffect(() => {
@@ -51,14 +52,14 @@ export default function SearchScreen({ navigation }) {
       try {
         const response = await fetch("https://lifemiam-backend.vercel.app/recipes/?limit=10&sortBy=popularity");
         const data = await response.json();
-        setFilteredData(data);
+        setFilteredRecipes(data);
         console.log(data)
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
     fetchData();
-  }, [search]);
+  }, [SearchQuery]);
 
 
   return (
@@ -71,11 +72,12 @@ export default function SearchScreen({ navigation }) {
         value={SearchQuery}
         onChangeText={handleSearch}
       />
-    <FlatList
-      data={filteredData}
-      keyExtractor={recipe => recipe._id}
-      renderItem={({ recipe }) => <Text style={styles.recipe}>{recipe.title}</Text>}
+     <FlatList
+    //   data={filteredRecipe}
+    //   keyExtractor={recipe => recipe._id}
+    //   renderItem={({ recipe }) => <Text style={styles.recipe}>{recipe.title}</Text>}
      />
+    
       <Text style={styles.subtitle}>Les recettes populaires</Text>
       <TouchableOpacity style={styles.button} onPress={filterByClicks}>
         <Image style={styles.sort} source={require("../assets/trier.png")}/>
@@ -97,7 +99,7 @@ export default function SearchScreen({ navigation }) {
         <Text style={styles.result3}><Image style={styles.fruitsSalad} source={require("../assets/caesar_salad.jpg")} />Salade César</Text>
       </TouchableOpacity>
     </KeyboardAvoidingView>
-
+   
 
   )
 }
