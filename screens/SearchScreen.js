@@ -9,12 +9,42 @@ import {
   TextInput,
   TouchableOpacity,
   FlatList,
+  StatusBar,
 } from 'react-native';
 
-export default function SearchScreen({ navigation }) {
-  const [search, setSearch] = useState('');
-  const [filteredData, setFilteredData] = useState([]);
+const recipePopularity = [
+  {id: 11, name: "Poulet au curry", popularity: 5},
+  {id: 2, name: "Salade de fruits frais", popularity: 4},
+  {id: 12, name: "Salade César", popularity: 5},
+  {id: 15, name: "Gâteau au chocolat", popularity: 5},
+  {id: 39, name: "Pâtes à la carbonara", popularity: 5},
+]
 
+export default function SearchScreen({ navigation }) {
+  const [recipes, setRecipes] = useState(recipePopularity);
+  const [SearchQuery, setSearchQuery] = useState('');
+  const [filteredData, setFilteredData] = useState(recipePopularity);
+
+  const filterByClicks = () => {
+    const sortedRecipes = [...filteredRecipes].sort((a, b) => b.clics - a.clics);
+    setFilteredRecettes(sortedRecipes);
+  };
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    const filtered = recettes.filter((recipe) =>
+      recipe.name.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredRecettes(filtered);
+  };
+
+  const handleRecipeClick = (id) => {
+    const updatedRecipes = recipe.map((recette) =>
+      recette.id === id ? { ...recipe, clics: recette.clics + 1 } : recipe
+    );
+    setRecettes(updatedRecipes);
+    setFilteredRecettes(updatedRecipes);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,12 +63,13 @@ export default function SearchScreen({ navigation }) {
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+      <StatusBar barStyle="dark-content" />
       <Text style={styles.title}>Recettes</Text>
       <TextInput
         style={styles.searchBar}
-        placeholder="Search..."
-        value={search}
-        onChangeText={text => setSearch(text)}
+        placeholder="Rechercher..."
+        value={SearchQuery}
+        onChangeText={handleSearch}
       />
     <FlatList
       data={filteredData}
@@ -46,6 +77,9 @@ export default function SearchScreen({ navigation }) {
       renderItem={({ recipe }) => <Text style={styles.recipe}>{recipe.title}</Text>}
      />
       <Text style={styles.subtitle}>Les recettes populaires</Text>
+      <TouchableOpacity style={styles.button} onPress={filterByClicks}>
+        <Image style={styles.sort} source={require("../assets/trier.png")}/>
+      </TouchableOpacity>
       <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={() => navigation.navigate("Recipe")}>
         <View style={styles.allResults}></View>
         <Text style={styles.result1}><Image source={require("../assets/gateau_chocolat.jpg")} />Gâteau au chocolat</Text>
