@@ -8,6 +8,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import { useIsFocused } from "@react-navigation/native";
 
@@ -95,25 +96,41 @@ export default function SearchScreen({ navigation }) {
     // console.log(element.image)
     return (
       <TouchableOpacity key={i} onPress={() => handleRecipeClick(element._id)}>
+
         <View style={styles.recipes}>
+
           <Image source={{ uri: element.image }} style={styles.recipeImage} />
-          <Text>{element.name}</Text>
+          <Text style={styles.H3}>{element.name}</Text>
+          <View style={styles.PHbutton}></View>
         </View>
+
       </TouchableOpacity>
     )
   })
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
 
-      <Text style={styles.title}>Recettes</Text>
-      <TextInput
-        style={styles.searchBar}
-        placeholder="Rechercher..."
-        value={SearchQuery}
-        onChangeText={handleSearch}
-      />
-      <Text style={styles.subtitle}>Les recettes populaires</Text>
-      {popularRecipes}
+      <View style={styles.titleCont}>
+
+        <Text style={styles.H1}>Recettes</Text>
+
+        <TextInput
+          style={styles.searchBar}
+          placeholder="Rechercher..."
+          value={SearchQuery}
+          onChangeText={handleSearch}
+        />
+
+        <Text style={styles.H2}>Les recettes populaires</Text>
+
+        <ScrollView style={styles.ScrollCont}> 
+
+          
+          {popularRecipes}
+          
+        </ScrollView>
+      </View>
+      
       {/* <FlatList
         data={filteredRecipes}
         renderItem={renderItem}
@@ -127,55 +144,65 @@ export default function SearchScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 50,
-    alignItems: "center"
   },
-
+  titleCont:{
+    marginTop: 50,
+    alignItems: "flex-start",
+    marginLeft: "4%",
+  },
   searchBar: {
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
     paddingLeft: 8,
     marginBottom: 10,
-    width: 300,
+    width: "96%",
   },
-
-  title: {
-    color: "green",
+  H1:{
     fontSize: 30,
-  },
-
-  subtitle: {
-    color: "green",
+    color:"#365E32",
+    fontWeight: "700"
+},
+  H2:{
+    margin: 10,
     fontSize: 20,
-  },
-
-  allResults: {
-    paddingBottom: 150,
-  },
-
-  result1: {
-
-  },
-
-  result2: {
-    marginTop: 15,
-  },
-
-  result3: {
-
-  },
-
-  fruitsSalad: {
+    color:"#365E32",
+    fontWeight: "700",
+},
+H3:{
+    marginLeft: 15,
+    margin: 5,
+    fontSize: 15,
+    color:"#365E32",
+    fontWeight: "700",
+},
+ScrollCont:{
+  width: "96%"
+},
+recipes:{
+  borderWidth:2,
+  borderColor: "#81A263",
+  height: 50,
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  marginVertical: 10,
+  borderBottomLeftRadius: 30,
+  borderRadius: 10,
+},
+recipeImage: {
     height: 60,
     width: 60,
-  },
-
-  recipeImage: {
-    height: 60,
-    width: 60,
-  },
-
+    borderBottomLeftRadius: 30,
+    borderTopRightRadius: 30,
+},
+PHbutton:{
+  borderWidth: 1,
+  borderRadius: 10,
+  backgroundColor: "green",
+  width: 50,
+  height: 50,
+}
 });
 
 
