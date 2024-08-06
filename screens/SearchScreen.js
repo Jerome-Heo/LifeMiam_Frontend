@@ -29,7 +29,7 @@ export default function SearchScreen({navigation}) {
 // console.log(recipes)
 
 const fetchPopularRecipes = () => {
-  fetch('https://lifemiam-backend.vercel.app/recipes/?limit=10&sortBy=popularity')
+  fetch('https://lifemiam-backend.vercel.app/recipes/?&sortBy=popularity')
   .then((response) => response.json())
   .then((data) => {
     // const sortedData = data.sort((a, b) => b.popularity - a.popularity);
