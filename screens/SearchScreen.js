@@ -10,15 +10,16 @@ import {
   TouchableOpacity,
 
 } from 'react-native';
-import { useIsFocused } from "@react-navigation/native"; 
+import { useIsFocused } from "@react-navigation/native";
 
 
-export default function SearchScreen({navigation}) {
+export default function SearchScreen({ navigation }) {
   const [recipes, setRecipes] = useState([]);
   const [SearchQuery, setSearchQuery] = useState('');
   const [filteredRecipes, setFilteredRecipes] = useState([]);
-  const isFocused = useIsFocused(); 
-  
+  const isFocused = useIsFocused();
+  const [searchTimeout, setSearchTimeout] = useState(null);
+
   // const recipePopularity = [
   //   { id: 11, name: "Poulet au curry", popularity: 5 },
   //   { id: 2, name: "Salade de fruits frais", popularity: 4 },
@@ -26,36 +27,52 @@ export default function SearchScreen({navigation}) {
   //   { id: 15, name: "Gâteau au chocolat", popularity: 5 },
   //   { id: 39, name: "Pâtes à la carbonara", popularity: 5 },
   // ]
-// console.log(recipes)
+  // console.log(recipes)
 
-const fetchPopularRecipes = () => {
-  fetch('https://lifemiam-backend.vercel.app/recipes/?&sortBy=popularity')
-  .then((response) => response.json())
-  .then((data) => {
-    // const sortedData = data.sort((a, b) => b.popularity - a.popularity);
-    setRecipes(data.data);
-    setFilteredRecipes(data.data);
-    // console.log(data.data)
-  })
-  .catch((error) => {
-    console.error('Error fetching data:', error);
-  })
-}
-useEffect(() => {
-  fetchPopularRecipes();
-}, [isFocused]);
-  
-  // const filterByClicks = () => {
-  //   const sortedRecipes = [...filteredRecipes].sort((a, b) => b.clics - a.clics);
-  //   setFilteredRecipes(sortedRecipes);
-  // };
+  const fetchPopularRecipes = () => {
+    fetch('https://lifemiam-backend.vercel.app/recipes/?&sortBy=popularity')
+      .then((response) => response.json())
+      .then((data) => {
+        // const sortedData = data.sort((a, b) => b.popularity - a.popularity);
+        setRecipes(data.data);
+        setFilteredRecipes(data.data);
+        // console.log(data.data)
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      })
+  }
+  useEffect(() => {
+    fetchPopularRecipes();
+  }, [isFocused]);
+
+  // fetch à débug ASAP jéjé
+  const fetchSearchResults = (query) => {
+    fetch(`http://localhost:3000/recipes/?search=Gâteau%20au%20chocolat${query}`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data.data);
+        if (data.length) {
+          setFilteredRecipes(data.data);
+        } else {
+          console.error('Data is not an array:', data);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching search results:', error);
+      });
+  };
 
   const handleSearch = (query) => {
-  //   setSearchQuery(query);
-  //   const filtered = recipes.filter((recipe) =>
-  //     recipe.name.toLowerCase().includes(query.toLowerCase())
-  //   );
-  //   setFilteredRecipes(filtered);
+    setSearchQuery(query);
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+    setSearchTimeout(
+      setTimeout(() => {
+        fetchSearchResults(query);
+      }, 2000)
+    );
   };
 
   const handleRecipeClick = (id) => {
@@ -68,23 +85,20 @@ useEffect(() => {
   };
 
 
-
-
-
   const popularRecipes = recipes.map((element, i) => {
     // console.log(element.image)
     return (
-      <TouchableOpacity key={i} onPress={() => handleRecipeClick(element._id) }>
-      <View style={styles.recipes}>
-        <Image source={{uri: element.image}} style={styles.recipeImage} />
-        <Text>{element.name}</Text>
-      </View>
-    </TouchableOpacity>
+      <TouchableOpacity key={i} onPress={() => handleRecipeClick(element._id)}>
+        <View style={styles.recipes}>
+          <Image source={{ uri: element.image }} style={styles.recipeImage} />
+          <Text>{element.name}</Text>
+        </View>
+      </TouchableOpacity>
     )
   })
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-    
+
       <Text style={styles.title}>Recettes</Text>
       <TextInput
         style={styles.searchBar}
@@ -103,17 +117,6 @@ useEffect(() => {
     </KeyboardAvoidingView>
   )
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 const styles = StyleSheet.create({
@@ -169,3 +172,17 @@ const styles = StyleSheet.create({
   },
 
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
