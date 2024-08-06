@@ -41,4 +41,7 @@ const styles = StyleSheet.create({
   textButt: {
     color: "white",
   },
+  textButt: {
+    color: "white",
+  },
 });
