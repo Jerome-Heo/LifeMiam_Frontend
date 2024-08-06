@@ -20,7 +20,7 @@ import {
         "name": "Gâteau au chocolat",
         "tags": [
             "dessert",
-            "végétarien"
+            "végétarien",
         ],
         "regime": [
             "végétarien"
@@ -75,6 +75,16 @@ import {
 
     const [serving, setServing] = useState(ExRecipe.default_serving);
 
+    //Mapper les tags pour en faire des vignettes
+    const tags = ExRecipe.tags.map((data)=> {
+        return (
+            <View style={styles.TagVignette}> 
+                <Text style={styles.TxtVignette}>{data}</Text> 
+                <View style={styles.ImgVignette}></View> 
+            </View>
+        )
+    })
+
     //press les deux boutons + et - 
     const handleMinus = () => {
         setServing(prevServing => Math.max(1, prevServing - 1))
@@ -119,17 +129,17 @@ import {
     return (
       <View style={styles.container}>
         <View style={styles.ButtonsCont}>
-            <TouchableOpacity style={styles.buttons} onPress={() => goBack()}><Text color={"#E7D37F"}>Return</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.buttons}><Text color={"#E7D37F"}>Add</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.buttons} onPress={() => goBack()}><Image source={require("../assets/AddButton.png")}></Image></TouchableOpacity>
+            <TouchableOpacity style={styles.buttons}><Image source={require("../assets/GoBackButton.png")}></Image></TouchableOpacity>
         </View>
         
         <ScrollView style={styles.ScrollView}>  
             <Image source={require("../assets/gateau_chocolat.jpg")} style={styles.MainImage}></Image>
             
             <Text style={styles.nameRecipe}>{ExRecipe.name}</Text>
-
+            <View style={styles.vignetteCont}>{tags}</View>
             <View style={styles.specCont}>
-                <Text style={styles.H2}>Difficulté : {ExRecipe.difficulty}</Text> 
+                <Text style={styles.H2}>Difficulté : {ExRecipe.difficulty}/5</Text> 
                 <Text style={styles.H2}>Préparation : {ExRecipe.time}min</Text> 
             </View>  
             
@@ -181,11 +191,33 @@ import {
         justifyContent:'space-between',
         paddingHorizontal: 20,
         width: "100%",
+    }, 
+    vignetteCont:{
+        flexDirection: "row",
+        justifyContent: "space-around",
+        flexWrap:"wrap"
     },
-    buttons:{
-        backgroundColor:"#365E32",
-        width: 50,
-    },  
+    TagVignette:{
+        marginTop: 3,
+        padding: 10,
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexDirection: "row",
+        backgroundColor:"#81A263",
+        borderRadius: 50,
+        width: 125,
+        height: 40
+    },
+    TxtVignette:{
+        color:"white",
+        fontWeight: "600"
+    },
+    ImgVignette:{
+        backgroundColor:"white",
+        borderRadius: 100,
+        width: 25,
+        height: 25,
+    },
     container: {
       flex: 1,
       backgroundColor: 'white',
@@ -207,7 +239,8 @@ import {
         
     },
     specCont:{
-        flexDirection: "row"
+        flexDirection: "row",
+        justifyContent: "center",
     },
     H2:{
         margin: 10,
