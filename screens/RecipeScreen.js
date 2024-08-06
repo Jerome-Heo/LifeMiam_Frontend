@@ -11,36 +11,41 @@ import {
   } from 'react-native';
   import { useState } from 'react';
 
-  export default function RecipeScreen({navigation}) {
+  export default function RecipeScreen({navigation: { goBack } }) {
     
     
 
     let ExRecipe = {
         "_id": 15,
         "name": "Gâteau au chocolat",
-        "tags": ["dessert", "végétarien"],
-        "regime": ["végétarien"],
+        "tags": [
+            "dessert",
+            "végétarien"
+        ],
+        "regime": [
+            "végétarien"
+        ],
         "image": "url_image_gateau_au_chocolat",
         "default_serving": 8,
         "sub-doc ing": [
             {
-                "ingredient": 1,
+                "ingredient": "Farine",
                 "quantity": 200
             },
             {
-                "ingredient": 2,
+                "ingredient": "Sucre",
                 "quantity": 150
             },
             {
-                "ingredient": 3,
+                "ingredient": "Beurre",
                 "quantity": 4
             },
             {
-                "ingredient": 5,
+                "ingredient": "Lait",
                 "quantity": 2
             },
             {
-                "ingredient": 4,
+                "ingredient": "Œufs",
                 "quantity": 1
             }
         ],
@@ -54,9 +59,18 @@ import {
             "Cuire au four pendant 25 minutes.",
             "Laisser refroidir avant de servir."
         ],
-        "difficulty": "moyenne",
+        "difficulty": 3,
         "time": 45,
-        "popularity": 5
+        "popularity": 5,
+        "ustensiles": [
+            "moule à gâteau",
+            "four",
+            "bol",
+            "fouet",
+            "bain-marie"
+        ],
+        "temps_preparation": 22,
+        "temps_cuisson": 23
     }
 
     const [serving, setServing] = useState(ExRecipe.default_serving);
@@ -78,11 +92,14 @@ import {
         };
     });
 
-    returnButton = () => {
-        navigation.navigate('Search');
-      }
+    //Les ustensils
+    const utensils = ExRecipe.ustensiles.map((data, i )=> {
+        return(
+            <Text key={i} style={styles.H3}>- {data}</Text>
+        )
+    })
 
-    //La recette ne précise pas l'unité de mesure de chaque ingrédient ni son nom.
+    //Les ingrédients et quantitées
     const ingredient = adjustedIngredients.map((data, i) => {
         return (
            <Text key={i} style={styles.H3} >{`- ${data.quantity}g de ${data.ingredient}`}</Text>
@@ -92,8 +109,8 @@ import {
     //Les différentes étapes de la recette
     const steps = ExRecipe.steps.map((data, i) => {
         return (
-            <View>
-                <Text key={i} style={styles.H3} marginTop={10}>Etape {i}: </Text>
+            <View key={i}>
+                <Text style={styles.H3} marginTop={10}>Etape {i}: </Text>
                 <Text style={styles.H3}>- {data}</Text>
            </View>
         )
@@ -102,7 +119,7 @@ import {
     return (
       <View style={styles.container}>
         <View style={styles.ButtonsCont}>
-            <TouchableOpacity style={styles.buttons} onPress={returnButton}><Text color={"#E7D37F"}>Return</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.buttons} onPress={() => goBack()}><Text color={"#E7D37F"}>Return</Text></TouchableOpacity>
             <TouchableOpacity style={styles.buttons}><Text color={"#E7D37F"}>Add</Text></TouchableOpacity>
         </View>
         
@@ -133,9 +150,18 @@ import {
             <View>
 
             <View borderBottomWidth={1} borderBottomColor={"#E7D37F"} width={"70%"} marginHorizontal={50} marginTop={20}/> 
+            
+            <Text style={styles.H2}>Ustensiles :</Text>  
+            <View>{utensils}</View>
+            <View borderBottomWidth={1} borderBottomColor={"#E7D37F"} width={"70%"} marginHorizontal={50} marginTop={20}/> 
 
-            <Text style={styles.H2}>Recette :</Text>  
-            <View style={styles.stepList}>{steps}</View>
+            <Text style={styles.H2}>Préparation :</Text>  
+            <Text style={styles.H3}>-Temps de préparation: min</Text>
+            <Text style={styles.H3}>-Temps de cuisson: min</Text>
+
+            <View borderBottomWidth={1} borderBottomColor={"#E7D37F"} width={"70%"} marginHorizontal={50} marginTop={20}/> 
+
+            <View>{steps}</View>
 
             </View>
 
