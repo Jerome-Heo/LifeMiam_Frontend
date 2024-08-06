@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import Colors from '../utilities/color'
+
 export default function HomeScreen({ navigation }) {
 
   handleGo = () => {
@@ -26,7 +28,7 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'green',
+    backgroundColor: Colors.ORANGE,
     alignItems: 'center',
     justifyContent: 'center',
   },
