@@ -13,18 +13,18 @@ import {
   import { useRoute } from '@react-navigation/native';
   
   export default function RecipeScreen({navigation: { goBack } }) {
-
+    const URL = 'https://lifemiam-backend.vercel.app'
     const token = '0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf'
     const route = useRoute();
     const {RecetteID} = route.params
     const [Recipe, SetRecipe] = useState({})
     
     useEffect(() => {
-        fetch(`https://lifemiam-backend.vercel.app/recipes/${RecetteID}/${token}`)
+        fetch(`${URL}/recipes/${RecetteID}/${token}`)
         .then((response) => response.json())
         .then((data) => {
-            SetRecipe(data.data[0])
-            setServing(data.data[0].default_serving)
+            SetRecipe(data.data)
+            setServing(data.data.default_serving)
         })
     }, [])
     
