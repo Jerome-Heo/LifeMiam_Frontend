@@ -28,12 +28,12 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.ORANGE,
+    backgroundColor: Colors.WHITE,
     alignItems: 'center',
     justifyContent: 'center',
   },
   go: {
-    backgroundColor: "red",
+    backgroundColor: Colors.LIGHT_GREEN,
     width: 200,
     height: 200,
     alignItems: 'center',

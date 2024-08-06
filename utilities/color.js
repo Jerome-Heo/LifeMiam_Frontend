@@ -1,9 +1,10 @@
 const Colors =
 {
-AQUA_GREEN: '#1A5276',
-RED: '#B03A2E',
-ORANGE: '#DC7633',
-PURPLE: '#8E44AD',
-GRAY: '#566573',
+DARK_GREEN: '#365E32',
+LIGHT_GREEN: '#81A263',
+YELLOW: '#E7D37F',
+BLUE_FB: '#6375A2',
+BLACK:'#000000',
+WHITE:'#ffffff'
 }
 export default Colors;
