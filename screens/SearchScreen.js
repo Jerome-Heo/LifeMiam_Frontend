@@ -8,7 +8,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-
 } from 'react-native';
 import { useIsFocused } from "@react-navigation/native";
 
@@ -19,7 +18,8 @@ export default function SearchScreen({ navigation }) {
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const isFocused = useIsFocused();
   const [searchTimeout, setSearchTimeout] = useState(null);
-
+  const URL = 'https://lifemiam-backend.vercel.app'
+  
   // const recipePopularity = [
   //   { id: 11, name: "Poulet au curry", popularity: 5 },
   //   { id: 2, name: "Salade de fruits frais", popularity: 4 },
@@ -30,7 +30,7 @@ export default function SearchScreen({ navigation }) {
   // console.log(recipes)
 
   const fetchPopularRecipes = () => {
-    fetch('https://lifemiam-backend.vercel.app/recipes/?&sortBy=popularity')
+    fetch(`${URL}/recipes/?&sortBy=popularity`)
       .then((response) => response.json())
       .then((data) => {
         // const sortedData = data.sort((a, b) => b.popularity - a.popularity);
@@ -48,7 +48,7 @@ export default function SearchScreen({ navigation }) {
 
   // fetch à débug ASAP jéjé
   const fetchSearchResults = (query) => {
-    fetch(`http://localhost:3000/recipes/?search=Gâteau%20au%20chocolat${query}`)
+    fetch(`${URL}/recipes/?search=Gâteau%20au%20chocolat${query}`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data.data);
@@ -62,6 +62,12 @@ export default function SearchScreen({ navigation }) {
         console.error('Error fetching search results:', error);
       });
   };
+
+  
+  // const filterByClicks = () => {
+  //   const sortedRecipes = [...filteredRecipes].sort((a, b) => b.clics - a.clics);
+  //   setFilteredRecipes(sortedRecipes);
+  // };
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -81,7 +87,7 @@ export default function SearchScreen({ navigation }) {
     );
     setRecipes(updatedRecipes);
     setFilteredRecipes(updatedRecipes);
-    navigation.navigate("Recipe")
+    navigation.navigate("Recipe", {RecetteID: id});
   };
 
 
@@ -106,7 +112,6 @@ export default function SearchScreen({ navigation }) {
         value={SearchQuery}
         onChangeText={handleSearch}
       />
-      {/* <Image source={{uri: element.image}} style={styles.recipeImage} /> */}
       <Text style={styles.subtitle}>Les recettes populaires</Text>
       {popularRecipes}
       {/* <FlatList
