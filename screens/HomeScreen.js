@@ -9,6 +9,10 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import Signin from '../components/Signin'
+import Signup from '../components/Signup'
+import Unboarding from '../components/Unboarding'
+
 import Colors from '../utilities/color'
 
 export default function HomeScreen({ navigation }) {
@@ -21,6 +25,10 @@ export default function HomeScreen({ navigation }) {
     <View style={styles.container}>
       <Text>HomeScreen</Text>
       <TouchableOpacity style={styles.go} onPress={() => handleGo()}><Text style={styles.textButt}>Go To Search</Text></TouchableOpacity>
+
+      <Signin/>
+      <Signup/>
+      <Unboarding/>
     </View>
   )
 }
