@@ -8,55 +8,68 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  FlatList,
-  StatusBar,
-  SafeAreaView,
+  ScrollView,
 } from 'react-native';
+import { useIsFocused } from "@react-navigation/native";
 
 
-export default function SearchScreen({navigation}) {
+export default function SearchScreen({ navigation }) {
   const [recipes, setRecipes] = useState([]);
   const [SearchQuery, setSearchQuery] = useState('');
   const [filteredRecipes, setFilteredRecipes] = useState([]);
-  
-  // const recipePopularity = [
-  //   { id: 11, name: "Poulet au curry", popularity: 5 },
-  //   { id: 2, name: "Salade de fruits frais", popularity: 4 },
-  //   { id: 12, name: "Salade César", popularity: 5 },
-  //   { id: 15, name: "Gâteau au chocolat", popularity: 5 },
-  //   { id: 39, name: "Pâtes à la carbonara", popularity: 5 },
-  // ]
-// console.log(recipes)
+  const [searchTimeout, setSearchTimeout] = useState(null);
+  const isFocused = useIsFocused();
+  const URL = 'https://lifemiam-backend.vercel.app'
 
-const fetchPopularRecipes = () => {
-  fetch('https://lifemiam-backend.vercel.app/recipes/?&sortBy=popularity')
-  .then((response) => response.json())
-  .then((data) => {
-    // const sortedData = data.sort((a, b) => b.popularity - a.popularity);
-    setRecipes(data.data);
-    setFilteredRecipes(data.data);
-    // console.log(data.data)
-  })
-  .catch((error) => {
-    console.error('Error fetching data:', error);
-  })
-}
-useEffect(() => {
-  fetchPopularRecipes();
-}, []);
+
+  const fetchPopularRecipes = () => {
+    fetch(`${URL}/recipes/?&sortBy=popularity`)
+      .then((response) => response.json())
+      .then((data) => {
+        setRecipes(data.data);
+        setFilteredRecipes(data.data);
+        // console.log(data.data)
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      })
+  }
+
+  useEffect(() => {
+    fetchPopularRecipes();
+  }, [isFocused]);
+
   
-  // const filterByClicks = () => {
-  //   const sortedRecipes = [...filteredRecipes].sort((a, b) => b.clics - a.clics);
-  //   setFilteredRecipes(sortedRecipes);
-  // };
+  const fetchSearchResults = (query) => {
+    fetch(`${URL}/recipes/?search=${query}`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data.data);
+        if (data.data.length) {
+          setFilteredRecipes(data.data);
+          setRecipes(data.data);
+        } else {
+          console.error('Data is not an array:', data);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching search results:', error);
+      });
+  };
+
 
   const handleSearch = (query) => {
-  //   setSearchQuery(query);
-  //   const filtered = recipes.filter((recipe) =>
-  //     recipe.name.toLowerCase().includes(query.toLowerCase())
-  //   );
-  //   setFilteredRecipes(filtered);
+    setSearchQuery(query);
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+    setSearchTimeout(
+      setTimeout(() => {
+        fetchSearchResults(query);
+      }, 1000)
+    );
   };
+
 
   const handleRecipeClick = (id) => {
     const updatedRecipes = recipes.map((recette) =>
@@ -64,42 +77,40 @@ useEffect(() => {
     );
     setRecipes(updatedRecipes);
     setFilteredRecipes(updatedRecipes);
-    navigation.navigate("Recipe", {RecetteID: id});
+    navigation.navigate("Recipe", { RecetteID: id });
   };
-
-
 
 
 
   const popularRecipes = recipes.map((element, i) => {
     // console.log(element.image)
     return (
-      <TouchableOpacity key={i} onPress={() => handleRecipeClick(element._id) }>
-      <View style={styles.recipes}>
-        <Image source={{uri: element.image}} style={styles.recipeImage} />
-        <Text>{element.name}</Text>
-      </View>
-    </TouchableOpacity>
+      <TouchableOpacity key={i} onPress={() => handleRecipeClick(element._id)}>
+        <View style={styles.recipes}>
+          <Image source={{ uri: element.image }} style={styles.recipeImage} />
+          <Text style={styles.H3}>{element.name}</Text>
+          <View style={styles.PHbutton}></View>
+        </View>
+      </TouchableOpacity>
     )
   })
+
+
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-    
-      <Text style={styles.title}>Recettes</Text>
-      <TextInput
-        style={styles.searchBar}
-        placeholder="Rechercher..."
-        value={SearchQuery}
-        onChangeText={handleSearch}
-      />
-      {/* <Image source={{uri: element.image}} style={styles.recipeImage} /> */}
-      <Text style={styles.subtitle}>Les recettes populaires</Text>
-      {popularRecipes}
-      {/* <FlatList
-        data={filteredRecipes}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-      /> */}
+      <View style={styles.titleCont}>
+        <Text style={styles.H1}>Recettes</Text>
+        <TextInput
+          style={styles.searchBar}
+          placeholder="Rechercher..."
+          value={SearchQuery}
+          onChangeText={handleSearch}
+        />
+        <Text style={styles.H2}>Les recettes populaires</Text>
+        <ScrollView style={styles.ScrollCont}>
+          {popularRecipes}
+        </ScrollView>
+      </View>
     </KeyboardAvoidingView>
   )
 }
@@ -116,56 +127,81 @@ useEffect(() => {
 
 
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 50,
-    alignItems: "center"
   },
-
+  titleCont: {
+    marginTop: 50,
+    alignItems: "flex-start",
+    marginLeft: "4%",
+  },
   searchBar: {
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
     paddingLeft: 8,
     marginBottom: 10,
-    width: 300,
+    width: "96%",
   },
-
-  title: {
-    color: "green",
+  H1: {
     fontSize: 30,
+    color: "#365E32",
+    fontWeight: "700"
   },
-
-  subtitle: {
-    color: "green",
+  H2: {
+    margin: 10,
     fontSize: 20,
+    color: "#365E32",
+    fontWeight: "700",
   },
-
-  allResults: {
-    paddingBottom: 150,
+  H3: {
+    marginLeft: 15,
+    margin: 5,
+    fontSize: 15,
+    color: "#365E32",
+    fontWeight: "700",
   },
-
-  result1: {
-
+  ScrollCont: {
+    width: "96%"
   },
-
-  result2: {
-    marginTop: 15,
+  recipes: {
+    borderWidth: 2,
+    borderColor: "#81A263",
+    height: 50,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginVertical: 10,
+    borderBottomLeftRadius: 30,
+    borderRadius: 10,
   },
-
-  result3: {
-
-  },
-
-  fruitsSalad: {
-    height: 60,
-    width: 60,
-  },
-
   recipeImage: {
     height: 60,
     width: 60,
+    borderBottomLeftRadius: 30,
+    borderTopRightRadius: 30,
   },
-
+  PHbutton: {
+    borderWidth: 1,
+    borderRadius: 10,
+    backgroundColor: "green",
+    width: 50,
+    height: 50,
+  }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
