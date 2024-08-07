@@ -9,11 +9,11 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-import Signin from '../components/Signin'
-import Signup from '../components/Signup'
-import Unboarding from '../components/Unboarding'
+import Signin from "../components/Signin";
+import Signup from "../components/Signup";
+import Onboarding from "../components/Onboarding";
 
-import Colors from '../utilities/color'
+import Colors from "../utilities/color";
 
 export default function HomeScreen({ navigation }) {
   handleGo = () => {
@@ -22,18 +22,14 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text>HomeScreen</Text>
-<<<<<<< HEAD
+      {/* <Text>HomeScreen</Text>
       <TouchableOpacity style={styles.go} onPress={() => handleGo()}>
         <Text style={styles.textButt}>Go To Search</Text>
       </TouchableOpacity>
-=======
-      <TouchableOpacity style={styles.go} onPress={() => handleGo()}><Text style={styles.textButt}>Go To Search</Text></TouchableOpacity>
 
-      <Signin/>
-      <Signup/>
-      <Unboarding/>
->>>>>>> d1fe565ce04114f1ed805ee181900e7dd2afcdbd
+      <Signin />
+      <Signup /> */}
+      <Onboarding />
     </View>
   );
 }
@@ -41,15 +37,9 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-<<<<<<< HEAD
-    backgroundColor: "green",
+    backgroundColor: Colors.WHITE,
     alignItems: "center",
     justifyContent: "center",
-=======
-    backgroundColor: Colors.WHITE,
-    alignItems: 'center',
-    justifyContent: 'center',
->>>>>>> d1fe565ce04114f1ed805ee181900e7dd2afcdbd
   },
   go: {
     backgroundColor: Colors.LIGHT_GREEN,
