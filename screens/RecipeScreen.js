@@ -26,7 +26,7 @@ import {
             SetRecipe(data.data)
             setServing(data.data.default_serving)
         })
-    }, [])
+    }, [RecetteID])
     
     const [serving, setServing] = useState(Recipe.default_serving);
 
@@ -91,7 +91,7 @@ import {
         <ScrollView style={styles.ScrollView}>  
             <Image source={{uri: Recipe.image}} style={styles.MainImage}></Image>
             
-            <Text style={styles.nameRecipe}>{Recipe.name}</Text>
+            <Text style={styles.H1}>{Recipe.name}</Text>
             <View style={styles.vignetteCont}>{tags}</View>
             <View style={styles.specCont}>
                 <Text style={styles.H2}>Difficulté : {Recipe.difficulty}/5</Text> 
@@ -186,13 +186,12 @@ import {
         width: 400,
         height: 300,
     },
-    nameRecipe:{
+    H1:{
         fontSize: 30,
         color:"#365E32",
         marginLeft: 20,
-    },
-    tagCont:{
-        
+        fontWeight: "700",
+        margin: 5,
     },
     specCont:{
         flexDirection: "row",
@@ -202,12 +201,14 @@ import {
         margin: 10,
         fontSize: 20,
         color:"#365E32",
+        fontWeight: "700",
     },
     H3:{
         marginLeft: 15,
         margin: 5,
         fontSize: 15,
         color:"#365E32",
+        fontWeight: "700",
     },
     IngrListandSelector:{
         flexDirection: "row"
