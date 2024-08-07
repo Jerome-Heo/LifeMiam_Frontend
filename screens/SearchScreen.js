@@ -20,20 +20,11 @@ export default function SearchScreen({ navigation }) {
   const [searchTimeout, setSearchTimeout] = useState(null);
   const URL = 'https://lifemiam-backend.vercel.app'
   
-  // const recipePopularity = [
-  //   { id: 11, name: "Poulet au curry", popularity: 5 },
-  //   { id: 2, name: "Salade de fruits frais", popularity: 4 },
-  //   { id: 12, name: "Salade César", popularity: 5 },
-  //   { id: 15, name: "Gâteau au chocolat", popularity: 5 },
-  //   { id: 39, name: "Pâtes à la carbonara", popularity: 5 },
-  // ]
-  // console.log(recipes)
 
   const fetchPopularRecipes = () => {
     fetch(`${URL}/recipes/?&sortBy=popularity`)
       .then((response) => response.json())
       .then((data) => {
-        // const sortedData = data.sort((a, b) => b.popularity - a.popularity);
         setRecipes(data.data);
         setFilteredRecipes(data.data);
         // console.log(data.data)
@@ -42,6 +33,7 @@ export default function SearchScreen({ navigation }) {
         console.error('Error fetching data:', error);
       })
   }
+       
   useEffect(() => {
     fetchPopularRecipes();
   }, [isFocused]);
@@ -52,7 +44,7 @@ export default function SearchScreen({ navigation }) {
       .then((response) => response.json())
       .then((data) => {
         console.log(data.data);
-        if (data.length) {
+        if (data.data.length) {
           setFilteredRecipes(data.data);
         } else {
           console.error('Data is not an array:', data);
@@ -64,11 +56,6 @@ export default function SearchScreen({ navigation }) {
   };
 
   
-  // const filterByClicks = () => {
-  //   const sortedRecipes = [...filteredRecipes].sort((a, b) => b.clics - a.clics);
-  //   setFilteredRecipes(sortedRecipes);
-  // };
-
   const handleSearch = (query) => {
     setSearchQuery(query);
     if (searchTimeout) {
@@ -80,6 +67,8 @@ export default function SearchScreen({ navigation }) {
       }, 2000)
     );
   };
+
+
 
   const handleRecipeClick = (id) => {
     const updatedRecipes = recipes.map((recette) =>
