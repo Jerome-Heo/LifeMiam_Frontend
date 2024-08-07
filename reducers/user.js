@@ -1,18 +1,28 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  value: { token: null },
+  value: { token: null, regime: [] },
 };
 
 export const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
     token: (state, action) => {
       state.value.token = action.payload;
     },
+    addRegime: (state, action) => {
+      state.value.regime.push(action.payload);
+      console.log("added", action.payload);
+    },
+    removeRegime: (state, action) => {
+      state.value.regime = state.value.regime.filter(
+        (e) => e !== action.payload
+      );
+      console.log("removed", action.payload);
+    },
   },
 });
 
-export const { token } = userSlice.actions;
+export const { token, addRegime, removeRegime } = userSlice.actions;
 export default userSlice.reducer;

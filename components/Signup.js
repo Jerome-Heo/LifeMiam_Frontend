@@ -16,8 +16,6 @@ function Signup() {
   const URL = 'https://lifemiam-backend.vercel.app'
   // const URL = 'http://192.168.0.53:3000'
 
-
-
   useEffect(() => {
 
     setDisplayError(null)
@@ -41,17 +39,27 @@ function Signup() {
           if (data.result == true)
           {
             setDisplaySignedUp('Vous êtes inscrit et avez un token ! ')
+            setEmail(null)
+            setUsername(null)
+            setPassword(null)
+            // navigation.navigate('TabNavigator', {screen: 'Search'});
           }
 
           if (data.result == false)
           {
             setDisplayError(data.error)
+            setEmail(null)
+            setUsername(null)
+            setPassword(null)
           }
           
         })
         .catch((error) => {
           console.error('Error in sign up:', error);
           setDisplayError(error)
+          setEmail(null)
+          setUsername(null)
+          setPassword(null)
         });
     };
 
@@ -155,7 +163,7 @@ function Signup() {
     {
       width:'100%',
       height:'100%',      
-      objectFit:'cover'
+      objectFit:'contain'
     },
     inputContainer:
     {
