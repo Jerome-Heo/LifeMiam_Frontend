@@ -39,14 +39,15 @@ export default function SearchScreen({ navigation }) {
     fetchPopularRecipes();
   }, [isFocused]);
 
-  // fetch à débug ASAP jéjé
+  //requête BDD pour obtenir les recettes demandées
   const fetchSearchResults = (query) => {
-    fetch(`${URL}/recipes/?search=Gâteau%20au%20chocolat${query}`)
+    fetch(`${URL}/recipes/?search=${query}&tags=["végétarien"]`)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.data);
+        console.log(data);
         if (data.data.length) {
           setFilteredRecipes(data.data);
+          setRecipes(data.data);
         } else {
           console.error('Data is not an array:', data);
         }
@@ -56,7 +57,7 @@ export default function SearchScreen({ navigation }) {
       });
   };
 
-
+  //timer pour aider l'utilisateur qui hésite dans sa recherche
   const handleSearch = (query) => {
     setSearchQuery(query);
     if (searchTimeout) {
@@ -65,11 +66,12 @@ export default function SearchScreen({ navigation }) {
     setSearchTimeout(
       setTimeout(() => {
         fetchSearchResults(query);
-      }, 2000)
+      }, 1000)
     );
   };
 
 
+  //chemin de navigation vers RecipeScreen par le clic
   const handleRecipeClick = (id) => {
     const updatedRecipes = recipes.map((recette) =>
       recette.id === id ? { ...recipes, clics: recette.clics + 1 } : recipes
@@ -79,8 +81,11 @@ export default function SearchScreen({ navigation }) {
     navigation.navigate("Recipe", { RecetteID: id });
   };
 
+  const addRecipeToMenu = (recipe) => {
+    navigation.navigate('MenuScreen', { recipe });
+  };
 
-
+  //affichage des recettes populaires avec les images cloudinary depuis la BDD
   const popularRecipes = recipes.map((element, i) => {
     // console.log(element.image)
     return (
@@ -88,12 +93,23 @@ export default function SearchScreen({ navigation }) {
         <View style={styles.recipes}>
           <Image source={{ uri: element.image }} style={styles.recipeImage} />
           <Text style={styles.H3}>{element.name}</Text>
+          <TouchableOpacity style={styles.addButton} onPress={() => addRecipeToMenu(element)}>
+            <Image source={require("../assets/smallAdd.png")}></Image>
+          </TouchableOpacity>    
           <View style={styles.PHbutton}></View>
         </View>
       </TouchableOpacity>
     )
-  })
+  });
+        
 
+
+  //bouton "clear" pour effacer ce qui est écrit dans l'input
+  const clearSearch = () => {
+    setSearchQuery('');
+    setFilteredRecipes([]);
+    setRecipes([]);
+  };
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
@@ -105,6 +121,10 @@ export default function SearchScreen({ navigation }) {
           value={SearchQuery}
           onChangeText={handleSearch}
         />
+        <TouchableOpacity onPress={clearSearch} style={styles.clearButton}>
+          <Image style={styles.clearButton} source={require("../assets/clear.png")} />
+        </TouchableOpacity>
+
         <Text style={styles.H2}>Les recettes populaires</Text>
         <ScrollView style={styles.ScrollCont}>
           {popularRecipes}
@@ -188,7 +208,12 @@ const styles = StyleSheet.create({
     backgroundColor: "green",
     width: 50,
     height: 50,
-  }
+  },
+
+  clearButton: {
+    height: 20,
+    width: 20,
+  },
 });
 
 
