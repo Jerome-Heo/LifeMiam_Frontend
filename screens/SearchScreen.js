@@ -39,14 +39,15 @@ export default function SearchScreen({ navigation }) {
     fetchPopularRecipes();
   }, [isFocused]);
 
-  // fetch à débug ASAP jéjé
+  
   const fetchSearchResults = (query) => {
-    fetch(`${URL}/recipes/?search=Gâteau%20au%20chocolat${query}`)
+    fetch(`${URL}/recipes/?search=${query}`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data.data);
         if (data.data.length) {
           setFilteredRecipes(data.data);
+          setRecipes(data.data);
         } else {
           console.error('Data is not an array:', data);
         }
@@ -65,7 +66,7 @@ export default function SearchScreen({ navigation }) {
     setSearchTimeout(
       setTimeout(() => {
         fetchSearchResults(query);
-      }, 2000)
+      }, 1000)
     );
   };
 
