@@ -81,6 +81,9 @@ export default function SearchScreen({ navigation }) {
     navigation.navigate("Recipe", { RecetteID: id });
   };
 
+  const addRecipeToMenu = (recipe) => {
+    navigation.navigate('MenuScreen', { recipe });
+  };
 
   //affichage des recettes populaires avec les images cloudinary depuis la BDD
   const popularRecipes = recipes.map((element, i) => {
@@ -90,11 +93,16 @@ export default function SearchScreen({ navigation }) {
         <View style={styles.recipes}>
           <Image source={{ uri: element.image }} style={styles.recipeImage} />
           <Text style={styles.H3}>{element.name}</Text>
+          <TouchableOpacity style={styles.addButton} onPress={() => addRecipeToMenu(element)}>
+            <Image source={require("../assets/smallAdd.png")}></Image>
+          </TouchableOpacity>    
           <View style={styles.PHbutton}></View>
         </View>
       </TouchableOpacity>
     )
   });
+        
+
 
   //bouton "clear" pour effacer ce qui est écrit dans l'input
   const clearSearch = () => {
