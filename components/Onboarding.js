@@ -76,9 +76,10 @@ function Onboarding({navigation}) {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
+          console.log('data',data);
           data.result &&
             navigation.navigate("TabNavigator", { screen: "Search" });
+         
         });
     }
   };

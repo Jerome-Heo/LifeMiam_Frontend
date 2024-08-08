@@ -14,7 +14,6 @@ import Signup from "../components/Signup";
 import Onboarding from "../components/Onboarding";
 import { useState } from "react";
 import Colors from "../utilities/color";
-import { useState } from "react";
 
 export default function HomeScreen({ navigation }) {
 
