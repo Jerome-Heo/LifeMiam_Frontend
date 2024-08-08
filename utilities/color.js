@@ -5,6 +5,6 @@ LIGHT_GREEN: '#81A263',
 YELLOW: '#E7D37F',
 BLUE_FB: '#6375A2',
 BLACK:'#000000',
-WHITE:'#ffffff'
+WHITE:'#ffffff',
 }
 export default Colors;

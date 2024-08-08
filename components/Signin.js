@@ -21,7 +21,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { token } from '../reducers/user';
 
-function Signin() {
+function Signin({navigation}) {
   const URL = 'https://lifemiam-backend.vercel.app';
   const dispatch = useDispatch();
   const [signin, setSignin] = useState(null);
