@@ -22,8 +22,10 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* <Text>HomeScreen</Text>
-      <TouchableOpacity style={styles.go} onPress={() => handleGo()}><Text style={styles.textButt}>Go To Search</Text></TouchableOpacity> */}
+      <Text>HomeScreen</Text>
+      <TouchableOpacity style={styles.go} onPress={() => handleGo()}>
+        <Text style={styles.textButt}>Go To Search</Text>
+      </TouchableOpacity>
       <Signin />
       <Signup />
       <Onboarding />

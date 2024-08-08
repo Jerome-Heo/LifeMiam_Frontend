@@ -1,8 +1,3 @@
-// PROFILE SCREEN
-// displayed during on-boarding and in ProfileTab
-// has Tab nav access
-//
-
 import { useState } from "react";
 import {
   View,
@@ -21,13 +16,16 @@ import {
 import Colors from "../utilities/color";
 import { useDispatch, useSelector } from "react-redux";
 import { addRegime, removeRegime } from "../reducers/user";
+import { useNavigation } from "@react-navigation/native";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 function Onboarding() {
+  const navigation = useNavigation();
   const dispatch = useDispatch();
   const userToken = useSelector((state) => state.user.value.token);
+  const token = "HkkfE9VmlughUTLaNifglDHuTNC5yfx5";
   const userRegime = useSelector((state) => state.user.value.regime);
   const URL = "https://lifemiam-backend.vercel.app";
 
@@ -68,7 +66,21 @@ function Onboarding() {
   };
 
   const handleGo = () => {
-    navigation.navigate("TabNavigator", { screen: "Search" });
+    console.log("userRegime", userRegime);
+    if (userRegime.length > 0) {
+      // const regime = userRegime.map((e) => e.replace(" ", "-"));
+      fetch(`${URL}/users/update?regime=[${userRegime}]`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: token, regime: userRegime }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          data.result &&
+            navigation.navigate("TabNavigator", { screen: "Search" });
+        });
+    }
   };
 
   return (
