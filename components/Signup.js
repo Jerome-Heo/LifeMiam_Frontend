@@ -2,22 +2,24 @@ import { View,Image,StyleSheet ,Text,TextInput,SafeAreaView,KeyboardAvoidingView
 import Colors from '../utilities/color'
 import { useState ,useEffect} from "react";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { useDispatch, useSelector } from 'react-redux';
+function Signup({onboarding}) {
 
-function Signup() {
+  const dispatch = useDispatch();
 
   const [displaySignedUp ,setDisplaySignedUp]=useState(null)
   const [displayError,setDisplayError]=useState(null)
   const [email,setEmail]=useState(null)
   const [username,setUsername]=useState(null)
   const [password,setPassword]=useState(null)
-  const [passwordHidden,setPasswordHidden]=useState(null)
   const [showPassword, setShowPassword] = useState(false);
+
 
   const URL = 'https://lifemiam-backend.vercel.app'
   // const URL = 'http://192.168.0.53:3000'
 
   useEffect(() => {
-
+    
     setDisplayError(null)
     setDisplaySignedUp(null)
   
@@ -39,6 +41,9 @@ function Signup() {
           if (data.result == true)
           {
             setDisplaySignedUp('Vous êtes inscrit et avez un token ! ')
+            // dispatch
+            dispatch(token({ token: data.token }));
+            onboarding(true)
             setEmail(null)
             setUsername(null)
             setPassword(null)
@@ -47,6 +52,7 @@ function Signup() {
 
           if (data.result == false)
           {
+            onboarding=false
             setDisplayError(data.error)
             setEmail(null)
             setUsername(null)

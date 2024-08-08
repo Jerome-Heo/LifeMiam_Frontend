@@ -12,23 +12,57 @@ import {
 import Signin from "../components/Signin";
 import Signup from "../components/Signup";
 import Onboarding from "../components/Onboarding";
-
+import { useState } from "react";
 import Colors from "../utilities/color";
 
 export default function HomeScreen({ navigation }) {
+  const [displayComponent, setDisplayComponent] = useState(null);
+
   handleGo = () => {
     navigation.navigate("TabNavigator", { screen: "Search" });
   };
 
+  const isOnBoarding = (value) => {
+    if (value) {
+      setDisplayComponent("onboarding");
+    }
+  };
+
+  const displayNull = (
+    <View>
+      <View style={styles.logoContainer}>
+        <Image style={styles.logoImg} source={require("../assets/logo.png")} />
+      </View>
+      <Text>LIFE MIAM</Text>
+      <TouchableOpacity
+        style={styles.test}
+        onPress={() => {
+          setDisplayComponent("signup");
+        }}
+      >
+        <Text>S'inscrire</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.test}
+        onPress={() => {
+          setDisplayComponent("signin");
+        }}
+      >
+        <Text>J'ai un compte</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
     <View style={styles.container}>
-      <Text>HomeScreen</Text>
-      <TouchableOpacity style={styles.go} onPress={() => handleGo()}>
-        <Text style={styles.textButt}>Go To Search</Text>
-      </TouchableOpacity>
-      {/* <Signin />
-      <Signup /> */}
-      <Onboarding />
+      {/* <TouchableOpacity style={styles.go} onPress={() => handleGo()}><Text style={styles.textButt}>Go To Search</Text></TouchableOpacity> */}
+      {!displayComponent && displayNull}
+      {displayComponent == "signin" && <Signin navigation={navigation} />}
+      {displayComponent == "signup" && <Signup onboarding={isOnBoarding} />}
+      {displayComponent == "onboarding" && (
+        <Onboarding navigation={navigation} />
+      )}
     </View>
   );
 }
@@ -52,5 +86,21 @@ const styles = StyleSheet.create({
   },
   textButt: {
     color: "white",
+  },
+  test: {
+    height: 100,
+    backgroundColor: "pink",
+    alignItems: "center",
+    justifyContent: "center",
+    margin: 20,
+  },
+  logoContainer: {
+    height: "30%",
+    width: "100%",
+  },
+  logoImg: {
+    width: "100%",
+    height: "100%",
+    objectFit: "contain",
   },
 });

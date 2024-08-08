@@ -21,8 +21,8 @@ import { useNavigation } from "@react-navigation/native";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-function Onboarding() {
-  const navigation = useNavigation();
+function Onboarding({navigation}) {
+
   const dispatch = useDispatch();
   const userToken = useSelector((state) => state.user.value.token);
   const token = "-ob9kC9qgjQ7vn9vx0s6JUGmtlUWANtv";
@@ -74,9 +74,10 @@ function Onboarding() {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
+          console.log('data',data);
           data.result &&
             navigation.navigate("TabNavigator", { screen: "Search" });
+         
         });
     }
   };
