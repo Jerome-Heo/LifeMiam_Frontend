@@ -93,10 +93,12 @@ export default function SearchScreen({ navigation }) {
         <View style={styles.recipes}>
           <Image source={{ uri: element.image }} style={styles.recipeImage} />
           <Text style={styles.H3}>{element.name}</Text>
+            
+          <View style={styles.PHbutton}>
           <TouchableOpacity style={styles.addButton} onPress={() => addRecipeToMenu(element)}>
             <Image source={require("../assets/smallAdd.png")}></Image>
-          </TouchableOpacity>    
-          <View style={styles.PHbutton}></View>
+          </TouchableOpacity> 
+          </View>
         </View>
       </TouchableOpacity>
     )
@@ -206,8 +208,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     backgroundColor: "green",
-    width: 50,
-    height: 50,
+   
   },
 
   clearButton: {
