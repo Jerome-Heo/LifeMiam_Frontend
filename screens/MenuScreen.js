@@ -19,6 +19,7 @@ import {
     const [menus, setMenus] = useState([])
     const [isCreatingMenu, setIsCreatingMenu] = useState(false)
     const [createBarTxt, setCreateBarTxt] = useState('')
+    const [isMenuAdded, setIsMenuAdded] = useState(false)
 
     useEffect(() => {
       fetch(`${URL}/menus/getMenus`, {
@@ -31,7 +32,7 @@ import {
         if(Array.isArray(data))
           setMenus(data)
       })
-  }, [])
+  }, [isMenuAdded])
    
     const handleCreateMenu = () => {
       fetch(`${URL}/menus/create`, {
@@ -40,7 +41,8 @@ import {
         body: JSON.stringify({ token: token, name: createBarTxt }),
       }).then(response => response.json())
         .then(data => {
-          setMenus([... data])
+          setIsCreatingMenu(false)
+          setIsMenuAdded(!isMenuAdded)
           setCreateBarTxt('')
         });
     }
@@ -82,16 +84,20 @@ import {
       <ScrollView style={styles.fetchMenusCont}>
         {menusDisplay}
       </ScrollView>
-      {createMenuButton}
+        <View style={styles.createMenuAlign}>
+        {createMenuButton}
+        </View>
     </View>
     : 
     <View>
-    <View style={styles.contentCont}> 
-      <Image style={styles.logoImg} source={require("../assets/logo.png")}/>
-      <Text style={styles.H3}>Vous n'avez pas de menus...</Text> 
-      <Text style={styles.H3}>Commencer une liste ?</Text> 
-    </View>
-      {createMenuButton}
+      <View style={styles.contentCont}> 
+        <Image style={styles.logoImg} source={require("../assets/logo.png")}/>
+        <Text style={styles.H3}>Vous n'avez pas de menus...</Text> 
+        <Text style={styles.H3}>Commencer une liste ?</Text> 
+      </View>
+      <View style={styles.createMenuAlign}>
+        {createMenuButton}
+        </View>
     </View>
 
     return (
@@ -160,7 +166,10 @@ import {
       borderRadius: 50,
     },
     createMenuAlign:{
-      marginTop: 120,
+      width: "98%",
+      borderWidth: 1,
+      position: 'absolute',
+      bottom: 120,
     },
     createMenuTxt:{
       fontSize: 20,
@@ -168,7 +177,7 @@ import {
       color: '#E7D37F',
     },
     validCont:{
-      padding: 10,
+      padding: 25,
       flexDirection: "row",
     },
     validBar: {
@@ -183,6 +192,7 @@ import {
     },
     fetchMenusCont: {
       width: "100%",
+      borderWidth: 1,
     },
     menuCont: {
       margin: 10,
