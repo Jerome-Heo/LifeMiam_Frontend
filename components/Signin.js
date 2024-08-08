@@ -16,10 +16,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 
-// Requested to navigate from a component
-import { useNavigation } from '@react-navigation/native';
-
-import { token } from '../reducers/user';
+import { addRegime, token } from '../reducers/user';
 
 function Signin({navigation}) {
   const URL = 'https://lifemiam-backend.vercel.app';
@@ -27,8 +24,6 @@ function Signin({navigation}) {
   const [signin, setSignin] = useState(null);
   const [password, SetPassword] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
-
-  const navigation = useNavigation(); // Requested to navigate from a component
 
   const handleSignin = () => {
     fetch(`${URL}/users/signin`, {
@@ -40,12 +35,14 @@ function Signin({navigation}) {
         console.log(data);
 				if (data.result === true) {
 					dispatch(token({ token: data.token }));
+          dispatch(addRegime({regime: data.regime}));
 					setSignin('');
 					SetPassword('');
           navigation.navigate("TabNavigator", { screen: "Search" });
 				}
         else {
           // Display an error
+          console.log("Erreur avec Signin");
         }
 			});
   }
@@ -90,9 +87,9 @@ const styles = StyleSheet.create({
   },
   logoImg: {
     borderWidth: 1,
-      width:'100%',
-      height:'100%',      
-      objectFit:'contain',
+    width:'100%',
+    height:'100%',      
+    objectFit:'contain',
   },
   title: {
     fontSize:36,
@@ -102,17 +99,19 @@ const styles = StyleSheet.create({
   inputContainer: {
     position: 'relative',
     borderWidth: 1,
-    width: "90%",
+    width: "80%",
     marginTop:15,
     marginBottom:15,
   },
   label: {
-    backgroundColor: Colors.WHITE,
-    position: 'absolute',
-    top: -10,
-    left: 10,
-    zIndex: 1,
-    paddingHorizontal: 5,
+    position:'absolute',
+    top:-10,
+    left:10,
+    backgroundColor:Colors.WHITE,
+    color:Colors.LIGHT_GREEN,
+    zIndex:10,
+    paddingHorizontal:5,
+    fontWeight:'500'
   },
   input: {
     height: 50,
@@ -120,6 +119,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     color: "black",
     borderWidth: 1,
+    borderColor:Colors.DARK_GREEN,
     paddingHorizontal: 10,
   },
   showpassword: {
@@ -131,6 +131,9 @@ const styles = StyleSheet.create({
     justifyContent:'center',
     paddingHorizontal:10,
   },
+  icon:{
+    color:Colors.DARK_GREEN,
+    },
   signinButton: {
     marginTop:30,
     alignSelf:'center',
@@ -141,8 +144,7 @@ const styles = StyleSheet.create({
     width:'80%',
     backgroundColor:Colors.DARK_GREEN,
   },
-  signinButtonText:
-  {
+  signinButtonText:{
     textAlign:'center',
     color:Colors.YELLOW,
     fontSize:16
