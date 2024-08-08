@@ -9,18 +9,39 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Button
 } from 'react-native';
 import { useIsFocused } from "@react-navigation/native";
 
+import * as Animatable from 'react-native-animatable';
+const types = ['bounceIn', 'bounceInDown', 'bounceInUp', 'bounceInLeft', 'bounceInRight', 'fadeIn', 'fadeInDown', 'fadeInDownBig', 'fadeInUp', 'fadeInUpBig', 'fadeInLeft', 'fadeInLeftBig', 'fadeInRight', 'fadeInRightBig', 'lightSpeedIn', 'slideInDown', 'slideInUp', 'slideInLeft', 'slideInRight', 'zoomIn', 'zoomInDown', 'zoomInUp', 'zoomInLeft', 'zoomInRight']
+
+
+
+
 
 export default function SearchScreen({ navigation }) {
+
+  const [animation, setAnimation] = useState({
+    visible: false,
+    type: ''
+  })
+  const animate = (type) => {
+    setAnimation({ visible: false, type })
+    setTimeout(() => {
+        setAnimation({ visible: true, type })
+    }, 100);
+  }
+  const prop = animation.visible ? { animation: animation.type } : {}
+
+  
+
   const [recipes, setRecipes] = useState([]);
   const [SearchQuery, setSearchQuery] = useState('');
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [searchTimeout, setSearchTimeout] = useState(null);
   const isFocused = useIsFocused();
   const URL = 'https://lifemiam-backend.vercel.app'
-
 
   const fetchPopularRecipes = () => {
     fetch(`${URL}/recipes/?&sortBy=popularity`)
@@ -36,8 +57,16 @@ export default function SearchScreen({ navigation }) {
   }
 
   useEffect(() => {
-    fetchPopularRecipes();
-  }, [isFocused]);
+    setTimeout(() => {
+      fetchPopularRecipes();
+    }, 100);
+  }, [isFocused]); // Ne déclenche qu'au focus, pas à chaque update de popularRecipes
+  
+  useEffect(() => {
+ 
+      animate('fadeInLeft');
+  
+  }, [popularRecipes,searchTimeout]);
 
   //requête BDD pour obtenir les recettes demandées
   const fetchSearchResults = (query) => {
@@ -89,6 +118,7 @@ export default function SearchScreen({ navigation }) {
   const popularRecipes = recipes.map((element, i) => {
     // console.log(element.image)
     return (
+      <Animatable.View key={i} style={styles.view} {...prop}>
       <TouchableOpacity key={i} onPress={() => handleRecipeClick(element._id)}>
         <View style={styles.recipes}>
           <Image source={{ uri: element.image }} style={styles.recipeImage} />
@@ -101,6 +131,7 @@ export default function SearchScreen({ navigation }) {
           </View>
         </View>
       </TouchableOpacity>
+      </Animatable.View>
     )
   });
         
@@ -115,6 +146,7 @@ export default function SearchScreen({ navigation }) {
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+
       <View style={styles.titleCont}>
         <Text style={styles.H1}>Recettes</Text>
         <TextInput
@@ -129,23 +161,14 @@ export default function SearchScreen({ navigation }) {
 
         <Text style={styles.H2}>Les recettes populaires</Text>
         <ScrollView style={styles.ScrollCont}>
+       
           {popularRecipes}
+          
         </ScrollView>
       </View>
     </KeyboardAvoidingView>
   )
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -215,6 +238,7 @@ const styles = StyleSheet.create({
     height: 20,
     width: 20,
   },
+  
 });
 
 
