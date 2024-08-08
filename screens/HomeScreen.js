@@ -49,12 +49,6 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-<<<<<<< HEAD
-      <Text>HomeScreen</Text>
-      <TouchableOpacity style={styles.go} onPress={() => handleGo()}><Text style={styles.textButt}>Go To Search</Text></TouchableOpacity>
-      
-
-=======
     
       {/* <TouchableOpacity style={styles.go} onPress={() => handleGo()}><Text style={styles.textButt}>Go To Search</Text></TouchableOpacity> */}
       {!displayComponent && displayNull}
@@ -62,7 +56,6 @@ export default function HomeScreen({ navigation }) {
       { displayComponent == 'signup' && <Signup onboarding={isOnBoarding}/>}
       { displayComponent == 'onboarding' && <Onboarding navigation={navigation}/> }
      
->>>>>>> 4aefe21a5c14cd28e9dccdddb489a596a5734e3a
     </View>
   );
 }
