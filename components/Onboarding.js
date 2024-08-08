@@ -25,7 +25,8 @@ import { addRegime, removeRegime } from "../reducers/user";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-function Onboarding() {
+function Onboarding({navigation}) {
+
   const dispatch = useDispatch();
   const userToken = useSelector((state) => state.user.value.token);
   const userRegime = useSelector((state) => state.user.value.regime);

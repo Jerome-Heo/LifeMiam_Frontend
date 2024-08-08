@@ -18,7 +18,7 @@ import { useEffect, useState } from 'react';
 
 import { token } from '../reducers/user';
 
-function Signin() {
+function Signin({navigation}) {
   const URL = 'https://lifemiam-backend.vercel.app';
   const dispatch = useDispatch();
   const [signin, setSignin] = useState(null);
@@ -37,6 +37,7 @@ function Signin() {
 					dispatch(token({ token: data.token }));
 					setSignin('');
 					SetPassword('');
+          navigation.navigate("TabNavigator", { screen: "Search" });
 				}
         else {
           // Display an error
