@@ -50,11 +50,15 @@ export default function HomeScreen({ navigation }) {
         <Text>J'ai un compte</Text> 
     </TouchableOpacity>
   </View>
-
+  
+//j'ai ajouté un bouton ARROW RIGHT de sagouin pour skip le signin/up
   return (
     <View style={styles.container}>
     <TouchableOpacity style={styles.backButton} onPress={() => handleGoBack()}>
         <FontAwesome name={'arrow-left'} style={styles.icon} size={50}/>
+    </TouchableOpacity>
+    <TouchableOpacity style={styles.backButton} onPress={() => handleGo()}>
+        <FontAwesome name={'arrow-right'} style={styles.icon} size={50}/>
     </TouchableOpacity>
       {/* <TouchableOpacity style={styles.go} onPress={() => handleGo()}><Text style={styles.textButt}>Go To Search</Text></TouchableOpacity> */}
       {!displayComponent && displayNull}

@@ -21,11 +21,15 @@ import {
     const [createBarTxt, setCreateBarTxt] = useState('')
 
     useEffect(() => {
-      fetch(`${URL}/menus/${token}`)
+      fetch(`${URL}/menus/getMenus`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({token: token})
+      })
       .then((response) => response.json())
       .then((data) => {
-        if(Array.isArray(data.menus))
-          setMenus(data.menus)
+        if(Array.isArray(data))
+          setMenus(data)
       })
   }, [])
    
@@ -36,6 +40,7 @@ import {
         body: JSON.stringify({ token: token, name: createBarTxt }),
       }).then(response => response.json())
         .then(data => {
+          setMenus([... data])
           setCreateBarTxt('')
         });
     }
