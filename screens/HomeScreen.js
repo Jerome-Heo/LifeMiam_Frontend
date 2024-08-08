@@ -14,19 +14,22 @@ import Signup from "../components/Signup";
 import Onboarding from "../components/Onboarding";
 
 import Colors from "../utilities/color";
+import { useState } from "react";
 
 export default function HomeScreen({ navigation }) {
+
+  const [displayComponent, setDisplayComponent]=useState(null)
+
   handleGo = () => {
     navigation.navigate("TabNavigator", { screen: "Search" });
   };
 
   return (
     <View style={styles.container}>
-      {/* <Text>HomeScreen</Text>
-      <TouchableOpacity style={styles.go} onPress={() => handleGo()}><Text style={styles.textButt}>Go To Search</Text></TouchableOpacity> */}
-      <Signin />
-      <Signup />
-      <Onboarding />
+      <Text>HomeScreen</Text>
+      <TouchableOpacity style={styles.go} onPress={() => handleGo()}><Text style={styles.textButt}>Go To Search</Text></TouchableOpacity>
+      
+
     </View>
   );
 }
