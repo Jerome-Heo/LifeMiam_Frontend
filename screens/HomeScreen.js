@@ -26,8 +26,8 @@ export default function HomeScreen({ navigation }) {
       <TouchableOpacity style={styles.go} onPress={() => handleGo()}>
         <Text style={styles.textButt}>Go To Search</Text>
       </TouchableOpacity>
-      <Signin />
-      <Signup />
+      {/* <Signin />
+      <Signup /> */}
       <Onboarding />
     </View>
   );
