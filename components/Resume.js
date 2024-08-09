@@ -61,10 +61,8 @@ function Resume(){
     const menusDisplay = menusResume && menusResume.map((data, i) => {
         return (
           <View key={i} style={styles.menuCont}>
-            <TouchableOpacity style={styles.button} onPress={() => handleClickMenu(`${data._id}`)}>
                 <Text style={styles.menuTxt}>{`${data.name}`}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => handleClickMenu(`${data._id}`)}>
+            <TouchableOpacity  onPress={() => handleClickMenu(`${data._id}`)}>
                 <FontAwesome name={"info-circle"} style={styles.menuListInfo} size={25} color={"#E7D37F"}/>
             </TouchableOpacity>
           </View>
@@ -146,12 +144,14 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     menuCont:{
+        flexDirection:"row",
         marginTop: 5,
         borderTopRightRadius: 20,
         borderBottomRightRadius: 20,
         backgroundColor:'#365E32',
         height: 50,
-        justifyContent: "center",
+        alignItems: "center",
+        justifyContent: 'space-between',
         paddingLeft: 30,
     },
     menuTxt:{
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
         fontWeight:'700',
     },
     menuListInfo: {
-
+        marginRight: 20,
     }
 })
 
