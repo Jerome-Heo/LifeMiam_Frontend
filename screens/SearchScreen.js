@@ -39,7 +39,7 @@ export default function SearchScreen({ navigation }) {
   const token = "HkkfE9VmlughUTLaNifglDHuTNC5yfx5";
   const userRegime = useSelector((state) => state.user.value.regime);
   const [vignettesSelected, setVignettesSelected] = useState(userRegime);
-  console.log("vignettesSelected", vignettesSelected);
+  // console.log("vignettesSelected", vignettesSelected);
 
   const fetchPopularRecipes = () => {
     fetch(`${URL}/recipes/?sortBy=popularity`)
@@ -60,15 +60,18 @@ export default function SearchScreen({ navigation }) {
 
   //requête BDD pour obtenir les recettes demandées
   const fetchSearchResults = (query) => {
-    fetch(`${URL}/recipes/?search=${query}&tags=["végétarien"]`)
+    console.log("test");
+    const encodedVignettes = JSON.stringify(vignettesSelected);
+    console.log("encoded", encodedVignettes);
+    fetch(`${URL}/recipes/?search=${query}&tags=${encodedVignettes}`)
       .then((response) => response.json())
       .then((data) => {
-        // console.log(data);
-        if (data.data.length) {
+        console.log(data.result);
+        if (data.result) {
           setFilteredRecipes(data.data);
           setRecipes(data.data);
         } else {
-          console.error("Data is not an array:", data);
+          console.error("No matching recipes");
         }
       })
       .catch((error) => {
@@ -101,7 +104,7 @@ export default function SearchScreen({ navigation }) {
   // afficher les vignettes de regime, selon les regimes dans le reducer user
   const regimeVignettes = regimeList.map((vi, i) => {
     isSelected = vignettesSelected.includes(vi.name);
-    console.log(userRegime);
+
     return (
       <Pressable
         key={i}
