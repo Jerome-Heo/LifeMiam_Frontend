@@ -11,7 +11,9 @@ import {
   } from 'react-native';
   import { useEffect, useState } from 'react';
   import { useRoute } from '@react-navigation/native';
-  
+  import Resume from '../components/Resume'
+  import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
   export default function RecipeScreen({navigation: { goBack } }) {
     const URL = 'https://lifemiam-backend.vercel.app'
     const token = '0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf'
@@ -84,8 +86,12 @@ import {
     return (
       <View style={styles.container}>
         <View style={styles.ButtonsCont}>
-            <TouchableOpacity style={styles.buttons} onPress={() => goBack()}><Image source={require("../assets/AddButton.png")}></Image></TouchableOpacity>
-            <TouchableOpacity style={styles.buttons}><Image source={require("../assets/GoBackButton.png")}></Image></TouchableOpacity>
+        <TouchableOpacity style={styles.buttons} onPress={() => goBack()}>
+            <FontAwesome name={"arrow-left"} size={25} color={"#E7D37F"}/>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.buttons} onPress={() => goBack()}>
+            <FontAwesome name={"plus"} size={25} color={"#E7D37F"}/>
+        </TouchableOpacity>
         </View>
         
         <ScrollView style={styles.ScrollView}>  
@@ -132,7 +138,7 @@ import {
 
             <View marginTop={50}/> 
         </ScrollView>  
-
+        <Resume />
       </View>
     )
   }
@@ -147,10 +153,18 @@ import {
         paddingHorizontal: 20,
         width: "100%",
     }, 
+    buttons:{
+        backgroundColor: '#365E32',
+        width:50,
+        height: 50,
+        borderRadius: 50,
+        alignItems:'center',
+        justifyContent:'center',
+    },
     vignetteCont:{
         flexDirection: "row",
         justifyContent: "space-around",
-        flexWrap:"wrap"
+        flexWrap:"wrap",
     },
     TagVignette:{
         marginTop: 3,
@@ -166,7 +180,7 @@ import {
     },
     TxtVignette:{
         color:"white",
-        fontWeight: "600"
+        fontWeight: "600",
     },
     ImgVignette:{
         backgroundColor:"white",
