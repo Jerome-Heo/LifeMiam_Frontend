@@ -10,11 +10,24 @@ function Resume(){
     const [isMenuListVisible, setIsMenuListVisible] = useState(false);
     const [menusResume,setMenusResume] = useState([]);
 
-    // Ouvre le résumé du menu (sans animation) et fetch (changer pour un useEffect)
+    useEffect(() => {
+        fetch(`${URL}/menus/getMenus`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({token: token})
+          })
+          .then((response) => response.json())
+          .then((data) => {
+            if(Array.isArray(data))
+              setMenusResume(data);
+          })
+    }, [])
+
+    // Ouvre le résumé du menu (sans animation)
     const handleMenuList = () => {
         if(!isMenuListVisible) {
             setIsMenuListVisible(true);
-            fetch(`${URL}/menus/getMenus`, {
+            /*fetch(`${URL}/menus/getMenus`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({token: token})
@@ -23,18 +36,37 @@ function Resume(){
               .then((data) => {
                 if(Array.isArray(data))
                   setMenusResume(data);
-              })
+              });*/
         }
         else {
             setIsMenuListVisible(false);
         }
+    }
+
+    const handleClickMenu = (menuId) => {
+        // ${URL}/menus/${menuId}
+        fetch(`${URL}/menus/${menuId}`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({token: token})
+          })
+          .then((response) => response.json())
+          .then((data) => {
+            if(Array.isArray(data))
+              setMenusResume(data);
+        });
     }
     
     // Map le menuResume pour afficher tous les menus dans le résumé
     const menusDisplay = menusResume && menusResume.map((data, i) => {
         return (
           <View key={i} style={styles.menuCont}>
-            <Text style={styles.menuTxt}>{`${data.name}`}</Text>
+            <TouchableOpacity style={styles.button} onPress={() => handleClickMenu(`${data._id}`)}>
+                <Text style={styles.menuTxt}>{`${data.name}`}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => handleClickMenu(`${data._id}`)}>
+                <FontAwesome name={"info-circle"} style={styles.menuListInfo} size={25} color={"#E7D37F"}/>
+            </TouchableOpacity>
           </View>
         )
     })
@@ -106,7 +138,7 @@ const styles = StyleSheet.create({
         color: "white",
         marginLeft: "16%",
         fontSize: 25,
-        fontWeight:'700'
+        fontWeight:'700',
     },
     menusDisplay:{
         width: "90%",
@@ -125,7 +157,10 @@ const styles = StyleSheet.create({
     menuTxt:{
         color:'#E7D37F',
         fontSize: 18,
-        fontWeight:'700'
+        fontWeight:'700',
+    },
+    menuListInfo: {
+
     }
 })
 
