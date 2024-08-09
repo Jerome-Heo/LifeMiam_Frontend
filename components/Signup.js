@@ -73,11 +73,6 @@ function Signup({onboarding}) {
 
 
     return (
-      <SafeAreaView style={styles.container}>
-
-        <View style={styles.logoContainer}>
-        <Image style={styles.logoImg} source={require("../assets/logo.png")}/>
-        </View>
         <KeyboardAvoidingView style={styles.textContainer}>
           <Text style={styles.title}>S'inscrire avec mon email</Text>
           <Text style={styles.description}>Lorem ipsum dolor sit amet consectetur adipisicing elit.</Text>
@@ -130,23 +125,17 @@ function Signup({onboarding}) {
           
         </KeyboardAvoidingView>
 
-      </SafeAreaView>
     )
   }
 
   const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: Colors.WHITE,
-      alignItems: 'center',
-      paddingTop:'10%',
-      width:'100%'
-    },
+
     textContainer:
     {
  
       justifyContent: 'center',
-      width:'90%'
+      width:'90%',
+      height:'50%',
     },
     title:
     {   
@@ -161,17 +150,6 @@ function Signup({onboarding}) {
       fontWeight:'500',
       color:Colors.DARK_GREEN,
       marginVertical:5
-    },
-    logoContainer:
-    {
-      height:'30%',
-      width:'100%',
-    },
-    logoImg:
-    {
-      width:'100%',
-      height:'100%',      
-      objectFit:'contain'
     },
     inputContainer:
     {

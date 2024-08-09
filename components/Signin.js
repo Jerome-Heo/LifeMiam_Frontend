@@ -47,11 +47,7 @@ function Signin({navigation}) {
 			});
   }
   return (
-  <SafeAreaView style={styles.container}>
-    <View style={styles.logoContainer}>
-      <Image style={styles.logoImg} source={require("../assets/logo.png")}/>
-    </View>
-    <View style={styles.container}>
+    <KeyboardAvoidingView style={styles.textContainer}>
       <Text style={styles.title}>Se connecter</Text>
       <KeyboardAvoidingView style={styles.inputContainer}>
           <Text style={styles.label}>Adresse email ou Username</Text>
@@ -68,28 +64,17 @@ function Signin({navigation}) {
         <TouchableOpacity style={styles.signinButton} onPress={() => handleSignin()}>
           <Text style={styles.signinButtonText}>Connexion</Text>
         </TouchableOpacity>
-    </View>
-  </SafeAreaView>
+    </KeyboardAvoidingView>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.WHITE,
-    alignItems: 'center',
-    paddingTop:'10%',
-    width: '100%',
-  },
-  logoContainer: {
-    height:'30%',
-    width:'100%',
-  },
-  logoImg: {
-    borderWidth: 1,
-    width:'100%',
-    height:'100%',      
-    objectFit:'contain',
+  textContainer:
+  {
+    alignItems:'center',
+    justifyContent: 'center',
+    width:'90%',
+    height:'50%',
   },
   title: {
     fontSize:36,
