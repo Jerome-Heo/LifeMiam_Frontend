@@ -28,7 +28,7 @@ function Resume(){
     // Ouvre le résumé du menu (sans animation)
     const handleMenuList = () => {
         Animated.timing(animatedHeight,{
-            toValue: isMenuListVisible ? 60 : 400,
+            toValue: isMenuListVisible ? 60 : menusResume.length*90,
             duration: 300,
             useNativeDriver: false,
         }).start();
@@ -98,8 +98,8 @@ const styles = StyleSheet.create({
         alignItems: "flex-start",
         backgroundColor: "#81A263",
         width: "100%",
-        borderWidth: 1,
-        margin: 1,
+        marginBottom: 2,
+        overflow: "hidden"
     },
     containerOff:{
         alignItems: "flex-start",
