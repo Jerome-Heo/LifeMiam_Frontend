@@ -181,10 +181,10 @@ const styles = StyleSheet.create({
   backgroundColor:Colors.DARK_GREEN,
   justifyContent:'center',
   alignItems:'center',
-  paddingVertical:10,
+  paddingVertical:20,
   paddingHorizontal:40,
   borderRadius:20,
-  width:'50%',
+  width:'60%',
   marginVertical:20
   },
   buttonPlainText:
@@ -198,10 +198,10 @@ const styles = StyleSheet.create({
     borderColor:Colors.DARK_GREEN,
     justifyContent:'center',
     alignItems:'center',
-    paddingVertical:10,
+    paddingVertical:20,
     paddingHorizontal:40,
     borderRadius:20,
-    width:'50%',
+    width:'60%',
     marginVertical:20
   },
 
