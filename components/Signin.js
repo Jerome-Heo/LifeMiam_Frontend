@@ -49,86 +49,70 @@ function Signin({ navigation }) {
       });
   };
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.logoContainer}>
-        <Image style={styles.logoImg} source={require("../assets/logo.png")} />
-      </View>
-      <View style={styles.container}>
-        <Text style={styles.title}>Se connecter</Text>
-        <KeyboardAvoidingView style={styles.inputContainer}>
-          <Text style={styles.label}>Adresse email ou Username</Text>
-          <TextInput
-            label={"Adresse email ou Username"}
-            textContentType="email"
-            keyboardType="email-address"
-            style={styles.input}
-            onChangeText={(e) => setSignin(e)}
-            value={signin}
-            maxLength={254}
-          ></TextInput>
-        </KeyboardAvoidingView>
-        <KeyboardAvoidingView style={styles.inputContainer}>
-          <Text style={styles.label}>Password</Text>
-          <TextInput
-            label={"Password"}
-            textContentType="password"
-            secureTextEntry={showPassword ? false : true}
-            style={styles.input}
-            onChangeText={(e) => SetPassword(e)}
-            value={showPassword ? password : password}
-            maxLength={128}
-          ></TextInput>
-          <View style={styles.showpassword}>
-            {!showPassword && (
-              <FontAwesome
-                name={"eye"}
-                style={styles.icon}
-                size={20}
-                onPress={() => {
-                  setShowPassword(true);
-                }}
-              />
-            )}
-            {showPassword && (
-              <FontAwesome
-                name={"eye-slash"}
-                style={styles.icon}
-                size={20}
-                onPress={() => {
-                  setShowPassword(false);
-                }}
-              />
-            )}
-          </View>
-        </KeyboardAvoidingView>
-        <TouchableOpacity
-          style={styles.signinButton}
-          onPress={() => handleSignin()}
-        >
-          <Text style={styles.signinButtonText}>Connexion</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+    <KeyboardAvoidingView style={styles.textContainer}>
+      <Text style={styles.title}>Se connecter</Text>
+      <KeyboardAvoidingView style={styles.inputContainer}>
+        <Text style={styles.label}>Adresse email ou Username</Text>
+        <TextInput
+          label={"Adresse email ou Username"}
+          textContentType="email"
+          keyboardType="email-address"
+          style={styles.input}
+          onChangeText={(e) => setSignin(e)}
+          value={signin}
+          maxLength={254}
+        ></TextInput>
+      </KeyboardAvoidingView>
+      <KeyboardAvoidingView style={styles.inputContainer}>
+        <Text style={styles.label}>Password</Text>
+        <TextInput
+          label={"Password"}
+          textContentType="password"
+          secureTextEntry={showPassword ? false : true}
+          style={styles.input}
+          onChangeText={(e) => SetPassword(e)}
+          value={showPassword ? password : password}
+          maxLength={128}
+        ></TextInput>
+        <View style={styles.showpassword}>
+          {!showPassword && (
+            <FontAwesome
+              name={"eye"}
+              style={styles.icon}
+              size={20}
+              onPress={() => {
+                setShowPassword(true);
+              }}
+            />
+          )}
+          {showPassword && (
+            <FontAwesome
+              name={"eye-slash"}
+              style={styles.icon}
+              size={20}
+              onPress={() => {
+                setShowPassword(false);
+              }}
+            />
+          )}
+        </View>
+      </KeyboardAvoidingView>
+      <TouchableOpacity
+        style={styles.signinButton}
+        onPress={() => handleSignin()}
+      >
+        <Text style={styles.signinButtonText}>Connexion</Text>
+      </TouchableOpacity>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.WHITE,
+  textContainer: {
     alignItems: "center",
-    paddingTop: "10%",
-    width: "100%",
-  },
-  logoContainer: {
-    height: "30%",
-    width: "100%",
-  },
-  logoImg: {
-    borderWidth: 1,
-    width: "100%",
-    height: "100%",
-    objectFit: "contain",
+    justifyContent: "center",
+    width: "90%",
+    height: "50%",
   },
   title: {
     fontSize: 36,

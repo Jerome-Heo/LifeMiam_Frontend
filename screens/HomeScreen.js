@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  SafeAreaView,
   TouchableOpacity,
 } from "react-native";
 
@@ -34,49 +35,65 @@ export default function HomeScreen({ navigation }) {
   };
 
   const displayNull = (
-    <View>
-      <View style={styles.logoContainer}>
-        <Image style={styles.logoImg} source={require("../assets/logo.png")} />
-      </View>
-      <Text>LIFE MIAM</Text>
-      <TouchableOpacity
-        style={styles.test}
-        onPress={() => {
-          setDisplayComponent("signup");
-        }}
-      >
-        <Text>S'inscrire</Text>
-      </TouchableOpacity>
+    <View style={styles.homeContainer}>
 
-      <TouchableOpacity
-        style={styles.test}
-        onPress={() => {
-          setDisplayComponent("signin");
-        }}
-      >
-        <Text>J'ai un compte</Text>
-      </TouchableOpacity>
+      <Text style={styles.siteTitle}>LIFE MIAM</Text>
+
+      <View style={styles.buttonGroup}>
+        <TouchableOpacity
+          style={styles.buttonPlain}
+          onPress={() => {
+            setDisplayComponent("signup");
+          }}
+        >
+          <Text style={styles.buttonPlainText}>S'inscrire</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.buttonEmpty}
+          onPress={() => {
+            setDisplayComponent("signin");
+          }}
+        >
+          <Text style={styles.buttonEmptyText}>J'ai un compte</Text>
+        </TouchableOpacity>
+      </View>
+
     </View>
   );
 
   //j'ai ajouté un bouton ARROW RIGHT de sagouin pour skip le signin/up
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+
+   
+
+    <View style={styles.testContainer}>
       <TouchableOpacity
         style={styles.backButton}
         onPress={() => handleGoBack()}
       >
-        <FontAwesome name={"arrow-left"} style={styles.icon} size={50} />
+        <FontAwesome name={"arrow-left"} style={styles.icon} size={40} />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.backButton} onPress={() => handleGo()}>
-        <FontAwesome name={"arrow-right"} style={styles.icon} size={50} />
-      </TouchableOpacity>
+
       <TouchableOpacity
         style={styles.backButton}
         onPress={() => navigation.navigate("TabNavigator", { screen: "List" })}
       >
         <Text>Go to Liste de courses</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity style={styles.backButton} onPress={() => handleGo()}>
+        <FontAwesome name={"arrow-right"} style={styles.icon} size={40} />
+      </TouchableOpacity>
+
+ 
+    </View>
+
+    <View style={styles.logoContainer}>
+    <Image style={styles.logoImg} source={require("../assets/logo.png")}/>
+    </View>
+
       {/* <TouchableOpacity style={styles.go} onPress={() => handleGo()}><Text style={styles.textButt}>Go To Search</Text></TouchableOpacity> */}
       {!displayComponent && displayNull}
       {displayComponent == "signin" && <Signin navigation={navigation} />}
@@ -84,23 +101,51 @@ export default function HomeScreen({ navigation }) {
       {displayComponent == "onboarding" && (
         <Onboarding navigation={navigation} />
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  homeContainer:
+  {
+
+    width:'100%',
+    alignItems:'center',
+    justifyContent:'space-around',
+    height:'50%'
+  },
+  testContainer:
+  {
+  flexDirection:'row',
+  alignItems:'space-between',
+  justifyContent:'center'
+  },
   container: {
     flex: 1,
     backgroundColor: Colors.WHITE,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent:'center',
+    paddingTop:'10%',
+    width:'100%', 
   },
+  
   go: {
     backgroundColor: Colors.LIGHT_GREEN,
     width: 200,
     height: 200,
     alignItems: "center",
     justifyContent: "center",
+  },
+  logoContainer:
+  {
+    height:'30%',
+    width:'100%',
+  },
+  logoImg:
+  {
+    width:'100%',
+    height:'100%',      
+    objectFit:'contain'
   },
   textButt: {
     color: "white",
@@ -124,4 +169,44 @@ const styles = StyleSheet.create({
     height: "100%",
     objectFit: "contain",
   },
+  buttonGroup:
+  { 
+    height:'60%',
+    width:'100%',
+    alignItems:'center',
+    justifyContent:'center'
+  },
+  buttonPlain:
+  {
+  backgroundColor:Colors.DARK_GREEN,
+  justifyContent:'center',
+  alignItems:'center',
+  paddingVertical:10,
+  paddingHorizontal:40,
+  borderRadius:20,
+  width:'50%',
+  marginVertical:20
+  },
+  buttonPlainText:
+  {
+  color:Colors.YELLOW
+  },
+  buttonEmpty:
+  {
+    backgroundColor:Colors.WHITE,
+    borderWidth:1,
+    borderColor:Colors.DARK_GREEN,
+    justifyContent:'center',
+    alignItems:'center',
+    paddingVertical:10,
+    paddingHorizontal:40,
+    borderRadius:20,
+    width:'50%',
+    marginVertical:20
+  },
+
+  buttonEmptyText:
+  {
+    color:Colors.DARK_GREEN
+  }
 });
