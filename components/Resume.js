@@ -1,17 +1,23 @@
 import { View,Image,StyleSheet ,Text,TextInput,SafeAreaView,KeyboardAvoidingView, TouchableOpacity, Animated} from "react-native";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useEffect, useState, useRef } from 'react';
+import { useDispatch, useSelector} from 'react-redux';
+import { setMenu, clearMenu } from "../reducers/user";
 
-function Resume(){
+function Resume({ navigation }){
 
     const URL = 'https://lifemiam-backend.vercel.app';
     const token = '0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf';
+    const dispatch = useDispatch();
 
     const [isMenuListVisible, setIsMenuListVisible] = useState(false);
     const [menusResume,setMenusResume] = useState([]);
+    const [visibleMenu, setVisibleMenu] = useState([]);
+    const currentMenu = useSelector((state) => state.user.value.menu)
 
     const animatedHeight = useRef(new Animated.Value(60)).current;
 
+    //charger tous les menus d'un user
     useEffect(() => {
         fetch(`${URL}/menus/getMenus`, {
             method: 'POST',
@@ -25,18 +31,23 @@ function Resume(){
           })
     }, [])
 
-    // Ouvre le résumé du menu (sans animation)
+    // Ouvre le résumé du menu
     const handleMenuList = () => {
         Animated.timing(animatedHeight,{
-            toValue: isMenuListVisible ? 60 : menusResume.length*90,
+            toValue: isMenuListVisible ? 60 : 70 + (currentMenu ? 0 : menusResume.length*90) + (!currentMenu ? 0 : visibleMenu.length*90),
             duration: 300,
             useNativeDriver: false,
         }).start();
         setIsMenuListVisible(!isMenuListVisible)
     }
 
+    //vide le reducer menu
+    const backMenu = () => {
+        dispatch(clearMenu())
+    }
+
+    //cliquer sur un menu pour le séléctionner
     const handleClickMenu = (menuId) => {
-        // ${URL}/menus/${menuId}
         fetch(`${URL}/menus/${menuId}`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -44,24 +55,39 @@ function Resume(){
           })
           .then((response) => response.json())
           .then((data) => {
-            if(Array.isArray(data))
-              setMenusResume(data);
+              dispatch(setMenu(menuId));
+              console.log(data.menu.menu_recipes)
+              setVisibleMenu(data.menu.menu_recipes)
         });
     }
-    
-    // Map le menuResume pour afficher tous les menus dans le résumé
-    const menusDisplay = menusResume && menusResume.map((data, i) => {
-        return (
-          <View key={i} style={styles.menuCont}>
-                <Text style={styles.menuTxt}>{`${data.name}`}</Text>
-            <TouchableOpacity  onPress={() => handleClickMenu(`${data._id}`)}>
-                <FontAwesome name={"info-circle"} style={styles.menuListInfo} size={25} color={"#E7D37F"}/>
-            </TouchableOpacity>
+
+    //Map les recettes d'un même menu pour les afficher en colonne
+    //onPress={navigation.navigate("Recipe", { RecetteID: data.recipe })} => j'ai importé la navigation mais rien n'y fait
+    const RecipesDisplay = visibleMenu && visibleMenu.map((data,i) => {
+        return(
+            <View key={i} style={styles.recipeCont}>
+                <Text style={styles.menuTxt}>{`${data.recipe.name}`}</Text>
+                <TouchableOpacity >
+                    <FontAwesome 
+                        name={"info-circle"} 
+                        style={styles.menuListInfo} 
+                        size={25} color={"#E7D37F"} 
+                    />
+                </TouchableOpacity>
           </View>
         )
     })
 
-    //Modifie l'affichage de la modale (sans animation)
+    // Map le menuResume pour afficher tous les menus dans le résumé
+    const menusDisplay = menusResume && menusResume.map((data, i) => {
+        return (
+          <TouchableOpacity key={i} style={styles.menuCont} onPress={() => handleClickMenu(data._id)}>
+                <Text style={styles.menuTxt}>{`${data.name}`}</Text>
+          </TouchableOpacity>
+        )
+    })
+
+    //Modifie l'affichage de la modale
     const Container = (
         <Animated.View style={[
             styles.container,
@@ -69,7 +95,7 @@ function Resume(){
                 height: animatedHeight,
             }
         ]}>
-            <View style={styles.align}>
+        <View style={styles.align}>
             <TouchableOpacity style={styles.button} onPress={handleMenuList}>
                 <FontAwesome 
                     name={isMenuListVisible ? "caret-down" : "caret-up"} 
@@ -78,9 +104,19 @@ function Resume(){
                     color={"#E7D37F"}
                 />
             </TouchableOpacity>
-            <Text style={styles.resumeText}>Résumé du menu</Text>
+                {!currentMenu ? 
+                <Text style={styles.resumeText}>Choisir un menu</Text> 
+                :<Text style={styles.resumeText}>Résumé du menu</Text>}
+            <TouchableOpacity style={styles.button} onPress={() => backMenu()}>
+                <FontAwesome 
+                    name={currentMenu ? "arrow-left" : ""} 
+                    style={styles.caret} 
+                    size={25} 
+                    color={"#E7D37F"}
+                />
+            </TouchableOpacity>
         </View>
-        <View style={styles.menusDisplay}>{menusDisplay}</View>
+        {!currentMenu ? <View style={styles.menusDisplay}>{menusDisplay}</View> : <View style={styles.recipesDisplay}>{RecipesDisplay}</View>}
             </Animated.View>
     )
 
@@ -101,25 +137,11 @@ const styles = StyleSheet.create({
         marginBottom: 2,
         overflow: "hidden"
     },
-    containerOff:{
-        alignItems: "flex-start",
-        backgroundColor: "#81A263",
-        width: "100%",
-        height: 60,
-        borderWidth: 1,
-        marginBottom: 1,
-    },
-    containerOn:{
-        alignItems: "flex-start",
-        backgroundColor: "#81A263",
-        width: "100%",
-        height: "80%",
-        marginBottom: 1,
-        marginTop: "38%"
-    },
     align:{
         flexDirection: "row",
         alignItems: "center",
+        width: "100%",
+        justifyContent: "space-between"
     },
     button:{
       backgroundColor: '#365E32',
@@ -128,31 +150,47 @@ const styles = StyleSheet.create({
       height: 45,
       alignItems: "center",
       justifyContent: "center",
-      marginTop: "2%",
-      marginLeft: "2%",
+      margin: "2%"
     },
     resumeText:{
         color: "white",
-        marginLeft: "16%",
         fontSize: 25,
         fontWeight:'700',
     },
     menusDisplay:{
-        width: "90%",
+        width: "100%",
         height: "auto",
-        marginTop: 10,
+        marginTop: 15,
+        alignItems: "center",
     },
     menuCont:{
         flexDirection:"row",
         marginTop: 5,
-        borderTopRightRadius: 20,
-        borderBottomRightRadius: 20,
+        borderRadius: 5,
         backgroundColor:'#365E32',
         height: 50,
         alignItems: "center",
-        justifyContent: 'space-between',
-        paddingLeft: 30,
+        justifyContent: 'center',
+        width: "80%"
     },
+    recipesDisplay:{
+        width: "100%",
+        height: "auto",
+        marginTop: 15,
+        alignItems: "flex-start",
+    },
+    recipeCont:{
+        flexDirection:"row",
+        marginTop: 5,
+        borderBottomRightRadius: 25,
+        borderTopRightRadius: 25,
+        backgroundColor:'#365E32',
+        height: 50,
+        alignItems: "center",
+        justifyContent: "space-between",
+        paddingLeft: 10,
+        width: "80%"
+    },    
     menuTxt:{
         color:'#E7D37F',
         fontSize: 18,
