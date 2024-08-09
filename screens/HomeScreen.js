@@ -14,9 +14,19 @@ import Signup from "../components/Signup";
 import Onboarding from "../components/Onboarding";
 import { useState } from "react";
 import Colors from "../utilities/color";
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 export default function HomeScreen({ navigation }) {
+<<<<<<< HEAD
   const [displayComponent, setDisplayComponent] = useState(null);
+=======
+
+  const [displayComponent,setDisplayComponent] = useState(null);
+
+  const handleGoBack = () => {
+    setDisplayComponent(null);
+  }
+>>>>>>> 84236781c3325ad87558960b2c626f1028856188
 
   handleGo = () => {
     navigation.navigate("TabNavigator", { screen: "Search" });
@@ -43,19 +53,20 @@ export default function HomeScreen({ navigation }) {
         <Text>S'inscrire</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.test}
-        onPress={() => {
-          setDisplayComponent("signin");
-        }}
-      >
-        <Text>J'ai un compte</Text>
-      </TouchableOpacity>
-    </View>
-  );
-
+    <TouchableOpacity style={styles.test} onPress={()=> {setDisplayComponent('signin')}}> 
+        <Text>J'ai un compte</Text> 
+    </TouchableOpacity>
+  </View>
+  
+//j'ai ajouté un bouton ARROW RIGHT de sagouin pour skip le signin/up
   return (
     <View style={styles.container}>
+    <TouchableOpacity style={styles.backButton} onPress={() => handleGoBack()}>
+        <FontAwesome name={'arrow-left'} style={styles.icon} size={50}/>
+    </TouchableOpacity>
+    <TouchableOpacity style={styles.backButton} onPress={() => handleGo()}>
+        <FontAwesome name={'arrow-right'} style={styles.icon} size={50}/>
+    </TouchableOpacity>
       {/* <TouchableOpacity style={styles.go} onPress={() => handleGo()}><Text style={styles.textButt}>Go To Search</Text></TouchableOpacity> */}
       {!displayComponent && displayNull}
       {displayComponent == "signin" && <Signin navigation={navigation} />}

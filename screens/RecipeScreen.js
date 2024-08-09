@@ -189,7 +189,7 @@ import {
     H1:{
         fontSize: 30,
         color:"#365E32",
-        marginLeft: 20,
+        marginLeft: 10,
         fontWeight: "700",
         margin: 5,
     },

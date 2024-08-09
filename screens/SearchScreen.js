@@ -9,23 +9,53 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+<<<<<<< HEAD
   Pressable,
   Dimensions,
 } from "react-native";
+=======
+  Button
+} from 'react-native';
+>>>>>>> 84236781c3325ad87558960b2c626f1028856188
 import { useIsFocused } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import Colors from "../utilities/color";
 
+<<<<<<< HEAD
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
+=======
+import * as Animatable from 'react-native-animatable';
+const types = ['bounceIn', 'bounceInDown', 'bounceInUp', 'bounceInLeft', 'bounceInRight', 'fadeIn', 'fadeInDown', 'fadeInDownBig', 'fadeInUp', 'fadeInUpBig', 'fadeInLeft', 'fadeInLeftBig', 'fadeInRight', 'fadeInRightBig', 'lightSpeedIn', 'slideInDown', 'slideInUp', 'slideInLeft', 'slideInRight', 'zoomIn', 'zoomInDown', 'zoomInUp', 'zoomInLeft', 'zoomInRight']
+
+
+
+
+>>>>>>> 84236781c3325ad87558960b2c626f1028856188
 
 export default function SearchScreen({ navigation }) {
+
+  const [animation, setAnimation] = useState({
+    visible: false,
+    type: ''
+  })
+  const animate = (type) => {
+    setAnimation({ visible: false, type })
+    setTimeout(() => {
+        setAnimation({ visible: true, type })
+    }, 100);
+  }
+  const prop = animation.visible ? { animation: animation.type } : {}
+
+  
+
   const [recipes, setRecipes] = useState([]);
   const [SearchQuery, setSearchQuery] = useState("");
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [searchTimeout, setSearchTimeout] = useState(null);
   const isFocused = useIsFocused();
 
+<<<<<<< HEAD
   const URL = "https://lifemiam-backend.vercel.app";
 
   const regimeList = [
@@ -41,6 +71,8 @@ export default function SearchScreen({ navigation }) {
   const [vignettesSelected, setVignettesSelected] = useState(userRegime);
   // console.log("vignettesSelected", vignettesSelected);
 
+=======
+>>>>>>> 84236781c3325ad87558960b2c626f1028856188
   const fetchPopularRecipes = () => {
     fetch(`${URL}/recipes/?sortBy=popularity`)
       .then((response) => response.json())
@@ -55,8 +87,16 @@ export default function SearchScreen({ navigation }) {
   };
 
   useEffect(() => {
-    fetchPopularRecipes();
-  }, [isFocused]);
+    setTimeout(() => {
+      fetchPopularRecipes();
+    }, 100);
+  }, [isFocused]); // Ne déclenche qu'au focus, pas à chaque update de popularRecipes
+  
+  useEffect(() => {
+ 
+      animate('fadeInLeft');
+  
+  }, [popularRecipes,searchTimeout]);
 
   //requête BDD pour obtenir les recettes demandées
   const fetchSearchResults = (query) => {
@@ -138,10 +178,12 @@ export default function SearchScreen({ navigation }) {
   const popularRecipes = recipes.map((element, i) => {
     // console.log(element.image)
     return (
+      <Animatable.View key={i} style={styles.view} {...prop}>
       <TouchableOpacity key={i} onPress={() => handleRecipeClick(element._id)}>
         <View style={styles.recipes}>
           <Image source={{ uri: element.image }} style={styles.recipeImage} />
           <Text style={styles.H3}>{element.name}</Text>
+<<<<<<< HEAD
           <TouchableOpacity
             style={styles.addButton}
             onPress={() => addRecipeToMenu(element)}
@@ -151,6 +193,18 @@ export default function SearchScreen({ navigation }) {
         </View>
       </TouchableOpacity>
     );
+=======
+            
+          <View style={styles.PHbutton}>
+          <TouchableOpacity style={styles.addButton} onPress={() => addRecipeToMenu(element)}>
+            <Image source={require("../assets/smallAdd.png")}></Image>
+          </TouchableOpacity> 
+          </View>
+        </View>
+      </TouchableOpacity>
+      </Animatable.View>
+    )
+>>>>>>> 84236781c3325ad87558960b2c626f1028856188
   });
 
   //bouton "clear" pour effacer ce qui est écrit dans l'input
@@ -161,10 +215,15 @@ export default function SearchScreen({ navigation }) {
   };
 
   return (
+<<<<<<< HEAD
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
+=======
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+
+>>>>>>> 84236781c3325ad87558960b2c626f1028856188
       <View style={styles.titleCont}>
         <Text style={styles.H1}>Recettes</Text>
         <TextInput
@@ -182,12 +241,25 @@ export default function SearchScreen({ navigation }) {
         </TouchableOpacity>
         <View style={styles.vignetteContainer}>{regimeVignettes}</View>
         <Text style={styles.H2}>Les recettes populaires</Text>
+<<<<<<< HEAD
         <ScrollView style={styles.ScrollCont}>{popularRecipes}</ScrollView>
+=======
+        <ScrollView style={styles.ScrollCont}>
+       
+          {popularRecipes}
+          
+        </ScrollView>
+>>>>>>> 84236781c3325ad87558960b2c626f1028856188
       </View>
     </KeyboardAvoidingView>
   );
 }
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 84236781c3325ad87558960b2c626f1028856188
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -247,14 +319,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     backgroundColor: "green",
-    width: 50,
-    height: 50,
+   
   },
 
   clearButton: {
     height: 20,
     width: 20,
   },
+<<<<<<< HEAD
 
   vignetteContainer: {
     width: windowWidth,
@@ -296,4 +368,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   icon: { width: 15, height: 15 },
+=======
+  
+>>>>>>> 84236781c3325ad87558960b2c626f1028856188
 });
