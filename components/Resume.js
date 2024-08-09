@@ -80,6 +80,7 @@ function Resume(){
             </TouchableOpacity>
             <Text style={styles.resumeText}>Résumé du menu</Text>
         </View>
+        <View style={styles.menusDisplay}>{menusDisplay}</View>
             </Animated.View>
     )
 
