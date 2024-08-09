@@ -11,6 +11,9 @@ export const userSlice = createSlice({
     token: (state, action) => {
       state.value.token = action.payload;
     },
+    initRegimes: (state, action) => {
+      state.value.regime = action.payload;
+    },
     addRegime: (state, action) => {
       state.value.regime.push(action.payload);
       console.log("added", action.payload);
@@ -24,5 +27,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const { token, addRegime, removeRegime } = userSlice.actions;
+export const { token, addRegime, removeRegime, initRegimes } =
+  userSlice.actions;
 export default userSlice.reducer;
