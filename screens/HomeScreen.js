@@ -97,7 +97,7 @@ export default function HomeScreen({ navigation }) {
       {/* <TouchableOpacity style={styles.go} onPress={() => handleGo()}><Text style={styles.textButt}>Go To Search</Text></TouchableOpacity> */}
       {!displayComponent && displayNull}
       {displayComponent == "signin" && <Signin navigation={navigation} />}
-      {displayComponent == "signup" && <Signup onboarding={isOnBoarding} />}
+      {displayComponent == "signup" && <Signup onboarding={isOnBoarding} page="onboarding"/>}
       {displayComponent == "onboarding" && (
         <Onboarding navigation={navigation} />
       )}

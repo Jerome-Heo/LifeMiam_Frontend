@@ -80,6 +80,9 @@ export default function SearchScreen({ navigation }) {
   const token = "HkkfE9VmlughUTLaNifglDHuTNC5yfx5";
   const userRegime = useSelector((state) => state.user.value.regime);
   const [vignettesSelected, setVignettesSelected] = useState(userRegime);
+
+  console.log("userRegime", userRegime);
+
   console.log("vignettesSelected", vignettesSelected);
 
   const fetchPopularRecipes = () => {
@@ -108,9 +111,12 @@ export default function SearchScreen({ navigation }) {
   //requête BDD pour obtenir les recettes demandées
   const fetchSearchResults = (query) => {
     console.log("test");
-    const encodedVignettes = JSON.stringify(vignettesSelected);
-    console.log("encoded", encodedVignettes);
-    fetch(`${URL}/recipes/?search=${query}&tags=${encodedVignettes}`)
+    const formattedVignettes = vignettesSelected.map((e) =>
+      encodeURIComponent(e)
+    );
+    const fetchVignettes = JSON.stringify(formattedVignettes);
+    console.log("fetch", fetchVignettes);
+    fetch(`${URL}/recipes/?search=${query}&tags=${fetchVignettes}`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data.result);
@@ -118,6 +124,7 @@ export default function SearchScreen({ navigation }) {
           setFilteredRecipes(data.data);
           setRecipes(data.data);
         } else {
+          setRecipes([]);
           console.error("No matching recipes");
         }
       })
@@ -167,6 +174,8 @@ export default function SearchScreen({ navigation }) {
     );
   });
 
+  //
+
   //chemin de navigation vers RecipeScreen par le clic
   const handleRecipeClick = (id) => {
     const updatedRecipes = recipes.map((recette) =>
@@ -212,7 +221,7 @@ export default function SearchScreen({ navigation }) {
   const clearSearch = () => {
     setSearchQuery("");
     setFilteredRecipes([]);
-    setRecipes([]);
+    // setRecipes([]);
   };
 
   return (
@@ -237,7 +246,9 @@ export default function SearchScreen({ navigation }) {
         </TouchableOpacity>
         <View style={styles.vignetteContainer}>{regimeVignettes}</View>
         <Text style={styles.H2}>Les recettes populaires</Text>
-        <ScrollView style={styles.ScrollCont}>{popularRecipes}</ScrollView>
+        <ScrollView style={styles.ScrollCont}>
+          {recipes.length > 0 && popularRecipes}
+        </ScrollView>
       </View>
     </KeyboardAvoidingView>
   );
