@@ -25,7 +25,7 @@ function Onboarding({navigation}) {
 
   const dispatch = useDispatch();
   const userToken = useSelector((state) => state.user.value.token);
-  const token = "HkkfE9VmlughUTLaNifglDHuTNC5yfx5";
+  const token = "-ob9kC9qgjQ7vn9vx0s6JUGmtlUWANtv";
   const userRegime = useSelector((state) => state.user.value.regime);
   const URL = "https://lifemiam-backend.vercel.app";
 
@@ -43,7 +43,6 @@ function Onboarding({navigation}) {
       <Pressable
         key={i}
         disabled={false}
-        // style={[styles.TagVignette]}
         onPress={() => handlePress(vi.name)}
         style={[styles.TagVignette, isSelected && styles.TagVignetteSelected]}
       >
@@ -58,7 +57,6 @@ function Onboarding({navigation}) {
   const handlePress = (name) => {
     const found = userRegime.some((element) => element === name);
     found ? dispatch(removeRegime(name)) : dispatch(addRegime(name));
-    console.log(userRegime);
   };
 
   const handleSkip = () => {
@@ -69,7 +67,7 @@ function Onboarding({navigation}) {
     console.log("userRegime", userRegime);
     if (userRegime.length > 0) {
       // const regime = userRegime.map((e) => e.replace(" ", "-"));
-      fetch(`${URL}/users/update?regime=[${userRegime}]`, {
+      fetch(`${URL}/users/update`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token: token, regime: userRegime }),
