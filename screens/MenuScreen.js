@@ -16,7 +16,7 @@ import {
   export default function MenuScreen({ navigation }) {
 
     const token = useSelector((state) => state.user.value.token);
-    // const token = '0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf';
+    //const token = '0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf';
     const URL = 'https://lifemiam-backend.vercel.app';
   
 
@@ -183,6 +183,8 @@ import {
       borderWidth: 1,
       position: 'absolute',
       bottom: 120,
+      left: 11,
+      backgroundColor: 'white'
     },
     createMenuTxt:{
       fontSize: 20,
@@ -205,10 +207,8 @@ import {
     },
     fetchMenusCont: {
       width: "100%",
-      borderWidth: 1,
     },
     menuCont: {
-      margin: 10,
       width: "100%",
       height: "20%",
     },
