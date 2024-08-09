@@ -61,7 +61,7 @@ export default function HomeScreen({ navigation }) {
         <FontAwesome name={'arrow-right'} style={styles.icon} size={50}/>
     </TouchableOpacity>
     <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate("TabNavigator", { screen: "List" })}>
-        Go to Liste de courses
+        <Text>Go to Liste de courses</Text>
     </TouchableOpacity>
       {/* <TouchableOpacity style={styles.go} onPress={() => handleGo()}><Text style={styles.textButt}>Go To Search</Text></TouchableOpacity> */}
       {!displayComponent && displayNull}
