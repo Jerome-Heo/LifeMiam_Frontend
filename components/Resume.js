@@ -1,6 +1,6 @@
-import { View,Image,StyleSheet ,Text,TextInput,SafeAreaView,KeyboardAvoidingView, TouchableOpacity} from "react-native";
+import { View,Image,StyleSheet ,Text,TextInput,SafeAreaView,KeyboardAvoidingView, TouchableOpacity, Animated} from "react-native";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 function Resume(){
 
@@ -9,6 +9,8 @@ function Resume(){
 
     const [isMenuListVisible, setIsMenuListVisible] = useState(false);
     const [menusResume,setMenusResume] = useState([]);
+
+    const animatedHeight = useRef(new Animated.Value(60)).current;
 
     useEffect(() => {
         fetch(`${URL}/menus/getMenus`, {
@@ -25,22 +27,12 @@ function Resume(){
 
     // Ouvre le résumé du menu (sans animation)
     const handleMenuList = () => {
-        if(!isMenuListVisible) {
-            setIsMenuListVisible(true);
-            /*fetch(`${URL}/menus/getMenus`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({token: token})
-              })
-              .then((response) => response.json())
-              .then((data) => {
-                if(Array.isArray(data))
-                  setMenusResume(data);
-              });*/
-        }
-        else {
-            setIsMenuListVisible(false);
-        }
+        Animated.timing(animatedHeight,{
+            toValue: isMenuListVisible ? 60 : 400,
+            duration: 300,
+            useNativeDriver: false,
+        }).start();
+        setIsMenuListVisible(!isMenuListVisible)
     }
 
     const handleClickMenu = (menuId) => {
@@ -70,26 +62,26 @@ function Resume(){
     })
 
     //Modifie l'affichage de la modale (sans animation)
-    const Container = !isMenuListVisible ? 
-    <View style={styles.containerOff}>
-        <View style={styles.align}>
-            <TouchableOpacity style={styles.button} onPress={() => handleMenuList()}>
-                <FontAwesome name={"caret-up"} style={styles.caret} size={25} color={"#E7D37F"}/>
+    const Container = (
+        <Animated.View style={[
+            styles.container,
+            {
+                height: animatedHeight,
+            }
+        ]}>
+            <View style={styles.align}>
+            <TouchableOpacity style={styles.button} onPress={handleMenuList}>
+                <FontAwesome 
+                    name={isMenuListVisible ? "caret-down" : "caret-up"} 
+                    style={styles.caret} 
+                    size={25} 
+                    color={"#E7D37F"}
+                />
             </TouchableOpacity>
             <Text style={styles.resumeText}>Résumé du menu</Text>
         </View>
-    </View>
-:
-    <View style={styles.containerOn}>
-        <View style={styles.align}>
-                <TouchableOpacity style={styles.button} onPress={() => handleMenuList()}>
-                    <FontAwesome name={"caret-down"} style={styles.caret} size={25} color={"#E7D37F"}/>
-                </TouchableOpacity>
-            <Text style={styles.resumeText}>Résumé du menu</Text>
-        </View>
-        <View style={styles.menusDisplay}>{menusDisplay}</View>
-    </View>
-
+            </Animated.View>
+    )
 
 
     return (
@@ -100,7 +92,13 @@ function Resume(){
 const styles = StyleSheet.create({
     mainCont:{
         width: "100%",
-
+    },
+    container: {
+        alignItems: "flex-start",
+        backgroundColor: "#81A263",
+        width: "100%",
+        borderWidth: 1,
+        margin: 1,
     },
     containerOff:{
         alignItems: "flex-start",
