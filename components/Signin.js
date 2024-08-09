@@ -38,7 +38,7 @@ function Signin({ navigation }) {
           // dispatch(token({ token: data.token }));
           // dispatch(addRegime({regime: data.regime}));
           dispatch(token(data.token));
-          data.regime.length > 0 && dispatch(initRegimes(data.regime));
+          data.regime.length > 0 && dispatch(initRegimes(...data.regime));
           setSignin("");
           SetPassword("");
           navigation.navigate("TabNavigator", { screen: "Search" });
