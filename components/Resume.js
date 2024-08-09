@@ -29,7 +29,7 @@ function Resume({ navigation }){
             if(Array.isArray(data))
               setMenusResume(data);
           })
-    }, [])
+    }, [currentMenu])
 
     // Ouvre le résumé du menu
     const handleMenuList = () => {
@@ -63,7 +63,7 @@ function Resume({ navigation }){
 
     //Map les recettes d'un même menu pour les afficher en colonne
     //onPress={navigation.navigate("Recipe", { RecetteID: data.recipe })} => j'ai importé la navigation mais rien n'y fait
-    const RecipesDisplay = visibleMenu && visibleMenu.map((data,i) => {
+    const RecipesDisplay = !visibleMenu ? <Text style={styles.menuTxt}>Vous n'avez pas de recette dans ce menu...</Text> :  visibleMenu.map((data,i) => {
         return(
             <View key={i} style={styles.recipeCont}>
                 <Text style={styles.menuTxt}>{`${data.recipe.name}`}</Text>

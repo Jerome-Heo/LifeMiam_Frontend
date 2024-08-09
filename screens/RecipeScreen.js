@@ -11,12 +11,15 @@ import {
   } from 'react-native';
   import { useEffect, useState } from 'react';
   import { useRoute } from '@react-navigation/native';
+  import { useSelector } from 'react-redux';
   import Resume from '../components/Resume'
   import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
   export default function RecipeScreen({navigation: { goBack } }) {
+
     const URL = 'https://lifemiam-backend.vercel.app'
     const token = '0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf'
+    const activeMenu = useSelector((state) => state.user.value.menu)
     const route = useRoute();
     const {RecetteID} = route.params
     const [Recipe, SetRecipe] = useState({})
@@ -49,6 +52,19 @@ import {
 
     const handlePlus = () => {
         setServing(prevServing => prevServing + 1)
+    }
+
+    //Ajouter une recette
+    const addRecipeMenu = () =>{
+        fetch(`${URL}/menus/${activeMenu}/addRecipe`,{
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ recipeId: RecetteID, serving : serving }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log(data);
+            })
     }
 
     //Ajuster la quantité d'ingrédient en fonction du nombre de serving
@@ -89,7 +105,7 @@ import {
         <TouchableOpacity style={styles.buttons} onPress={() => goBack()}>
             <FontAwesome name={"arrow-left"} size={25} color={"#E7D37F"}/>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.buttons} onPress={() => goBack()}>
+        <TouchableOpacity style={styles.buttons} onPress={() => addRecipeMenu()}>
             <FontAwesome name={"plus"} size={25} color={"#E7D37F"}/>
         </TouchableOpacity>
         </View>
