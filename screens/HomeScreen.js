@@ -71,6 +71,12 @@ export default function HomeScreen({ navigation }) {
       <TouchableOpacity style={styles.backButton} onPress={() => handleGo()}>
         <FontAwesome name={"arrow-right"} style={styles.icon} size={50} />
       </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => navigation.navigate("TabNavigator", { screen: "List" })}
+      >
+        <Text>Go to Liste de courses</Text>
+      </TouchableOpacity>
       {/* <TouchableOpacity style={styles.go} onPress={() => handleGo()}><Text style={styles.textButt}>Go To Search</Text></TouchableOpacity> */}
       {!displayComponent && displayNull}
       {displayComponent == "signin" && <Signin navigation={navigation} />}
