@@ -10,11 +10,15 @@ import {
     ScrollView,
   } from 'react-native';
   import { useEffect, useState } from 'react';
+  import FontAwesome from 'react-native-vector-icons/FontAwesome';
+  import { useDispatch, useSelector } from 'react-redux';
 
-  export default function MenuScreen() {
+  export default function MenuScreen({ navigation }) {
 
-    const URL = 'https://lifemiam-backend.vercel.app'
-    const token = '0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf'
+    const token = useSelector((state) => state.user.value.token);
+    // const token = '0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf';
+    const URL = 'https://lifemiam-backend.vercel.app';
+  
 
     const [menus, setMenus] = useState([])
     const [isCreatingMenu, setIsCreatingMenu] = useState(false)
@@ -30,7 +34,7 @@ import {
       .then((response) => response.json())
       .then((data) => {
         if(Array.isArray(data))
-          setMenus(data)
+          setMenus(data);
       })
   }, [isMenuAdded])
    
@@ -41,10 +45,14 @@ import {
         body: JSON.stringify({ token: token, name: createBarTxt }),
       }).then(response => response.json())
         .then(data => {
-          setIsCreatingMenu(false)
-          setIsMenuAdded(!isMenuAdded)
-          setCreateBarTxt('')
+          setIsCreatingMenu(false);
+          setIsMenuAdded(!isMenuAdded);
+          setCreateBarTxt('');
         });
+    }
+
+    const handleShoppingList = (id) => {
+      navigation.navigate("List", { menuId: id });
     }
 
     //Est-ce que j'ai cliqué sur la creation de menu ?
@@ -59,7 +67,7 @@ import {
      :
      <View style={[styles.contentCont, styles.createMenuAlign]}>
       <TouchableOpacity style={styles.createMenu} onPress={() => setIsCreatingMenu(true)}> 
-            <Text style={styles.createMenuTxt}> Créer un menu </Text>
+            <Text style={styles.createMenuTxt}>Créer un menu</Text>
       </TouchableOpacity>
     </View>
 
@@ -71,7 +79,12 @@ import {
           <Text style={styles.H3}>{`${data.name}`}</Text>
           <View style={styles.PHCont}>
             <View style={styles.PHProgressBar}></View>
-            <View style={styles.PHButton}></View>
+            <TouchableOpacity style={styles.PHShoppingList} onPress={() => handleShoppingList(data._id)}>
+              <Image source={require("../assets/cooking.png")} style={styles.imageCooking}></Image>
+            </TouchableOpacity>
+            <View style={styles.PHButton}>
+            <FontAwesome name={'list-ul'} style={styles.icon} size={40}/>
+            </View>
           </View>
         </View>
       )
@@ -196,6 +209,8 @@ import {
     },
     menuCont: {
       margin: 10,
+      width: "100%",
+      height: "20%",
     },
     PHCont:{
       flexDirection: "row",
@@ -206,7 +221,10 @@ import {
       marginLeft: 15,
       margin: 5,
       borderRadius: 5,
-      width: "65%"
+      width: "65%",
+    },
+    PHShoppingList: {
+
     },
     PHButton: {
       borderWidth: 1,
@@ -214,7 +232,13 @@ import {
       marginLeft: 15,
       margin: 5,
       borderRadius: 5,
-      width: "20%"
+      width: "20%",
+    },
+    imageCooking: {
+      backgroundColor: "#365E32",
+    },
+    icon: {
+      
     }
   });
   

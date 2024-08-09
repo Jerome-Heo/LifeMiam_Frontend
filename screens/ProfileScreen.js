@@ -7,10 +7,13 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
+    SafeAreaView
   } from 'react-native';
   import FontAwesome from 'react-native-vector-icons/FontAwesome';
   import { useDispatch, useSelector } from 'react-redux';
-import { token } from '../reducers/user';
+  import { token } from '../reducers/user';
+  import Onboarding from "../components/Onboarding";
+  import Colors from "../utilities/color";
   
   export default function ProfileScreen({navigation}) {
 
@@ -23,25 +26,48 @@ import { token } from '../reducers/user';
     }
 
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
+      
+
+        <Onboarding page="profile"/>
+        <View style={styles.backButtonContainer}>
         <TouchableOpacity style={styles.backButton} onPress={() => handleSignout()}>
-          <FontAwesome name={'sign-out'} style={styles.icon} size={50}/>
-          <Text>Déconnexion</Text>
+          <Text style={styles.backButtonText}>Se déconnecter ?</Text>
+          <FontAwesome name={'sign-out'} style={styles.backButtonIcon} size={50}/>
         </TouchableOpacity>
-        <Text>ProfileScreen</Text>
-      </View>
+        </View>
+        
+      </SafeAreaView>
     )
   }
   
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: 'yellow',
+      marginTop:50,
+      backgroundColor: Colors.WHITE,
       alignItems: 'center',
       justifyContent: 'center',
     },
-    icon: {
-
+    backButtonContainer:
+    {
+      width:'100%',
+      alignItems:'flex-end',
+    },
+    backButton:
+    {
+      
+      alignItems:'center',
+      padding:20
+    },
+    backButtonText:
+    {
+      color: Colors.LIGHT_GREEN,
+    },
+    backButtonIcon:
+    {
+      color: Colors.LIGHT_GREEN,
+     
     }
   });
   

@@ -21,7 +21,7 @@ import { useNavigation } from "@react-navigation/native";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-function Onboarding({navigation}) {
+function Onboarding({navigation,page}) {
 
   const dispatch = useDispatch();
   const userToken = useSelector((state) => state.user.value.token);
@@ -84,16 +84,17 @@ function Onboarding({navigation}) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Complete ton profil</Text>
+      {page == 'onboarding' && <Text style={styles.title}>Complete ton profil</Text>}
+      {page == 'profile' && <Text style={styles.title}>Modifie ton profil</Text>}
       <Text style={styles.question}>Des restrictions alimentaires ?</Text>
       <View style={styles.vignetteContainer}>{regimeVignettes}</View>
       <View style={styles.buttons}>
-        <TouchableOpacity style={styles.skip} onPress={() => handleSkip()}>
+        {page == 'onboarding' && <TouchableOpacity style={styles.skip} onPress={() => handleSkip()}>
           <Text style={styles.skipText}>Passer &gt;</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.go} onPress={() => handleGo()}>
+        </TouchableOpacity>}
+        {page == 'onboarding' && <TouchableOpacity style={styles.go} onPress={() => handleGo()}>
           <Text style={styles.goText}>Suivant</Text>
-        </TouchableOpacity>
+        </TouchableOpacity>}
       </View>
     </SafeAreaView>
   );
@@ -124,10 +125,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-around",
+
   },
 
   TagVignette: {
-    marginTop: 6,
+    marginTop: 30,
     marginHorizontal: 5,
     padding: 10,
     justifyContent: "space-between",
@@ -147,6 +149,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     minWidth: 80,
     paddingLeft: 5,
+    paddingRight:5
   },
   ImgVignette: {
     backgroundColor: "white",
@@ -156,6 +159,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    
   },
   icon: { width: 15, height: 15 },
   buttons: {
