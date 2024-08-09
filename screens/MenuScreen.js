@@ -11,11 +11,14 @@ import {
   } from 'react-native';
   import { useEffect, useState } from 'react';
   import FontAwesome from 'react-native-vector-icons/FontAwesome';
+  import { useDispatch, useSelector } from 'react-redux';
 
   export default function MenuScreen({ navigation }) {
 
+    const token = useSelector((state) => state.user.value.token);
+    // const token = '0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf';
     const URL = 'https://lifemiam-backend.vercel.app';
-    const token = '0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf';
+  
 
     const [menus, setMenus] = useState([])
     const [isCreatingMenu, setIsCreatingMenu] = useState(false)
