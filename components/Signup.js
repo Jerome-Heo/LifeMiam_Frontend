@@ -42,7 +42,7 @@ function Signup({onboarding}) {
           {
             setDisplaySignedUp('Vous êtes inscrit et avez un token ! ')
             // dispatch
-            dispatch(token({ token: data.token }));
+            dispatch(token(data.token));
             onboarding(true)
             setEmail(null)
             setUsername(null)
