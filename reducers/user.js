@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  value: { token: null, regime: [] },
+  value: { token: null, regime: [], menu: null },
 };
 
 export const userSlice = createSlice({
@@ -10,6 +10,9 @@ export const userSlice = createSlice({
   reducers: {
     token: (state, action) => {
       state.value.token = action.payload;
+    },
+    initRegimes: (state, action) => {
+      state.value.regime = action.payload;
     },
     addRegime: (state, action) => {
       state.value.regime.push(action.payload);
@@ -21,8 +24,15 @@ export const userSlice = createSlice({
       );
       console.log("removed", action.payload);
     },
+    setMenu: (state, action) => {
+      state.value.menu = action.payload
+    },
+    clearMenu: (state, action) => {
+      state.value.menu = null
+    }
   },
 });
 
-export const { token, addRegime, removeRegime } = userSlice.actions;
+export const { token, addRegime, removeRegime, initRegimes, setMenu, clearMenu } =
+  userSlice.actions;
 export default userSlice.reducer;
