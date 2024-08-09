@@ -3,6 +3,7 @@ import Colors from '../utilities/color'
 import { useState ,useEffect} from "react";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useDispatch, useSelector } from 'react-redux';
+import { token } from '../reducers/user';
 function Signup({onboarding}) {
 
   const dispatch = useDispatch();
@@ -42,6 +43,7 @@ function Signup({onboarding}) {
           {
             setDisplaySignedUp('Vous êtes inscrit et avez un token ! ')
             // dispatch
+
             dispatch(token(data.token));
             onboarding(true)
             setEmail(null)
