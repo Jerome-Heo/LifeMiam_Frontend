@@ -29,6 +29,7 @@ function Resume({ navigation }){
           .then((data) => {
             if(Array.isArray(data))
               setMenusResume(data);
+                handleMenuList()
           })
     }, [currentMenu])
 
