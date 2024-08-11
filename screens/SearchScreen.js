@@ -16,7 +16,7 @@ import {
 import { useIsFocused } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import Colors from "../utilities/color";
-
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 import * as Animatable from "react-native-animatable";
 const types = [
   "bounceIn",
@@ -63,7 +63,7 @@ export default function SearchScreen({ navigation }) {
 
   const [recipes, setRecipes] = useState([]);
   const [SearchQuery, setSearchQuery] = useState("");
-  const [filteredRecipes, setFilteredRecipes] = useState([]);
+  // const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [searchTimeout, setSearchTimeout] = useState(null);
   const isFocused = useIsFocused();
 
@@ -81,47 +81,48 @@ export default function SearchScreen({ navigation }) {
   const userRegime = useSelector((state) => state.user.value.regime);
   const [vignettesSelected, setVignettesSelected] = useState(userRegime);
 
-  console.log("userRegime", userRegime);
+  // REFACTO to have one fetch URL instead of 1 for popular recipes and 1 for search
+  // const fetchPopularRecipes = () => {
+  //   fetch(`${URL}/recipes/?sortBy=popularity`)
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       setRecipes(data.data);
+  //       // setFilteredRecipes(data.data);
+  //       // console.log(data.data)
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching data:", error);
+  //     });
+  // };
 
-  console.log("vignettesSelected", vignettesSelected);
-
-  const fetchPopularRecipes = () => {
-    fetch(`${URL}/recipes/?sortBy=popularity`)
-      .then((response) => response.json())
-      .then((data) => {
-        setRecipes(data.data);
-        setFilteredRecipes(data.data);
-        // console.log(data.data)
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  };
-
-  useEffect(() => {
-    setTimeout(() => {
-      fetchPopularRecipes();
-    }, 100);
-  }, [isFocused]); // Ne déclenche qu'au focus, pas à chaque update de popularRecipes
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     fetchRecipesResults(SearchQuery);
+  //   }, 100);
+  // }, [isFocused]); // Ne déclenche qu'au focus, pas à chaque update de popularRecipes
 
   useEffect(() => {
     animate("fadeInLeft");
-  }, [popularRecipes, searchTimeout]);
+    setTimeout(() => {
+      fetchRecipesResults(SearchQuery);
+    }, 100);
+  }, [isFocused, vignettesSelected, searchTimeout]);
 
   //requête BDD pour obtenir les recettes demandées
-  const fetchSearchResults = (query) => {
-    console.log("test");
-    const formattedVignettes = vignettesSelected.map((e) =>
-      encodeURIComponent(e)
-    );
-    const fetchVignettes = JSON.stringify(formattedVignettes);
-    console.log("fetch", fetchVignettes);
-    fetch(`${URL}/recipes/?search=${query}&tags=${fetchVignettes}`)
+  const fetchRecipesResults = (query) => {
+    // const formattedVignettes = vignettesSelected.map((e) =>
+    //   encodeURIComponent(e)
+    // );
+    // console.log("formattedVignettes:", formattedVignettes);
+    const fetchVignettes = JSON.stringify(vignettesSelected);
+    // console.log("fetchVignettes:", fetchVignettes);
+    const fetchURL = `${URL}/recipes/?sortBy=popularity&search=${query}&tags=${fetchVignettes}`;
+    console.log(fetchURL);
+    fetch(fetchURL)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.result);
         if (data.result) {
-          setFilteredRecipes(data.data);
+          // setFilteredRecipes(data.data);
           setRecipes(data.data);
         } else {
           setRecipes([]);
@@ -141,18 +142,25 @@ export default function SearchScreen({ navigation }) {
     }
     setSearchTimeout(
       setTimeout(() => {
-        fetchSearchResults(query);
+        fetchRecipesResults(query);
       }, 1000)
     );
   };
 
+  // onPress sur les Vignettes
   let isSelected;
-  // gerer la logique de disable/enable pour lancer la rechercher
   const handlePress = (name) => {
+    // console.log("vignette press:", name);
     const found = vignettesSelected.some((element) => element === name);
-    found
-      ? setVignettesSelected(vignettesSelected.filter((vi) => vi !== name))
-      : setVignettesSelected([...vignettesSelected, name]);
+    if (found) {
+      setVignettesSelected(
+        vignettesSelected.filter((element) => element !== name)
+      );
+    } else {
+      setVignettesSelected([...vignettesSelected, name]);
+    }
+    // console.log("searchQuery", SearchQuery);
+    // console.log("vignettes:", vignettesSelected);
   };
 
   // afficher les vignettes de regime, selon les regimes dans le reducer user
@@ -181,8 +189,8 @@ export default function SearchScreen({ navigation }) {
     const updatedRecipes = recipes.map((recette) =>
       recette.id === id ? { ...recipes, clics: recette.clics + 1 } : recipes
     );
-    setRecipes(updatedRecipes);
-    setFilteredRecipes(updatedRecipes);
+    setRecipes(updatedRecipes); //why?
+    // setFilteredRecipes(updatedRecipes);
     navigation.navigate("Recipe", { RecetteID: id });
   };
 
@@ -217,10 +225,28 @@ export default function SearchScreen({ navigation }) {
     );
   });
 
+  // affichage empty state si 0 resultat de recettes
+  const displayNull = () => {
+    return (
+      <View style={styles.emptyState}>
+        <FontAwesome
+          name={"search"}
+          style={styles.icon}
+          size={40}
+          onPress={() => {
+            setShowPassword(true);
+          }}
+        />
+        <Text>Aucune recette trouvée</Text>
+      </View>
+    );
+  };
+
   //bouton "clear" pour effacer ce qui est écrit dans l'input
   const clearSearch = () => {
     setSearchQuery("");
-    setFilteredRecipes([]);
+
+    // setFilteredRecipes([]);
     // setRecipes([]);
   };
 
@@ -248,6 +274,7 @@ export default function SearchScreen({ navigation }) {
         <Text style={styles.H2}>Les recettes populaires</Text>
         <ScrollView style={styles.ScrollCont}>
           {recipes.length > 0 && popularRecipes}
+          {recipes.length === 0 && displayNull}
         </ScrollView>
       </View>
     </KeyboardAvoidingView>
@@ -291,6 +318,11 @@ const styles = StyleSheet.create({
   },
   ScrollCont: {
     width: "96%",
+  },
+  emptyState: {
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
   },
   recipes: {
     borderWidth: 2,
