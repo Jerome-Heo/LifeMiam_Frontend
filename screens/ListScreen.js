@@ -13,7 +13,9 @@ import {
 import { useState, useEffect } from 'react';
 import Colors from "../utilities/color";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { useRoute } from '@react-navigation/native';
 import { useDispatch, useSelector } from "react-redux";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function ListScreen({ navigation: { goBack } }) {
 
@@ -24,18 +26,24 @@ export default function ListScreen({ navigation: { goBack } }) {
   const URL = "https://lifemiam-backend.vercel.app";
   // const URL = "http://localhost:3000";
   // const token = "wVL5sCx7YTgaO-fnxK5pX4mMG8JywAwQ"
+  const route = useRoute();
   const [list, setList] = useState([]);
-  const {token, menuId} = useSelector((state) => state.user.value.token);
+  const token= useSelector((state) => state.user.value.token);
   const dispatch = useDispatch();
+  const {menuId} = route.params
+  console.log('menu',menuId)
+  console.log('token',token)
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    if (token && menuId) {
+    // if (token && menuId) {
     fetchIngredients(token, menuId);
-    }
-  }, [token, menuId]);
-  console.log(token)
+    // }
+  }, []);
+  
+  
   const fetchIngredients = (token, menuId) => {
-    fetch(`${URL}/shop/generate/${menuId}`, {
+    fetch(`${URL}/shop/generate/66b63e6b681736595e10b222`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -51,16 +59,16 @@ export default function ListScreen({ navigation: { goBack } }) {
         console.error("No matching ingredients");
       }
     })
-    .catch((error) => {
-      console.error("Error fetching search results:", error);
-    });
+    // .catch((error) => {
+    //   console.error("Error fetching search results:", error);
+    // });
   };
         
   const categories = []
   list.filter((e) => !categories.find((cat) => cat === e.category) ? categories.push(e.category) : null)
 
   categories.sort()
-  console.log(categories)
+  // console.log(categories)
 
   let displayAll = []
   for (let category of categories) {
