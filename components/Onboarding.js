@@ -89,12 +89,12 @@ function Onboarding({navigation,page}) {
       <Text style={styles.question}>Des restrictions alimentaires ?</Text>
       <View style={styles.vignetteContainer}>{regimeVignettes}</View>
       <View style={styles.buttons}>
-        {page == 'onboarding' && <TouchableOpacity style={styles.skip} onPress={() => handleSkip()}>
+         <TouchableOpacity style={styles.skip} onPress={() => handleSkip()}>
           <Text style={styles.skipText}>Passer &gt;</Text>
-        </TouchableOpacity>}
-        {page == 'onboarding' && <TouchableOpacity style={styles.go} onPress={() => handleGo()}>
+        </TouchableOpacity>
+         <TouchableOpacity style={styles.go} onPress={() => handleGo()}>
           <Text style={styles.goText}>Suivant</Text>
-        </TouchableOpacity>}
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );

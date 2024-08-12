@@ -7,7 +7,8 @@ import { setMenu, clearMenu } from "../reducers/user";
 function Resume({ navigation }){
 
     const URL = 'https://lifemiam-backend.vercel.app';
-    const token = '0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf';
+    const token = useSelector((state) => state.user.value.token); 
+
     const dispatch = useDispatch();
 
     const [isMenuListVisible, setIsMenuListVisible] = useState(false);

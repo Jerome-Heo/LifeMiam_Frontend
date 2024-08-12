@@ -85,7 +85,7 @@ import {
     //Les ingrédients et quantitées
     const ingredient = Recipe.ing && adjustedIngredients.map((data, i) => {
         return (
-           <Text key={i} style={styles.H3} >{`- ${data.quantity}g de ${data.ingredient}`}</Text>
+           <Text key={i} style={styles.H3} >{`- ${data.ingredient.name} : ${data.quantity} ${data.ingredient.unit}`}</Text>
         )
     })
 
