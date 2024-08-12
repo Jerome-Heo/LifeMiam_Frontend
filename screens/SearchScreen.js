@@ -71,9 +71,36 @@ export default function SearchScreen({ navigation }) {
   const [isLoading, setIsLoading] = useState(true)
   const isFocused = useIsFocused();
   const activeMenu = useSelector((state) => state.user.value.menu);
+  const [debounceTimeout, setDebounceTimeout] = useState(null);
   // const {RecetteID} = route.params;
   const route = useRoute();
   const URL = "https://lifemiam-backend.vercel.app";
+
+  useEffect(() => {
+    if (isFocused) {
+      setIsLoading(true);
+      setTimeout(() => {
+        fetchRecipesResults('');
+        setIsLoading(false);
+      }, 2000);
+    }
+  }, [isFocused]);
+
+  useEffect(() => {
+    if (debounceTimeout) {
+      clearTimeout(debounceTimeout);
+  }
+
+  const newTimeout = setTimeout(() => {
+    if (SearchQuery.length === 0) {
+      fetchRecipesResults('');
+    } else if (SearchQuery.length >= 3) {
+      fetchRecipesResults(SearchQuery);
+    }
+  }, 1000);
+
+  setDebounceTimeout(newTimeout);
+}, [SearchQuery])
 
   const regimeList = [
     { name: "sans gluten", src: require("../assets/gluten_free.png") },
@@ -112,7 +139,7 @@ export default function SearchScreen({ navigation }) {
     setTimeout(() => {
       fetchRecipesResults(SearchQuery);
     }, 100);
-  }, [isFocused, vignettesSelected, searchTimeout]);
+  }, [isFocused, vignettesSelected])/*, searchTimeout*/;
 
 //   useEffect(() => {
 //     fetch(`${URL}/recipes/${RecetteID}/${token}`)
@@ -125,6 +152,7 @@ export default function SearchScreen({ navigation }) {
 
   //requête BDD pour obtenir les recettes demandées
   const fetchRecipesResults = (query) => {
+    
     const formattedVignettes = vignettesSelected.map((e) =>
       encodeURIComponent(e)
     );
@@ -137,7 +165,7 @@ export default function SearchScreen({ navigation }) {
     fetch(fetchURL)
       .then((response) => response.json())
       .then((data) => {
-        if (data.result) {
+        if (data.result) {     
           // setFilteredRecipes(data.data);
           setRecipes(data.data);
         } else {
@@ -146,7 +174,6 @@ export default function SearchScreen({ navigation }) {
         }
         setIsLoading(false)
       })
-    
       .catch((error) => {
         setIsLoading(false)
         console.log("Erreur lors de la récupération des résultats : ", error);
@@ -158,20 +185,15 @@ export default function SearchScreen({ navigation }) {
   
   const handleSearch = (query) => {
     setSearchQuery(query);
-    //recherche à partir de 3 caractères
-    if (query.length >= 3) {
-      fetchRecipesResults(query);
-    } else {
-    }
-      // timer pour aider l'utilisateur qui hésite dans sa recherche
-    if (searchTimeout) {
-      clearTimeout(searchTimeout);
-    }
-    setSearchTimeout(
-      setTimeout(() => {
-        fetchRecipesResults(query);
-      }, 2000)
-    );
+
+    // if (searchTimeout) {
+    //   clearTimeout(searchTimeout);
+    // } 
+    // setSearchTimeout(
+    //   setTimeout(() => {
+    //     fetchRecipesResults(query);
+    //   }, 2000)
+    // );
   };
 
   // onPress sur les Vignettes
