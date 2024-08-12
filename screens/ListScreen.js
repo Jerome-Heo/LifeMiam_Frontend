@@ -36,6 +36,7 @@ export default function ListScreen({navigation,navigation:{goBack}}) {
   const urlParams = route.params
  
   useEffect(() => {
+    
      if (token && urlParams != undefined) {
       console.log(token,urlParams.menuId)
       fetch(`${URL}/shop/generate/${urlParams.menuId}`, {

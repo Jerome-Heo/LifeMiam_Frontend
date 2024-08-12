@@ -174,7 +174,8 @@ import {
   {
 
   fontSize:26
-    },
+    }
+    ,
     logoImg:{
       width:300,
       height:300,
