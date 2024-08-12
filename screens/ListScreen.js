@@ -17,6 +17,8 @@ import { useRoute } from '@react-navigation/native';
 import { useSelector } from "react-redux";
 import { useIsFocused } from "@react-navigation/native";
 
+import SwipableItem from '../components/SwipeableElement'
+
 export default function ListScreen({navigation,navigation:{goBack}}) {
 
   // récupérer les catégories ['fruits','légumes','produits laitiers','produits secs','Condiments','Boissons']
@@ -48,7 +50,7 @@ export default function ListScreen({navigation,navigation:{goBack}}) {
       })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data)
+        // console.log('datas from bdd',data)
         if (data.result) {
           setList(data.data);
         } else {
@@ -67,20 +69,22 @@ export default function ListScreen({navigation,navigation:{goBack}}) {
   list.filter((e) => !categories.find((cat) => cat === e.category) ? categories.push(e.category) : null)
 
   categories.sort()
-  // console.log(categories)
-
+  //  console.log(categories)
+  console.log(list)
   let displayAll = []
   for (let category of categories) {
 
     let displayList = list.map((ing, i) => ing.category == category ?
-      <View key={i} style={styles.ingElement}>
-        <Text style={styles.ingElementText}>{ing.name} {ing.quantity} {ing.unit}</Text>
-      </View> : null
+      <SwipableItem key={i} name={ing.name} quantity={ing.quantity} unit={ing.unit}/> : null
+      // <View key={i} style={styles.ingElement}>
+      //   <Text style={styles.ingElementText}>{ing.name} {ing.quantity} {ing.unit}</Text>
+      // </View> : null
     )
     let boxCategory =
       <View key={category} style={styles.boxCategory}>
         <View key={category} style={styles.categorieTitle}><Text style={styles.categorieTitleText}>{category}</Text></View>
         {displayList}
+
       </View>
     displayAll = [...displayAll, boxCategory]
   }
@@ -117,9 +121,9 @@ export default function ListScreen({navigation,navigation:{goBack}}) {
         </TouchableOpacity>
         
         </View>}
-      
+       
       <ScrollView style={styles.list}>
-
+      
         
         {displayAll}
 
