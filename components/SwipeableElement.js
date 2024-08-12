@@ -27,6 +27,7 @@ export default function SwipableItem({name , quantity,unit}) {
     const pan = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
     const itemTranslate = pan.x.interpolate({ inputRange: offset, outputRange: offset, extrapolate: 'clamp' });
     
+    const [isOpen,setIsOpen]=useState(false)
     const [isDisabled,setIsDisabled]=useState(false)
     const [isFound,setIsFound]=useState(false)
 
@@ -79,6 +80,7 @@ export default function SwipableItem({name , quantity,unit}) {
     ).current;
     const reset = () => {
         isOpenState = false;
+        setIsOpen(false)
         Animated.spring(pan, {
             toValue: { x: 0, y: 0 },
             useNativeDriver: true,
@@ -87,6 +89,7 @@ export default function SwipableItem({name , quantity,unit}) {
     }
     const move = (toLeft) => {
         isOpenState = true;
+        setIsOpen(true)
         Animated.spring(pan, {
             toValue: { x: toLeft ? -btnWidth * rightButtons.length : btnWidth /* * leftButtons.length*/ , y: 0 },
             useNativeDriver: true,
@@ -104,6 +107,7 @@ export default function SwipableItem({name , quantity,unit}) {
        
     }
 
+
     return (
         <View style={styles.container}>
             {/* <Animated.View style={[styles.btnContainer, { transform: [{ translateX: translateLeftBtns }], }]}>
@@ -113,20 +117,20 @@ export default function SwipableItem({name , quantity,unit}) {
                     </TouchableOpacity>
                 ))}
             </Animated.View> */}
-            <Animated.View style={[styles.btnContainer, { transform: [{ translateX: translateRightBtns }], alignSelf: 'flex-end' }]}>
+            <Animated.View style={[styles.btnContainer, { transform:[{ translateX: translateRightBtns }], alignSelf: 'flex-end' }]}>
                 
-                    <TouchableOpacity onPress={()=> {buyedItem()}} style={[styles.btn, !isDisabled ? { backgroundColor: 'orange' } : { backgroundColor: Colors.YELLOW }]}>
-                        <Text style={{textAlign:'center'}}>{isDisabled ? 'Reposer' : 'Acheter' }</Text>
+                    <TouchableOpacity onPress={()=> {buyedItem()}} style={[styles.btn, !isDisabled ? { backgroundColor: Colors.DARK_GREEN } : { backgroundColor: Colors.YELLOW }]}>
+                        <Text style={!isDisabled ? {textAlign:'center',color:'#fff' } : {textAlign:'center'  } }>{isDisabled ? 'Reposer' : 'Acheter' }</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={()=> {foundItem()}} style={[styles.btn, !isFound ? { backgroundColor: 'orange' } : { backgroundColor: Colors.YELLOW }]}>
+                    <TouchableOpacity onPress={()=> {foundItem()}} style={[styles.btn, !isFound ? {backgroundColor: Colors.DARK_GREEN } : { backgroundColor: Colors.YELLOW }]}>
                         
-                          <Text style={{textAlign:'center'}}>{isFound ? 'Non trouvé' : 'trouvé' }</Text>
+                          <Text style={!isFound ? {textAlign:'center',color:'#fff' } : {textAlign:'center'  } }>{isFound ? 'Non trouvé' : 'trouvé' }</Text>
                     </TouchableOpacity>
                
             </Animated.View>
-            <Animated.View style={[styles.item, { transform: [{ translateX: itemTranslate }] }]} {...panResponder.panHandlers} >
-                <Text style={styles.txt}>{name} </Text>
+            <Animated.View style={[!isOpen ? styles.item : styles.itemOpen, { transform: [{ translateX: itemTranslate }] }]} {...panResponder.panHandlers} >
+                <Text style={styles.txt}>{name}</Text>
                 <Text style={styles.txt}>{quantity} {unit}</Text>
                 
             </Animated.View>
@@ -145,8 +149,19 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'flex-start',
         justifyContent: 'center',
+        
+        backgroundColor: Colors.LIGHT_GREEN,
+        paddingHorizontal:20
+    },
+    itemOpen: {
+        height: '100%',
+        width: '100%',
+        alignItems: 'flex-start',
+        justifyContent: 'center',
         paddingLeft: '50%',
         backgroundColor: Colors.LIGHT_GREEN,
+        transform: [{translateX: '50%'}],
+        paddingHorizontal:20
     },
     txt: {
         color: '#fff',
@@ -161,7 +176,6 @@ const styles = StyleSheet.create({
     btn: {
         height: '100%',
         width: btnWidth,
-        backgroundColor: 'red',
         borderLeftWidth: 1,
         borderRightWidth: 1,
         borderColor: '#fff',
