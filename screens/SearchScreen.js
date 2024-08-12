@@ -155,9 +155,15 @@ export default function SearchScreen({ navigation }) {
   if (isLoading) {
     console.log("loading...")
   }
-  //timer pour aider l'utilisateur qui hésite dans sa recherche
+  
   const handleSearch = (query) => {
     setSearchQuery(query);
+    //recherche à partir de 3 caractères
+    if (query.length >= 3) {
+      fetchRecipesResults(query);
+    } else {
+    }
+      // timer pour aider l'utilisateur qui hésite dans sa recherche
     if (searchTimeout) {
       clearTimeout(searchTimeout);
     }
@@ -272,10 +278,19 @@ export default function SearchScreen({ navigation }) {
     );
   };
 
+  const loadingView = () => {
+    return (
+      <View style={styles.emptyState}>
+        <Text style={styles.loadingText}>Loading...</Text>
+      </View>
+    );
+  };
+
   //bouton "clear" pour effacer ce qui est écrit dans l'input
   const clearSearch = () => {
     setSearchQuery("");
-
+    setVignettesSelected(userRegime);
+    fetchRecipesResults('');
     // setFilteredRecipes([]);
     // setRecipes([]);
   };
@@ -304,7 +319,7 @@ export default function SearchScreen({ navigation }) {
         <View style={styles.vignetteContainer}>{regimeVignettes}</View>
         <Text style={styles.H2}>Les recettes populaires</Text>
         <ScrollView style={styles.ScrollCont}>
-        {recipes.length > 0 ? popularRecipes : displayNull()}
+        {isLoading ? loadingView() :recipes.length > 0 ? popularRecipes : displayNull()}
         </ScrollView>
       </View>
     </KeyboardAvoidingView>
@@ -448,5 +463,9 @@ const styles = StyleSheet.create({
     color: "#365E32",
     fontSize: 35,
 
-  }
+  },
+
+  loadingText: {
+
+  },
 });
