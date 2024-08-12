@@ -14,10 +14,10 @@ import { useState, useEffect } from 'react';
 import Colors from "../utilities/color";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useRoute } from '@react-navigation/native';
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useIsFocused } from "@react-navigation/native";
 
-export default function ListScreen({ navigation: { goBack } }) {
+export default function ListScreen({navigation,navigation:{goBack}}) {
 
   // récupérer les catégories ['fruits','légumes','produits laitiers','produits secs','Condiments','Boissons']
   // filtre le tableau datas.data et extraire les catégories et supprimer les doublons
@@ -28,41 +28,39 @@ export default function ListScreen({ navigation: { goBack } }) {
   // const token = "wVL5sCx7YTgaO-fnxK5pX4mMG8JywAwQ"
   const route = useRoute();
   const [list, setList] = useState([]);
+  const [error,setError]=useState('')
   const token= useSelector((state) => state.user.value.token);
-  const dispatch = useDispatch();
-  const {menuId} = route.params
-  console.log('menu',menuId)
-  console.log('token',token)
-  const isFocused = useIsFocused();
 
+
+  const isFocused = useIsFocused();
+  const urlParams = route.params
+ 
   useEffect(() => {
-    // if (token && menuId) {
-    fetchIngredients(token, menuId);
-    // }
-  }, []);
+     if (token && urlParams != undefined) {
+      console.log(token,urlParams.menuId)
+      fetch(`${URL}/shop/generate/${urlParams.menuId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ token })
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data)
+        if (data.result) {
+          setList(data.data);
+        } else {
+          console.error("No matching ingredients");
+        }
+      })
+    }
+    else
+    {
+      setError('Aucunes données, êtes-vous connecté ?')
+    }
+  }, [isFocused]);
   
-  
-  const fetchIngredients = (token, menuId) => {
-    fetch(`${URL}/shop/generate/66b63e6b681736595e10b222`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ token })
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data)
-      if (data.result) {
-        dispatch(setList(data.data));
-      } else {
-        console.error("No matching ingredients");
-      }
-    })
-    // .catch((error) => {
-    //   console.error("Error fetching search results:", error);
-    // });
-  };
         
   const categories = []
   list.filter((e) => !categories.find((cat) => cat === e.category) ? categories.push(e.category) : null)
@@ -102,9 +100,26 @@ export default function ListScreen({ navigation: { goBack } }) {
           <FontAwesome name={'sort-amount-desc'} style={styles.iconSort} size={30} />
         </TouchableOpacity>
 
+        
+
       </View>
+
+      {error && <View>
+        <Text>{error}</Text>
+        <TouchableOpacity
+          style={styles.buttondisconnected}
+          onPress={() => {
+            navigation.navigate("Home");
+          }}
+        >
+          <Text style={styles.buttondisconnectedText}>Me connecter</Text>
+        </TouchableOpacity>
+        
+        </View>}
+      
       <ScrollView style={styles.list}>
 
+        
         {displayAll}
 
 
@@ -185,5 +200,24 @@ const styles = StyleSheet.create({
     padding: 10,
 
     paddingHorizontal: 12
+  },
+  buttondisconnected:
+  {
+    backgroundColor:Colors.WHITE,
+    borderWidth:1,
+    borderColor:Colors.DARK_GREEN,
+    justifyContent:'center',
+    alignItems:'center',
+    paddingVertical:10,
+    paddingHorizontal:40,
+    borderRadius:20,
+    width:'60%',
+    marginVertical:20,
+    alignSelf:'center'
+  },
+
+  buttondisconnectedText:
+  {
+    color:Colors.DARK_GREEN
   }
 });

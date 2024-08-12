@@ -82,7 +82,6 @@ export default function SearchScreen({ navigation }) {
   const [vignettesSelected, setVignettesSelected] = useState(userRegime);
 
   console.log("userRegime", userRegime);
-
   console.log("vignettesSelected", vignettesSelected);
 
   const fetchPopularRecipes = () => {

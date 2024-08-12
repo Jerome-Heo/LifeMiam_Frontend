@@ -22,7 +22,7 @@ import {
     const handleSignout = () => {
       dispatch(token({token: ""}));
       dispatch(removeRegime({regime: [null]})); // A vérifier
-      navigation.navigate('Home');
+      navigation.navigate("Home")
     }
 
     return (

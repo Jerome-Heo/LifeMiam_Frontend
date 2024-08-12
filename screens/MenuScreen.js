@@ -74,16 +74,19 @@ import {
   // Est-ce que j'ai fetch ?
   //J'affiche les différents menus en une colonne 
     const menusDisplay = menus && menus.map((data, i) => {
+      console.log(data)
       return (
         <View key={i} style={styles.menuCont} >
           <Text style={styles.H3}>{`${data.name}`}</Text>
           <View style={styles.PHCont}>
-            <View style={styles.PHProgressBar}></View>
-            <TouchableOpacity style={styles.PHShoppingList} onPress={() => handleShoppingList(data._id)}>
-              <Image source={require("../assets/cooking.png")} style={styles.imageCooking}></Image>
+            <View style={styles.PHProgressBar} >
+            <TouchableOpacity onPress={() => handleShoppingList(data._id)}>
+            <Text style={styles.courseTitleText}>Courses</Text>
             </TouchableOpacity>
+             
+            </View>
             <View style={styles.PHButton}>
-            <FontAwesome name={'list-ul'} style={styles.icon} size={40}/>
+            <Image source={require("../assets/cooking.png")} style={styles.imageCooking}></Image>
             </View>
           </View>
         </View>
@@ -164,7 +167,14 @@ import {
       fontSize: 15,
       color:"#365E32",
       fontWeight: "700",
+      marginBottom:0
   },
+
+  courseTitleText:
+  {
+
+  fontSize:26
+    },
     logoImg:{
       width:300,
       height:300,
@@ -211,6 +221,7 @@ import {
     menuCont: {
       width: "100%",
       height: "20%",
+      marginBottom:40
     },
     PHCont:{
       flexDirection: "row",
@@ -222,6 +233,8 @@ import {
       margin: 5,
       borderRadius: 5,
       width: "65%",
+      alignItems:'center',
+      justifyContent:'center'
     },
     PHShoppingList: {
 
