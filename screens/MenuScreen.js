@@ -12,7 +12,6 @@ import {
 import { useEffect, useState } from "react";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useDispatch, useSelector } from "react-redux";
-import Resume from "../components/Resume";
 
 export default function MenuScreen({ navigation }) {
   const userToken = useSelector((state) => state.user.value.token);
@@ -152,7 +151,7 @@ export default function MenuScreen({ navigation }) {
         />
         {display}
       </View>
-      {/* <Resume /> */}
+      <Resume />
     </View>
   );
 }
