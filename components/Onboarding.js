@@ -24,7 +24,7 @@ const windowHeight = Dimensions.get("window").height;
 function Onboarding({ navigation, page }) {
   const dispatch = useDispatch();
   const userToken = useSelector((state) => state.user.value.token);
-  // const token = "-ob9kC9qgjQ7vn9vx0s6JUGmtlUWANtv";
+  //const token = "-ob9kC9qgjQ7vn9vx0s6JUGmtlUWANtv";
   const userRegime = useSelector((state) => state.user.value.regime);
   const URL = "https://lifemiam-backend.vercel.app";
 
@@ -69,7 +69,7 @@ function Onboarding({ navigation, page }) {
       fetch(`${URL}/users/update`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: token, regime: userRegime }),
+        body: JSON.stringify({ token: userToken, regime: userRegime }),
       })
         .then((response) => response.json())
         .then((data) => {
@@ -87,6 +87,12 @@ function Onboarding({ navigation, page }) {
       )}
       {page == "profile" && (
         <Text style={styles.title}>Modifie ton profil</Text>
+      )}
+      {page == "onboarding" && (
+        <Text style={styles.title}>Complète ton profil</Text>
+      )}
+      {page == "profile" && (
+        <Text style={styles.title}>Modifier ton profil</Text>
       )}
       <Text style={styles.question}>Des restrictions alimentaires ?</Text>
       <View style={styles.vignetteContainer}>{regimeVignettes}</View>
