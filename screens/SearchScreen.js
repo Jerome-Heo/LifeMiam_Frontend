@@ -123,8 +123,6 @@ export default function SearchScreen({ navigation }) {
 //     })
 // }, [RecetteID])
 
- 
-
   //requête BDD pour obtenir les recettes demandées
   const fetchRecipesResults = (query) => {
     const formattedVignettes = vignettesSelected.map((e) =>
