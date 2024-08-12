@@ -15,8 +15,8 @@ import {
 
   export default function MenuScreen({ navigation }) {
 
-    //const token = useSelector((state) => state.user.value.token);
-    const token = '0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf';
+    const token = useSelector((state) => state.user.value.token);
+    //const token = '0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf';
     const URL = 'https://lifemiam-backend.vercel.app';
   
 
