@@ -19,6 +19,7 @@ function Resume({ navigation }){
 
     //charger tous les menus d'un user
     useEffect(() => {
+        handleMenuList()
         fetch(`${URL}/menus/getMenus`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -28,13 +29,14 @@ function Resume({ navigation }){
           .then((data) => {
             if(Array.isArray(data))
               setMenusResume(data);
+                handleMenuList()
           })
     }, [currentMenu])
 
     // Ouvre le résumé du menu
     const handleMenuList = () => {
         Animated.timing(animatedHeight,{
-            toValue: isMenuListVisible ? 60 : 70 + (currentMenu ? 0 : menusResume.length*90) + (!currentMenu ? 0 : visibleMenu.length*90),
+            toValue: isMenuListVisible ? 60 : 70 + (currentMenu ? visibleMenu.length*60 : menusResume.length*60),
             duration: 300,
             useNativeDriver: false,
         }).start();
@@ -58,6 +60,7 @@ function Resume({ navigation }){
               dispatch(setMenu(menuId));
               console.log(data.menu.menu_recipes)
               setVisibleMenu(data.menu.menu_recipes)
+              handleMenuList()
         });
     }
 
@@ -109,8 +112,7 @@ function Resume({ navigation }){
                 :<Text style={styles.resumeText}>Résumé du menu</Text>}
             <TouchableOpacity style={styles.button} onPress={() => backMenu()}>
                 <FontAwesome 
-                    name={currentMenu ? "arrow-left" : ""} 
-                    style={styles.caret} 
+                    name={currentMenu ? "arrow-left" : ""}
                     size={25} 
                     color={"#E7D37F"}
                 />
