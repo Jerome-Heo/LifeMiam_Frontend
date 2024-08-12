@@ -13,6 +13,11 @@ import { useEffect, useState } from "react";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useDispatch, useSelector } from "react-redux";
 
+import Resume from "../components/Resume";
+import { useEffect, useState } from "react";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { useDispatch, useSelector } from "react-redux";
+
 export default function MenuScreen({ navigation }) {
   const userToken = useSelector((state) => state.user.value.token);
   //const token = '0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf';
@@ -151,6 +156,7 @@ export default function MenuScreen({ navigation }) {
         />
         {display}
       </View>
+      <Resume />
     </View>
   );
 }
@@ -217,7 +223,7 @@ const styles = StyleSheet.create({
   createMenuAlign: {
     width: "98%",
     position: "absolute",
-    top: 480,
+    top: "95%",
     left: 3,
   },
   createMenuTxt: {
