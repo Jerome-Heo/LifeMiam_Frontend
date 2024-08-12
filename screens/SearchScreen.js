@@ -140,11 +140,11 @@ export default function SearchScreen({ navigation }) {
           setRecipes(data.data);
         } else {
           setRecipes([]);
-          // console.error("No matching recipes");
+          // console.error("Aucune recette correspondante");
         }
       })
       .catch((error) => {
-        console.error("Error fetching search results:", error);
+        console.error("Erreur lors de la récupération des résultats : ", error);
       });
   };
 
@@ -268,8 +268,6 @@ export default function SearchScreen({ navigation }) {
   //bouton "clear" pour effacer ce qui est écrit dans l'input
   const clearSearch = () => {
     setSearchQuery("");
-    setVignettesSelected(userRegime);
-    fetchRecipesResults('');
 
     // setFilteredRecipes([]);
     // setRecipes([]);
