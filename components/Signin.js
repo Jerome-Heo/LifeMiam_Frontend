@@ -35,8 +35,6 @@ function Signin({ navigation }) {
       .then((data) => {
         console.log(data);
         if (data.result === true) {
-          // dispatch(token({ token: data.token }));
-          // dispatch(addRegime({regime: data.regime}));
           dispatch(token(data.token));
           data.regime.length > 0 && dispatch(initRegimes(...data.regime));
           setSignin("");
@@ -44,7 +42,7 @@ function Signin({ navigation }) {
           navigation.navigate("TabNavigator", { screen: "Search" });
         } else {
           // Display an error
-          console.log("Erreur avec Signin");
+          console.log("Erreur avec la connexion");
         }
       });
   };
@@ -52,9 +50,9 @@ function Signin({ navigation }) {
     <KeyboardAvoidingView style={styles.textContainer}>
       <Text style={styles.title}>Se connecter</Text>
       <KeyboardAvoidingView style={styles.inputContainer}>
-        <Text style={styles.label}>Adresse email ou Username</Text>
+        <Text style={styles.label}>Adresse email ou nom d'utilisateur</Text>
         <TextInput
-          label={"Adresse email ou Username"}
+          label={"Adresse email ou nom d'utilisateur"}
           textContentType="email"
           keyboardType="email-address"
           style={styles.input}
@@ -64,9 +62,9 @@ function Signin({ navigation }) {
         ></TextInput>
       </KeyboardAvoidingView>
       <KeyboardAvoidingView style={styles.inputContainer}>
-        <Text style={styles.label}>Password</Text>
+        <Text style={styles.label}>Mot de passe</Text>
         <TextInput
-          label={"Password"}
+          label={"Mot de passe"}
           textContentType="password"
           secureTextEntry={showPassword ? false : true}
           style={styles.input}
