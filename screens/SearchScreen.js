@@ -257,19 +257,20 @@ export default function SearchScreen({ navigation }) {
     >
       <View style={styles.titleCont}>
         <Text style={styles.H1}>Recettes</Text>
-        <TextInput
-          style={styles.searchBar}
-          placeholder="Rechercher..."
-          value={SearchQuery}
-          onChangeText={handleSearch}
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={styles.searchBar}
+            placeholder="Rechercher..."
+            value={SearchQuery}
+            onChangeText={handleSearch}
           // clearButtonMode={"unless-editing"}
-        />
-        <TouchableOpacity onPress={clearSearch} style={styles.clearButton}>
-          <Image
-            style={styles.clearButton}
-            source={require("../assets/clear.png")}
           />
-        </TouchableOpacity>
+          {SearchQuery.length > 0 && (
+            <TouchableOpacity onPress={clearSearch} style={styles.clearButton} >
+              <Image style={styles.clearButtonIcon} source={require("../assets/clear.png")} />
+            </TouchableOpacity>
+          )}
+        </View>
         <View style={styles.vignetteContainer}>{regimeVignettes}</View>
         <Text style={styles.H2}>Les recettes populaires</Text>
         <ScrollView style={styles.ScrollCont}>
@@ -281,6 +282,8 @@ export default function SearchScreen({ navigation }) {
   );
 }
 
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -290,19 +293,30 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     marginLeft: "4%",
   },
-  searchBar: {
-    height: 40,
-    borderColor: "gray",
+
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     borderWidth: 1,
-    paddingLeft: 8,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    width: '92%',
     marginBottom: 10,
-    width: "96%",
   },
+
+  searchBar: {
+    flex: 1,
+    height: 40,
+    paddingHorizontal: 10,
+  },
+
   H1: {
     fontSize: 30,
     color: "#365E32",
     fontWeight: "700",
   },
+
   H2: {
     margin: 10,
     fontSize: 20,
@@ -348,12 +362,19 @@ const styles = StyleSheet.create({
   },
 
   clearButton: {
-    height: 20,
+    padding: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  clearButtonIcon: {
     width: 20,
+    height: 20,
+    tintColor: "#81A263",
   },
 
   vignetteContainer: {
-    width: windowWidth,
+    width: '100%',
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-around",
