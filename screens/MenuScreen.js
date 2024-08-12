@@ -100,7 +100,7 @@ import {
       <ScrollView style={styles.fetchMenusCont}>
         {menusDisplay}
       </ScrollView>
-        <View style={styles.createMenuAlign}>
+        <View>
         {createMenuButton}
         </View>
     </View>
@@ -111,7 +111,7 @@ import {
         <Text style={styles.H3}>Vous n'avez pas de menus...</Text> 
         <Text style={styles.H3}>Commencer une liste ?</Text> 
       </View>
-      <View style={styles.createMenuAlign}>
+      <View>
         {createMenuButton}
         </View>
     </View>
@@ -190,10 +190,8 @@ import {
     },
     createMenuAlign:{
       width: "98%",
-      borderWidth: 1,
       position: 'absolute',
-      bottom: 120,
-      left: 11,
+      top: 120,
       backgroundColor: 'white'
     },
     createMenuTxt:{

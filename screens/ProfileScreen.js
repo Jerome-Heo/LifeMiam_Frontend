@@ -11,7 +11,7 @@ import {
   } from 'react-native';
   import FontAwesome from 'react-native-vector-icons/FontAwesome';
   import { useDispatch, useSelector } from 'react-redux';
-  import { token } from '../reducers/user';
+  import { token, initRegimes } from "../reducers/user";
   import Onboarding from "../components/Onboarding";
   import Colors from "../utilities/color";
   
@@ -21,7 +21,7 @@ import {
 
     const handleSignout = () => {
       dispatch(token({token: ""}));
-      dispatch(removeRegime({regime: [null]})); // A vérifier
+      dispatch(initRegimes([null]));
       navigation.navigate("Home")
     }
 
