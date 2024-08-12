@@ -28,6 +28,7 @@ export default function SwipableItem({name , quantity,unit}) {
     const itemTranslate = pan.x.interpolate({ inputRange: offset, outputRange: offset, extrapolate: 'clamp' });
     
     const [isDisabled,setIsDisabled]=useState(false)
+    const [isFound,setIsFound]=useState(false)
 
     // const translateLeftBtns = pan.x.interpolate({ inputRange: [-leftButtons.length * btnWidth, 0], outputRange: [-leftButtons.length * btnWidth, 0], extrapolate: 'clamp' });
     const translateRightBtns = pan.x.interpolate({ inputRange: [0, rightButtons.length * btnWidth], outputRange: [0, rightButtons.length * btnWidth], extrapolate: 'clamp' });
@@ -92,6 +93,17 @@ export default function SwipableItem({name , quantity,unit}) {
             bounciness: 0
         }).start();
     }
+
+    const buyedItem= ()=> {
+        setIsDisabled(!isDisabled)
+
+    }
+
+    const foundItem= ()=> {
+        setIsFound(!isDisabled)
+       
+    }
+
     return (
         <View style={styles.container}>
             {/* <Animated.View style={[styles.btnContainer, { transform: [{ translateX: translateLeftBtns }], }]}>
@@ -103,12 +115,14 @@ export default function SwipableItem({name , quantity,unit}) {
             </Animated.View> */}
             <Animated.View style={[styles.btnContainer, { transform: [{ translateX: translateRightBtns }], alignSelf: 'flex-end' }]}>
                 
-                    <TouchableOpacity onPress={reset} style={[styles.btn, { backgroundColor: 'orange' }]}>
-                        <Text>{btn}</Text>
+                    <TouchableOpacity onPress={()=> {buyedItem()}} style={[styles.btn, !isDisabled ? { backgroundColor: 'orange' } : { backgroundColor: Colors.YELLOW }]}>
+                        <Text style={{textAlign:'center'}}>{isDisabled ? 'Reposer' : 'Acheter' }</Text>
                     </TouchableOpacity>
-                          <TouchableOpacity onPress={reset} style={[styles.btn, { backgroundColor: 'orange' }]}>
-                          <Text>{btn}</Text>
-                      </TouchableOpacity>
+
+                    <TouchableOpacity onPress={()=> {foundItem()}} style={[styles.btn, !isFound ? { backgroundColor: 'orange' } : { backgroundColor: Colors.YELLOW }]}>
+                        
+                          <Text style={{textAlign:'center'}}>{isFound ? 'Non trouvé' : 'trouvé' }</Text>
+                    </TouchableOpacity>
                
             </Animated.View>
             <Animated.View style={[styles.item, { transform: [{ translateX: itemTranslate }] }]} {...panResponder.panHandlers} >
