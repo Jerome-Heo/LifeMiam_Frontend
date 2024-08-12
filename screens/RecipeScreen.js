@@ -17,19 +17,20 @@ import {
 
   export default function RecipeScreen({navigation: { goBack } }) {
 
-    const URL = 'https://lifemiam-backend.vercel.app'
-    const token = '0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf'
+    const URL = 'https://lifemiam-backend.vercel.app';
+    const userToken = useSelector((state) => state.user.value.token);
+    // const token = '0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf';
     const activeMenu = useSelector((state) => state.user.value.menu)
     const route = useRoute();
     const {RecetteID} = route.params
     const [Recipe, SetRecipe] = useState({})
     
     useEffect(() => {
-        fetch(`${URL}/recipes/${RecetteID}/${token}`)
+        fetch(`${URL}/recipes/${RecetteID}/${userToken}`)
         .then((response) => response.json())
         .then((data) => {
-            SetRecipe(data.data)
-            setServing(data.data.default_serving)
+            SetRecipe(data.data);
+            setServing(data.data.default_serving);
         })
     }, [RecetteID])
     

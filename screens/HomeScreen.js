@@ -55,7 +55,7 @@ export default function HomeScreen({ navigation }) {
             setDisplayComponent("signin");
           }}
         >
-          <Text style={styles.buttonEmptyText}>J'ai un compte</Text>
+          <Text style={styles.buttonEmptyText}>Se connecter</Text>
         </TouchableOpacity>
       </View>
 
