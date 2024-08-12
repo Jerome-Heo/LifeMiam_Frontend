@@ -68,6 +68,7 @@ export default function SearchScreen({ navigation }) {
   const [searchTimeout, setSearchTimeout] = useState(null);
   // const [serving, setServing] = useState(Recipe.default_serving);
   const [Recipe, SetRecipe] = useState({})
+  const [isLoading, setIsLoading] = useState(true)
   const isFocused = useIsFocused();
   const activeMenu = useSelector((state) => state.user.value.menu);
   // const {RecetteID} = route.params;
@@ -82,7 +83,7 @@ export default function SearchScreen({ navigation }) {
     { name: "sans lactose", src: require("../assets/lactose_free.png") },
   ];
   const userToken = useSelector((state) => state.user.value.token);
-  const token = "HkkfE9VmlughUTLaNifglDHuTNC5yfx5";
+  // const token = "HkkfE9VmlughUTLaNifglDHuTNC5yfx5";
   const userRegime = useSelector((state) => state.user.value.regime);
   const [vignettesSelected, setVignettesSelected] = useState(userRegime);
 
@@ -124,10 +125,11 @@ export default function SearchScreen({ navigation }) {
 
   //requête BDD pour obtenir les recettes demandées
   const fetchRecipesResults = (query) => {
-    // const formattedVignettes = vignettesSelected.map((e) =>
-    //   encodeURIComponent(e)
-    // );
+    const formattedVignettes = vignettesSelected.map((e) =>
+      encodeURIComponent(e)
+    );
     // console.log("formattedVignettes:", formattedVignettes);
+    // console.log("v:", vignettesSelected)
     const fetchVignettes = JSON.stringify(vignettesSelected);
     // console.log("fetchVignettes:", fetchVignettes);
     const fetchURL = `${URL}/recipes/?sortBy=popularity&search=${query}&tags=${fetchVignettes}`;
@@ -142,12 +144,17 @@ export default function SearchScreen({ navigation }) {
           setRecipes([]);
           // console.error("Aucune recette correspondante");
         }
+        setIsLoading(false)
       })
+    
       .catch((error) => {
-        console.error("Erreur lors de la récupération des résultats : ", error);
+        setIsLoading(false)
+        console.log("Erreur lors de la récupération des résultats : ", error);
       });
   };
-
+  if (isLoading) {
+    console.log("loading...")
+  }
   //timer pour aider l'utilisateur qui hésite dans sa recherche
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -157,7 +164,7 @@ export default function SearchScreen({ navigation }) {
     setSearchTimeout(
       setTimeout(() => {
         fetchRecipesResults(query);
-      }, 1000)
+      }, 2000)
     );
   };
 

@@ -30,31 +30,31 @@ export default function ListScreen({navigation,navigation:{goBack}}) {
   // const token = "wVL5sCx7YTgaO-fnxK5pX4mMG8JywAwQ"
   const route = useRoute();
   const [list, setList] = useState([]);
-  const [error,setError]=useState('')
-  const token= useSelector((state) => state.user.value.token);
+  const [error,setError] = useState('');
+  const userToken = useSelector((state) => state.user.value.token);
 
 
   const isFocused = useIsFocused();
-  const urlParams = route.params
+  const urlParams = route.params;
  
   useEffect(() => {
     
-     if (token && urlParams != undefined) {
-      console.log(token,urlParams.menuId)
+     if (userToken && urlParams != undefined) {
+      console.log(userToken,urlParams.menuId)
       fetch(`${URL}/shop/generate/${urlParams.menuId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ token })
+        body: JSON.stringify({ token: userToken })
       })
       .then((response) => response.json())
       .then((data) => {
-        // console.log('datas from bdd',data)
+        console.log(data);
         if (data.result) {
           setList(data.data);
         } else {
-          console.error("No matching ingredients");
+          console.error("Aucun ingrédient correspondant");
         }
       })
     }
@@ -66,12 +66,12 @@ export default function ListScreen({navigation,navigation:{goBack}}) {
   
         
   const categories = []
-  list.filter((e) => !categories.find((cat) => cat === e.category) ? categories.push(e.category) : null)
+  list.filter((e) => !categories.find((cat) => cat === e.category) ? categories.push(e.category) : null);
 
-  categories.sort()
-  //  console.log(categories)
-  console.log(list)
-  let displayAll = []
+  categories.sort();
+  // console.log(categories)
+
+  let displayAll = [];
   for (let category of categories) {
 
     let displayList = list.map((ing, i) => ing.category == category ?
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     height: '90%',
     width: '90%',
 
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   boxCategory:
   {
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 10,
     borderRadius: 100,
-    paddingHorizontal: 12
+    paddingHorizontal: 12,
   },
   iconSort:
   {
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
 
     padding: 10,
 
-    paddingHorizontal: 12
+    paddingHorizontal: 12,
   },
   buttondisconnected:
   {
@@ -218,11 +218,11 @@ const styles = StyleSheet.create({
     borderRadius:20,
     width:'60%',
     marginVertical:20,
-    alignSelf:'center'
+    alignSelf:'center',
   },
 
   buttondisconnectedText:
   {
-    color:Colors.DARK_GREEN
+    color:Colors.DARK_GREEN,
   }
 });
