@@ -58,14 +58,14 @@ import {
     //Est-ce que j'ai cliqué sur la creation de menu ?
     //Affichage des boutons dédiés à la création
     const createMenuButton = isCreatingMenu ? 
-      <View style={[styles.validCont, styles.createMenuAlign]}>
+      <View style={styles.validCont}>
         <TextInput style={styles.validBar} onChangeText={(e) => setCreateBarTxt(e)} value={createBarTxt} placeholder='Votre nouveau menu...'/>
         <TouchableOpacity style={styles.validMenu} onPress={() => handleCreateMenu(createBarTxt)}>
           <Image source={require("../assets/ValidMenu.png")}></Image>
         </TouchableOpacity>
       </View>
      :
-     <View style={[styles.contentCont, styles.createMenuAlign]}>
+     <View style={styles.contentCont}>
       <TouchableOpacity style={styles.createMenu} onPress={() => setIsCreatingMenu(true)}> 
             <Text style={styles.createMenuTxt}>Créer un menu</Text>
       </TouchableOpacity>
@@ -78,14 +78,13 @@ import {
       return (
         <View key={i} style={styles.menuCont} >
           <Text style={styles.H3}>{`${data.name}`}</Text>
-          <View style={styles.PHCont}>
-            <View style={styles.PHProgressBar} >
-            <TouchableOpacity onPress={() => handleShoppingList(data._id)}>
-            <Text style={styles.courseTitleText}>Courses</Text>
-            </TouchableOpacity>
-             
-            </View>
-            <View style={styles.PHButton}>
+            <View style={styles.PHCont}>
+                <View style={styles.PHProgressBar} >
+                  <TouchableOpacity onPress={() => handleShoppingList(data._id)}>
+                    <Text style={styles.courseTitleText}>Courses</Text>
+                  </TouchableOpacity>
+                </View>
+              <View style={styles.PHButton}>
             <Image source={require("../assets/cooking.png")} style={styles.imageCooking}></Image>
             </View>
           </View>
@@ -96,11 +95,11 @@ import {
   //Est-ce que j'ai fetch ?
   //Je modifier l'affichage global de la page
     const display = menus.length > 0 ? 
-    <View>
-      <ScrollView style={styles.fetchMenusCont}>
+    <View style={styles.fetchMenusCont}>
+      <ScrollView style={{height: "78%"}} showsVerticalScrollIndicator={false}>
         {menusDisplay}
       </ScrollView>
-        <View>
+      <View style={styles.createMenuAlign}>
         {createMenuButton}
         </View>
     </View>
@@ -110,9 +109,10 @@ import {
         <Image style={styles.logoImg} source={require("../assets/logo.png")}/>
         <Text style={styles.H3}>Vous n'avez pas de menus...</Text> 
         <Text style={styles.H3}>Commencer une liste ?</Text> 
+        
       </View>
       <View>
-        {createMenuButton}
+      {createMenuButton}
         </View>
     </View>
 
@@ -192,8 +192,8 @@ import {
     createMenuAlign:{
       width: "98%",
       position: 'absolute',
-      top: 120,
-      backgroundColor: 'white'
+      top: 480,
+      left: 3,
     },
     createMenuTxt:{
       fontSize: 20,
@@ -219,8 +219,7 @@ import {
     },
     menuCont: {
       width: "100%",
-      height: "20%",
-      marginBottom:40
+      height: 100,
     },
     PHCont:{
       flexDirection: "row",
