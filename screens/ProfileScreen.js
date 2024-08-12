@@ -21,7 +21,7 @@ import {
 
     const handleSignout = () => {
       dispatch(token({token: ""}));
-      dispatch(initRegimes([null]));
+      dispatch(initRegimes([]));
       navigation.navigate("Home")
     }
 
