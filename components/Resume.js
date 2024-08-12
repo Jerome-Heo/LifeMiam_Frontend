@@ -7,7 +7,7 @@ import { setMenu, clearMenu } from "../reducers/user";
 function Resume({ navigation }){
 
     const URL = 'https://lifemiam-backend.vercel.app';
-    const token = useSelector((state) => state.user.value.token); 
+    const userToken = useSelector((state) => state.user.value.token); 
 
     const dispatch = useDispatch();
 
@@ -24,7 +24,7 @@ function Resume({ navigation }){
         fetch(`${URL}/menus/getMenus`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({token: token})
+            body: JSON.stringify({token: userToken})
           })
           .then((response) => response.json())
           .then((data) => {
@@ -53,7 +53,7 @@ function Resume({ navigation }){
         fetch(`${URL}/menus/${menuId}`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({token: token})
+            body: JSON.stringify({token: userToken})
           })
           .then((response) => response.json())
           .then((data) => {
