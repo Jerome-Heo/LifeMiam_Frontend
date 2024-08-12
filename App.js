@@ -53,9 +53,9 @@ const TabNavigator = () => {
       tabBarStyle: {backgroundColor: "#365E32", height: 75, paddingBottom: 5},
 
     })}>
-      <Tab.Screen name= "Menu" component={MenuScreen}/>
-      <Tab.Screen name= "Search" component={SearchScreen}/>
-      <Tab.Screen name= "Profile" component={ProfileScreen}/>
+      <Tab.Screen name= "Menu" component={MenuScreen} options={{ tabBarLabel: 'Menus' }}/>
+      <Tab.Screen name= "Search" component={SearchScreen} options={{ tabBarLabel: 'Recettes' }}/>
+      <Tab.Screen name= "Profile" component={ProfileScreen} options={{ tabBarLabel: 'Profil' }}/>
       <Tab.Screen name="Recipe" component={RecipeScreen} options={{tabBarButton: () => null}}/>
       <Tab.Screen name="List" component={ListScreen} options= {{tabBarButton: () => null}}/>
     </Tab.Navigator>
