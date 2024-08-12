@@ -34,7 +34,7 @@ function Signup({onboarding}) {
       fetch(`${URL}/users/signup`,{
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: username,email:email,password:password }),
+        body: JSON.stringify({ username: username, email:email, password:password }),
       })
         .then((response) => response.json())
         .then((data) => {
@@ -42,32 +42,30 @@ function Signup({onboarding}) {
           if (data.result == true)
           {
             setDisplaySignedUp('Vous êtes inscrit et avez un token ! ')
-            // dispatch
 
             dispatch(token(data.token));
-            onboarding(true)
-            setEmail(null)
-            setUsername(null)
-            setPassword(null)
-            // navigation.navigate('TabNavigator', {screen: 'Search'});
+            onboarding(true);
+            setEmail(null);
+            setUsername(null);
+            setPassword(null);
           }
 
           if (data.result == false)
           {
-            onboarding=false
-            setDisplayError(data.error)
-            setEmail(null)
-            setUsername(null)
-            setPassword(null)
+            onboarding=false;
+            setDisplayError(data.error);
+            setEmail(null);
+            setUsername(null);
+            setPassword(null);
           }
           
         })
         .catch((error) => {
-          console.error('Error in sign up:', error);
-          setDisplayError(error)
-          setEmail(null)
-          setUsername(null)
-          setPassword(null)
+          console.error("Erreur dans l'inscription:", error);
+          setDisplayError(error);
+          setEmail(null);
+          setUsername(null);
+          setPassword(null);
         });
     };
 
@@ -75,7 +73,7 @@ function Signup({onboarding}) {
     return (
         <KeyboardAvoidingView style={styles.textContainer}>
           <Text style={styles.title}>S'inscrire avec mon email</Text>
-          <Text style={styles.description}>Lorem ipsum dolor sit amet consectetur adipisicing elit.</Text>
+          <Text style={styles.description}></Text>
 
           <KeyboardAvoidingView style={styles.inputContainer}>
           <Text style={styles.label}>Adresse email</Text>
@@ -88,9 +86,9 @@ function Signup({onboarding}) {
           </KeyboardAvoidingView>
 
           <KeyboardAvoidingView style={styles.inputContainer}>
-          <Text style={styles.label}>Username</Text>
+          <Text style={styles.label}>Nom d'utilisateur</Text>
           <TextInput style={styles.input}
-          label={'Username'}
+          label={"Nom d'utilisateur"}
           onChangeText={(e) => setUsername(e)}
           value={username}
           />
@@ -98,10 +96,9 @@ function Signup({onboarding}) {
      
           <KeyboardAvoidingView style={styles.inputContainer}>
        
-          <Text style={styles.label}>Password</Text>
+          <Text style={styles.label}>Mot de passe</Text>
           <TextInput style={styles.input}
-          // ref={textInput}
-          label={'Password'}
+          label={'Mot de passe'}
           secureTextEntry={showPassword ? false : true }
           onChangeText={(e) => setPassword(e)}
           value={showPassword ? password : password}

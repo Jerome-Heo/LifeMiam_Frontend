@@ -16,13 +16,13 @@ export const userSlice = createSlice({
     },
     addRegime: (state, action) => {
       state.value.regime.push(action.payload);
-      console.log("added", action.payload);
+      console.log("ajouter", action.payload);
     },
     removeRegime: (state, action) => {
       state.value.regime = state.value.regime.filter(
         (e) => e !== action.payload
       );
-      console.log("removed", action.payload);
+      console.log("retirer", action.payload);
     },
     setMenu: (state, action) => {
       state.value.menu = action.payload

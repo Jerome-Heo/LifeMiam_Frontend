@@ -15,7 +15,7 @@ import {
 
   export default function MenuScreen({ navigation }) {
 
-    const token = useSelector((state) => state.user.value.token);
+    const userToken = useSelector((state) => state.user.value.token);
     //const token = '0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf';
     const URL = 'https://lifemiam-backend.vercel.app';
   
@@ -29,7 +29,7 @@ import {
       fetch(`${URL}/menus/getMenus`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({token: token})
+        body: JSON.stringify({token: userToken})
       })
       .then((response) => response.json())
       .then((data) => {
@@ -42,7 +42,7 @@ import {
       fetch(`${URL}/menus/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: token, name: createBarTxt }),
+        body: JSON.stringify({ token: userToken, name: createBarTxt }),
       }).then(response => response.json())
         .then(data => {
           setIsCreatingMenu(false);
