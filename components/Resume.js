@@ -3,19 +3,22 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector} from 'react-redux';
 import { setMenu, clearMenu } from "../reducers/user";
+import { useNavigation } from "@react-navigation/native";
 
-function Resume({ navigation }){
+function Resume(){
 
     const URL = 'https://lifemiam-backend.vercel.app';
     const userToken = useSelector((state) => state.user.value.token); 
-
+    const navigation = useNavigation();
     const dispatch = useDispatch();
 
     const [isMenuListVisible, setIsMenuListVisible] = useState(false);
     const [menusResume,setMenusResume] = useState([]);
     const [visibleMenu, setVisibleMenu] = useState([]);
-    const currentMenu = useSelector((state) => state.user.value.menu)
-
+    const [currentMenuTxt, setCurrentMenuTxt] = useState([]);
+    const [newMenuName, setNewMenuName] = useState("");
+    const currentMenu = useSelector((state) => state.user.value.menu);
+    
     const animatedHeight = useRef(new Animated.Value(60)).current;
 
     //charger tous les menus d'un user
@@ -44,8 +47,13 @@ function Resume({ navigation }){
     }
 
     //vide le reducer menu
-    const backMenu = () => {
-        dispatch(clearMenu())
+    const backAddMenu = () => {
+        currentMenu ? dispatch(clearMenu()) : handleCreateMenu()
+    }
+
+    const goToRecipe = (id) => {
+        console.log(id)
+        navigation.navigate("Recipe", { RecetteID: id });
     }
 
     //cliquer sur un menu pour le séléctionner
@@ -58,11 +66,22 @@ function Resume({ navigation }){
           .then((response) => response.json())
           .then((data) => {
               dispatch(setMenu(menuId));
-              console.log(data.menu.menu_recipes)
               setVisibleMenu(data.menu.menu_recipes)
+              setCurrentMenuTxt(data.menu.name)
               handleMenuList()
         });
     }
+    
+    const handleCreateMenu = () => {
+        fetch(`${URL}/menus/create`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: userToken, name: newMenuName}),
+        }).then(response => response.json())
+          .then(data => {
+            setNewMenuName('');
+          });
+      }
 
     //Map les recettes d'un même menu pour les afficher en colonne
     //onPress={navigation.navigate("Recipe", { RecetteID: data.recipe })} => j'ai importé la navigation mais rien n'y fait
@@ -70,7 +89,7 @@ function Resume({ navigation }){
         return(
             <View key={i} style={styles.recipeCont}>
                 <Text style={styles.menuTxt}>{`${data.recipe.name}`}</Text>
-                <TouchableOpacity >
+                <TouchableOpacity  onPress={() => goToRecipe(data.recipe._id)}>
                     <FontAwesome 
                         name={"info-circle"} 
                         style={styles.menuListInfo} 
@@ -108,11 +127,11 @@ function Resume({ navigation }){
                 />
             </TouchableOpacity>
                 {!currentMenu ? 
-                <Text style={styles.resumeText}>Choisir un menu</Text> 
-                :<Text style={styles.resumeText}>Résumé du menu</Text>}
-            <TouchableOpacity style={styles.button} onPress={() => backMenu()}>
+                <TextInput style={styles.resumeText} placeholder='Choisir ou créer' value={newMenuName} onChangeText={(e) => setNewMenuName(e)}></TextInput> 
+                :<Text style={styles.resumeText}>{currentMenuTxt}</Text>}
+            <TouchableOpacity style={styles.button} onPress={() => backAddMenu()}>
                 <FontAwesome 
-                    name={currentMenu ? "arrow-left" : ""}
+                    name={currentMenu ? "arrow-left" : "plus"}
                     size={25} 
                     color={"#E7D37F"}
                 />
