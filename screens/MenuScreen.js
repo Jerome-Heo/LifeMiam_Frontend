@@ -9,6 +9,7 @@ import {
     TouchableOpacity,
     ScrollView,
   } from 'react-native';
+  import Resume from "../components/Resume";
   import { useEffect, useState } from 'react';
   import FontAwesome from 'react-native-vector-icons/FontAwesome';
   import { useDispatch, useSelector } from 'react-redux';
@@ -123,7 +124,7 @@ import {
             <TextInput style={styles.searchBar} placeholder='Rechercher un menu...'/>
             {display}
           </View>
-        
+          <Resume />
       </View>
     )
   }
