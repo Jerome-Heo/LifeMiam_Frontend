@@ -239,7 +239,7 @@ export default function SearchScreen({ navigation }) {
     );
     setRecipes(updatedRecipes); //why?
     // setFilteredRecipes(updatedRecipes);
-    navigation.navigate("Recipe", { RecetteID: id });
+    navigation.navigate("Recipe", { RecetteID: id, readingMode: false });
   };
 
   //Ajouter une recette au menu avec bouton +
