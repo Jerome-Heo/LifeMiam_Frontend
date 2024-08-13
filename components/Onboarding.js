@@ -26,6 +26,7 @@ function Onboarding({ navigation, page }) {
   const userToken = useSelector((state) => state.user.value.token);
   //const token = "-ob9kC9qgjQ7vn9vx0s6JUGmtlUWANtv";
   const userRegime = useSelector((state) => state.user.value.regime);
+  console.log(userRegime);
   const URL = "https://lifemiam-backend.vercel.app";
 
   const regimeList = [
@@ -52,6 +53,13 @@ function Onboarding({ navigation, page }) {
       </Pressable>
     );
   });
+
+  let disabledButton = {
+    backgroundColor: Colors.LIGHT_GREEN,
+    opacity: 0.6,
+    borderColor: Colors.LIGHT_GREEN,
+  };
+  let enabledButton = { backgroundColor: Colors.DARK_GREEN };
 
   const handlePress = (name) => {
     const found = userRegime.some((element) => element === name);
@@ -94,7 +102,13 @@ function Onboarding({ navigation, page }) {
         <TouchableOpacity style={styles.skip} onPress={() => handleSkip()}>
           <Text style={styles.skipText}>Passer &gt;</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.go} onPress={() => handleGo()}>
+        <TouchableOpacity
+          style={[
+            styles.go,
+            !userRegime.length ? disabledButton : enabledButton,
+          ]}
+          onPress={() => handleGo()}
+        >
           <Text style={styles.goText}>Suivant</Text>
         </TouchableOpacity>
       </View>
@@ -112,7 +126,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: windowWidth,
     height: windowHeight,
-    marginVertical:30
+    marginVertical: 30,
   },
 
   title: {
@@ -124,7 +138,7 @@ const styles = StyleSheet.create({
   question: { color: Colors.DARK_GREEN, fontSize: 24, paddingLeft: 25 },
   vignetteContainer: {
     width: windowWidth,
-    height: 400,
+    height: 350,
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-around",
@@ -169,7 +183,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   go: {
-    backgroundColor: Colors.DARK_GREEN,
+    // backgroundColor: Colors.DARK_GREEN,
     width: 128,
     height: 40,
     borderRadius: 50,
