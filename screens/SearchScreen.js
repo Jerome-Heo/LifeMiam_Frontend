@@ -71,9 +71,36 @@ export default function SearchScreen({ navigation }) {
   const [isLoading, setIsLoading] = useState(true)
   const isFocused = useIsFocused();
   const activeMenu = useSelector((state) => state.user.value.menu);
+  const [debounceTimeout, setDebounceTimeout] = useState(null);
   // const {RecetteID} = route.params;
   const route = useRoute();
   const URL = "https://lifemiam-backend.vercel.app";
+  
+  useEffect(() => {
+    if (isFocused) {
+      setIsLoading(true);
+      setTimeout(() => {
+        fetchRecipesResults('');
+        setIsLoading(false);
+      }, 2000);
+    }
+  }, [isFocused]);
+
+  useEffect(() => {
+    if (debounceTimeout) {
+      clearTimeout(debounceTimeout);
+  }
+
+  const newTimeout = setTimeout(() => {
+    if (SearchQuery.length === 0) {
+      fetchRecipesResults('');
+    } else if (SearchQuery.length >= 3) {
+      fetchRecipesResults(SearchQuery);
+    }
+  }, 1000);
+
+  setDebounceTimeout(newTimeout);
+}, [SearchQuery])
 
   const regimeList = [
     { name: "sans gluten", src: require("../assets/gluten_free.png") },
@@ -112,7 +139,7 @@ export default function SearchScreen({ navigation }) {
     setTimeout(() => {
       fetchRecipesResults(SearchQuery);
     }, 100);
-  }, [isFocused, vignettesSelected, searchTimeout]);
+  }, [isFocused, vignettesSelected])/*, searchTimeout*/;
 
 //   useEffect(() => {
 //     fetch(`${URL}/recipes/${RecetteID}/${token}`)
@@ -128,7 +155,7 @@ export default function SearchScreen({ navigation }) {
     const formattedVignettes = vignettesSelected.map((e) =>
       encodeURIComponent(e)
     );
-    // console.log("formattedVignettes:", formattedVignettes);
+    console.log("formattedVignettes:", formattedVignettes);
     // console.log("v:", vignettesSelected)
     const fetchVignettes = JSON.stringify(vignettesSelected);
     // console.log("fetchVignettes:", fetchVignettes);
@@ -158,15 +185,15 @@ export default function SearchScreen({ navigation }) {
   //timer pour aider l'utilisateur qui hésite dans sa recherche
   const handleSearch = (query) => {
     setSearchQuery(query);
-    if (searchTimeout) {
-      clearTimeout(searchTimeout);
-    }
-    setSearchTimeout(
-      setTimeout(() => {
-        fetchRecipesResults(query);
-      }, 2000)
-    );
-  };
+    // if (searchTimeout) {
+  //     clearTimeout(searchTimeout);
+  //   }
+  //   setSearchTimeout(
+  //     setTimeout(() => {
+  //       fetchRecipesResults(query);
+  //     }, 2000)
+  //   );
+  // };
 
   // onPress sur les Vignettes
   let isSelected;
@@ -280,6 +307,14 @@ export default function SearchScreen({ navigation }) {
     // setRecipes([]);
   };
 
+  const loadingView = () => {
+    return (
+      <View style={styles.emptyState}>
+        <Text style={styles.loadingText}>Loading...</Text>
+      </View>
+    );
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -304,12 +339,12 @@ export default function SearchScreen({ navigation }) {
         <View style={styles.vignetteContainer}>{regimeVignettes}</View>
         <Text style={styles.H2}>Les recettes populaires</Text>
         <ScrollView style={styles.ScrollCont}>
-        {recipes.length > 0 ? popularRecipes : displayNull()}
+        {isLoading ? loadingView() :recipes.length > 0 ? popularRecipes : displayNull()}
         </ScrollView>
       </View>
     </KeyboardAvoidingView>
   );
-}
+}}
 
 
 
@@ -447,6 +482,8 @@ const styles = StyleSheet.create({
   notFound: {
     color: "#365E32",
     fontSize: 35,
+},
+loadingText: {
 
-  }
+},
 });
