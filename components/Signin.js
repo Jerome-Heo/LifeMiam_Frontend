@@ -1,28 +1,24 @@
 import {
   View,
-  Image,
-  SafeAreaView,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  ScrollView,
 } from "react-native";
 import Colors from "../utilities/color";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { useDispatch } from "react-redux";
+import { useState } from "react";
 
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
-
-import { addRegime, token, initRegimes } from "../reducers/user";
+import { addRegime, token } from "../reducers/user";
 
 function Signin({ navigation }) {
+
   const URL = "https://lifemiam-backend.vercel.app";
   const dispatch = useDispatch();
-  //const [signin, setSignin] = useState(null);
-  //const [password, SetPassword] = useState(null);
+
   const [showPassword, setShowPassword] = useState(false);
 
   const [signin, setSignin] = useState('Test');
@@ -39,7 +35,15 @@ function Signin({ navigation }) {
         console.log(data);
         if (data.result === true) {
           dispatch(token(data.token));
-          data.regime.length > 0 && dispatch(initRegimes(...data.regime));
+
+          if (date.regime.length > 0)
+          {
+            for(let regime of data.regime)
+            {
+              dispatch(addRegime(regime))
+            }
+          }
+
           setSignin("");
           SetPassword("");
           navigation.navigate("TabNavigator", { screen: "Search" });
@@ -50,9 +54,9 @@ function Signin({ navigation }) {
       });
   };
   return (
-    <KeyboardAvoidingView style={styles.textContainer}>
+    <KeyboardAvoidingView style={styles.textContainer} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
       <Text style={styles.title}>Se connecter</Text>
-      <KeyboardAvoidingView style={styles.inputContainer}>
+      <View style={styles.inputContainer}>
         <Text style={styles.label}>Adresse email ou nom d'utilisateur</Text>
         <TextInput
           label={"Adresse email ou nom d'utilisateur"}
@@ -63,8 +67,9 @@ function Signin({ navigation }) {
           value={signin}
           maxLength={254}
         ></TextInput>
-      </KeyboardAvoidingView>
-      <KeyboardAvoidingView style={styles.inputContainer}>
+      </View>
+
+      <View style={styles.inputContainer}>
         <Text style={styles.label}>Mot de passe</Text>
         <TextInput
           label={"Mot de passe"}
@@ -97,7 +102,8 @@ function Signin({ navigation }) {
             />
           )}
         </View>
-      </KeyboardAvoidingView>
+        
+      </View>
       <TouchableOpacity
         style={styles.signinButton}
         onPress={() => handleSignin()}

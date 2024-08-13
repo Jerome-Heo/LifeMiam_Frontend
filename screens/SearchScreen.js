@@ -71,36 +71,9 @@ export default function SearchScreen({ navigation }) {
   const [isLoading, setIsLoading] = useState(true);
   const isFocused = useIsFocused();
   const activeMenu = useSelector((state) => state.user.value.menu);
-  const [debounceTimeout, setDebounceTimeout] = useState(null);
   // const {RecetteID} = route.params;
   const route = useRoute();
   const URL = "https://lifemiam-backend.vercel.app";
-
-  useEffect(() => {
-    if (isFocused) {
-      setIsLoading(true);
-      setTimeout(() => {
-        fetchRecipesResults("");
-        setIsLoading(false);
-      }, 2000);
-    }
-  }, [isFocused]);
-
-  useEffect(() => {
-    if (debounceTimeout) {
-      clearTimeout(debounceTimeout);
-    }
-
-    const newTimeout = setTimeout(() => {
-      if (SearchQuery.length === 0) {
-        fetchRecipesResults("");
-      } else if (SearchQuery.length >= 3) {
-        fetchRecipesResults(SearchQuery);
-      }
-    }, 1000);
-
-    setDebounceTimeout(newTimeout);
-  }, [SearchQuery]);
 
   const regimeList = [
     { name: "sans gluten", src: require("../assets/gluten_free.png") },
@@ -111,44 +84,19 @@ export default function SearchScreen({ navigation }) {
   ];
   const userToken = useSelector((state) => state.user.value.token);
   // const token = "HkkfE9VmlughUTLaNifglDHuTNC5yfx5";
-  const userRegime = useSelector((state) => state.user.value.regime);
-  const [vignettesSelected, setVignettesSelected] = useState(userRegime);
-
-  // REFACTO to have one fetch URL instead of 1 for popular recipes and 1 for search
-  // const fetchPopularRecipes = () => {
-  //   fetch(`${URL}/recipes/?sortBy=popularity`)
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       setRecipes(data.data);
-  //       // setFilteredRecipes(data.data);
-  //       // console.log(data.data)
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching data:", error);
-  //     });
-  // };
-
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     fetchRecipesResults(SearchQuery);
-  //   }, 100);
-  // }, [isFocused]); // Ne déclenche qu'au focus, pas à chaque update de popularRecipes
+  const regimes = useSelector((state) => state.user.value.regime);
+  console.log(regimes);
+  const [vignettesSelected, setVignettesSelected] = useState(regimes);
 
   useEffect(() => {
     animate("fadeInLeft");
     setTimeout(() => {
       fetchRecipesResults(SearchQuery);
     }, 100);
-  }, [isFocused, vignettesSelected]) /*, searchTimeout*/;
+  }, [vignettesSelected, searchTimeout]);
 
-  //   useEffect(() => {
-  //     fetch(`${URL}/recipes/${RecetteID}/${token}`)
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //         SetRecipe(data.data)
-  //         setServing(data.data.default_serving)
-  //     })
-  // }, [RecetteID])
+  // faire un seul fetch qui récupère toutes les recettes et filtrer avec input et tags
+  // dégager le timeout
 
   //requête BDD pour obtenir les recettes demandées
   const fetchRecipesResults = (query) => {
@@ -173,6 +121,7 @@ export default function SearchScreen({ navigation }) {
         }
         setIsLoading(false);
       })
+
       .catch((error) => {
         setIsLoading(false);
         console.log("Erreur lors de la récupération des résultats : ", error);
@@ -184,12 +133,6 @@ export default function SearchScreen({ navigation }) {
   //timer pour aider l'utilisateur qui hésite dans sa recherche
   const handleSearch = (query) => {
     setSearchQuery(query);
-    //recherche à partir de 3 caractères
-    if (query.length >= 3) {
-      fetchRecipesResults(query);
-    } else {
-    }
-    // timer pour aider l'utilisateur qui hésite dans sa recherche
     if (searchTimeout) {
       clearTimeout(searchTimeout);
     }
@@ -277,7 +220,7 @@ export default function SearchScreen({ navigation }) {
             <View style={styles.PHbutton}>
               <TouchableOpacity
                 style={styles.addButton}
-                onPress={() => addRecipeToMenu()}
+                // onPress={() => addRecipeToMenu()}
               >
                 <Image source={require("../assets/smallAdd.png")}></Image>
               </TouchableOpacity>

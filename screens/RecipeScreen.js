@@ -14,6 +14,7 @@ import { useRoute } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import Resume from "../components/Resume";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import Colors from "../utilities/color";
 
 export default function RecipeScreen({ navigation, navigation: { goBack } }) {
   const URL = "https://lifemiam-backend.vercel.app";
@@ -28,22 +29,9 @@ export default function RecipeScreen({ navigation, navigation: { goBack } }) {
   const urlParams = route.params;
   const [readingMode, setReadingMode] = useState(null);
 
-  // const routes = navigation.getState()?.routes;
-  // console.log(routes);
-  // const prevRoute = routes[routes.length - 2];
-
   console.log(readingMode);
 
   useEffect(() => {
-    // if ((prevRoute.name === "TabNavigator", { screen: "MenuScreen" })) {
-    //   console.log("je viens du Menu!");
-    //   setReadingMode(true);
-    // } else if (
-    //   (prevRoute.name === "TabNavigator", { screen: "SearchScreen" })
-    // ) {
-    //   console.log("je viens de Search");
-    //   setReadingMode(false);
-    // }
     setReadingMode(urlParams.readingMode);
 
     fetch(`${URL}/recipes/${RecetteID}/${userToken}`)
@@ -151,12 +139,26 @@ export default function RecipeScreen({ navigation, navigation: { goBack } }) {
         >
           <FontAwesome name={"arrow-left"} size={25} color={"#E7D37F"} />
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.buttons}
-          onPress={() => addRecipeMenu()}
-        >
-          <FontAwesome name={"plus"} size={25} color={"#E7D37F"} />
-        </TouchableOpacity>
+        {!readingMode ? (
+          <TouchableOpacity
+            style={styles.disabledButtons}
+            onPress={() => addRecipeMenu()}
+          >
+            <FontAwesome
+              name={"plus"}
+              size={25}
+              color={"#E7D37F"}
+              opacity={"0.7"}
+            />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={styles.buttons}
+            onPress={() => addRecipeMenu()}
+          >
+            <FontAwesome name={"plus"} size={25} color={"#E7D37F"} />
+          </TouchableOpacity>
+        )}
       </View>
 
       <ScrollView style={styles.ScrollView}>
@@ -255,6 +257,14 @@ const styles = StyleSheet.create({
   },
   buttons: {
     backgroundColor: "#365E32",
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  disabledButtons: {
+    backgroundColor: Colors.DARK_GREEN,
     width: 50,
     height: 50,
     borderRadius: 50,

@@ -83,12 +83,6 @@ function Onboarding({ navigation, page }) {
   return (
     <SafeAreaView style={styles.container}>
       {page == "onboarding" && (
-        <Text style={styles.title}>Complete ton profil</Text>
-      )}
-      {page == "profile" && (
-        <Text style={styles.title}>Modifie ton profil</Text>
-      )}
-      {page == "onboarding" && (
         <Text style={styles.title}>Complète ton profil</Text>
       )}
       {page == "profile" && (
@@ -118,6 +112,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: windowWidth,
     height: windowHeight,
+    marginVertical:30
   },
 
   title: {
