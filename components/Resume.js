@@ -1,4 +1,4 @@
-import { View,Image,StyleSheet ,Text,TextInput,SafeAreaView,KeyboardAvoidingView, TouchableOpacity, Animated} from "react-native";
+import { View,ScrollView,Dimensions,Image,StyleSheet ,Text,TextInput,SafeAreaView,KeyboardAvoidingView, TouchableOpacity, Animated} from "react-native";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector} from 'react-redux';
@@ -20,7 +20,8 @@ function Resume(){
     const currentMenu = useSelector((state) => state.user.value.menu);
     
     const animatedHeight = useRef(new Animated.Value(60)).current;
-
+    const screenHeight = Dimensions.get('window').height;
+    const MAX_HEIGHT = screenHeight*0.7;
     //charger tous les menus d'un user
     useEffect(() => {
         handleMenuList()
@@ -38,8 +39,12 @@ function Resume(){
 
     // Ouvre le résumé du menu
     const handleMenuList = () => {
+
+        const contentHeight = 80 + (currentMenu ? visibleMenu.length*60 : menusResume.length*60)
+        const newHeight = isMenuListVisible ? 60 : Math.min(contentHeight, MAX_HEIGHT);
+
         Animated.timing(animatedHeight,{
-            toValue: isMenuListVisible ? 60 : 70 + (currentMenu ? visibleMenu.length*60 : menusResume.length*60),
+            toValue: newHeight,
             duration: 300,
             useNativeDriver: false,
         }).start();
@@ -137,7 +142,10 @@ function Resume(){
                 />
             </TouchableOpacity>
         </View>
-        {!currentMenu ? <View style={styles.menusDisplay}>{menusDisplay}</View> : <View style={styles.recipesDisplay}>{RecipesDisplay}</View>}
+        {!currentMenu ? 
+        <ScrollView style={styles.ScrollView} contentContainerStyle={styles.menusDisplay}>{menusDisplay}<View style={{height: 25}}></View></ScrollView> 
+        : 
+        <ScrollView style={styles.ScrollView} contentContainerStyle={styles.recipesDisplay}>{RecipesDisplay}<View style={{height: 25}}></View> </ScrollView>}
             </Animated.View>
     )
 
@@ -150,6 +158,10 @@ function Resume(){
 const styles = StyleSheet.create({
     mainCont:{
         width: "100%",
+    },
+    ScrollView:{
+        width: "100%",
+        marginTop: 15,
     },
     container: {
         alignItems: "flex-start",
