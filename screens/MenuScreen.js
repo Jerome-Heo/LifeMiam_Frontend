@@ -91,7 +91,6 @@ export default function MenuScreen({ navigation }) {
   const menusDisplay =
     menus &&
     menus.map((data, i) => {
-      console.log("menus.map", data);
       return (
         <View key={i} style={styles.menuCont}>
           <Text style={styles.H3}>{`${data.name}`}</Text>

@@ -59,7 +59,6 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
 
   useEffect(() => {
     setReadingMode(urlParams.readingMode);
-    // setServing(menuServing);
 
     fetch(`${URL}/recipes/${RecetteID}/${userToken}`)
       .then((response) => response.json())

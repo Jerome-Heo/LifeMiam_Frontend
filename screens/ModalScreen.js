@@ -43,10 +43,7 @@ export default function ModalScreen({ navigation, navigation: { goBack } }) {
         .then((response) => response.json())
         .then((data) => {
           setRecipes(data.menu.menu_recipes);
-          //   dispatch(setMenu(menuId));
-          console.log(data.menu.menu_recipes);
-          //   setVisibleMenu(data.menu.menu_recipes);
-          //   handleMenuList();
+          //   console.log(data.menu.menu_recipes);
         });
     } else {
       setError("Aucunes données, êtes-vous connecté ?");
