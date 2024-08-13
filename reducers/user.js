@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  value: { token: null, regime: [], menu: null },
+  value: { token: null, regime: [], menu: null,list:[] },
 };
 
 export const userSlice = createSlice({
@@ -29,10 +29,14 @@ export const userSlice = createSlice({
     },
     clearMenu: (state, action) => {
       state.value.menu = null
-    }
+    },
+    setList: (state, action) => {
+      state.value.list = action.payload
+    },
+
   },
 });
 
-export const { token, addRegime, removeRegime, initRegimes, setMenu, clearMenu } =
+export const { token, addRegime, removeRegime, initRegimes, setMenu, clearMenu,setList } =
   userSlice.actions;
 export default userSlice.reducer;

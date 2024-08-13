@@ -1,37 +1,31 @@
 
 import React, { useEffect, useRef, useState } from 'react';
+import { useSelector,useDispatch } from "react-redux";
 import { Animated, PanResponder, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Colors from "../utilities/color";
-// let data = [];
-// for (let i = 0; i < 20; i += 1) data.push(i);
+import { setList } from "../reducers/user";
 
-// const leftButtons = ['btn1', 'btn2', 'btn3'];
-const rightButtons = ['Acheter', 'Non trouvé'];
+const rightButtons = ['Acheter'/*, 'Non trouvé'*/];
 const btnWidth = 80;
-const offset = [-btnWidth * rightButtons.length, btnWidth /* * leftButtons.length*/ ];
+const offset = [-btnWidth * rightButtons.length, btnWidth];
 
+export default function SwipableItem({idlist,name , quantity,unit, buyed}) {
 
-// export default function SwipableListButton({name, quantity,unit}) {
-//     return (
-//         <ScrollView>
-//             {data.map(item => (
-//                 <SwipableItem key={item} name={name}  quantity={quantity}  unit={unit}    />
-//             ))}
-//         </ScrollView>
-//     )
-// }
-
-export default function SwipableItem({name , quantity,unit}) {
+    const URL = "http://192.168.0.53:3000";
+    // const token = "wVL5sCx7YTgaO-fnxK5pX4mMG8JywAwQ"
     let panValue = { x: 0, y: 0 };
     let isOpenState = useRef(false).current;
     const pan = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
     const itemTranslate = pan.x.interpolate({ inputRange: offset, outputRange: offset, extrapolate: 'clamp' });
     
+    const userToken = useSelector((state) => state.user.value.token);
     const [isOpen,setIsOpen]=useState(false)
-    const [isDisabled,setIsDisabled]=useState(false)
-    const [isFound,setIsFound]=useState(false)
+    const [isBuyed,setIsBuyed]=useState(buyed)
+    const dispatch = useDispatch();
+    const userList = useSelector((state) => state.user.value.list);
+    /***********/
+    
 
-    // const translateLeftBtns = pan.x.interpolate({ inputRange: [-leftButtons.length * btnWidth, 0], outputRange: [-leftButtons.length * btnWidth, 0], extrapolate: 'clamp' });
     const translateRightBtns = pan.x.interpolate({ inputRange: [0, rightButtons.length * btnWidth], outputRange: [0, rightButtons.length * btnWidth], extrapolate: 'clamp' });
     useEffect(() => {
         pan.addListener(value => {
@@ -52,16 +46,7 @@ export default function SwipableItem({name , quantity,unit}) {
             }),
             onPanResponderRelease: (e, g) => {
                 pan.flattenOffset();
-                /*
-                if (g.vx > 0.5 || g.dx > btnWidth * leftButtons.length / 2) {
-                    if (isOpenState && g.dx > 0) {
-                        reset();
-                        return;
-                    }
-                    move(false);
-                    return;
-                }
-                */
+
                 if (g.vx < -0.5 || g.dx < -btnWidth * rightButtons.length / 2) {
                     if (isOpenState && g.dx < 0) {
                         reset();
@@ -91,44 +76,54 @@ export default function SwipableItem({name , quantity,unit}) {
         isOpenState = true;
         setIsOpen(true)
         Animated.spring(pan, {
-            toValue: { x: toLeft ? -btnWidth * rightButtons.length : btnWidth /* * leftButtons.length*/ , y: 0 },
+            toValue: { x: toLeft ? -btnWidth * rightButtons.length : btnWidth , y: 0 },
             useNativeDriver: true,
             bounciness: 0
         }).start();
     }
 
     const buyedItem= ()=> {
-        setIsDisabled(!isDisabled)
+        //on clic , changer l'état dans le reducer et l'état en bdd
+            setIsBuyed(!isBuyed)
+            
+            let newList= userList.map(e => {
+                if (e.name === name) {
+                    return { ...e, isBuyed: !isBuyed };
+                }
+                return e;
+            });
+            dispatch(setList(newList));
+            console.log(userList)
+            fetch(`${URL}/shop/updatelist/${idlist}`, {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    token: userToken, 
+                    ingredients:newList
+                }),
+              })
+              .then(response => response.json())
+              .then((data)=> {console.log(data)})
 
+            // modifier en bdd
+              
     }
-
-    const foundItem= ()=> {
-        setIsFound(!isDisabled)
-       
-    }
-
 
     return (
         <View style={styles.container}>
-            {/* <Animated.View style={[styles.btnContainer, { transform: [{ translateX: translateLeftBtns }], }]}>
-                {leftButtons.map(btn => (
-                    <TouchableOpacity onPress={reset} key={btn} style={[styles.btn, { backgroundColor: 'red' }]}>
-                        <Text>{btn}</Text>
-                    </TouchableOpacity>
-                ))}
-            </Animated.View> */}
+   
             <Animated.View style={[styles.btnContainer, { transform:[{ translateX: translateRightBtns }], alignSelf: 'flex-end' }]}>
                 
-                    <TouchableOpacity onPress={()=> {buyedItem()}} style={[styles.btn, !isDisabled ? { backgroundColor: Colors.DARK_GREEN } : { backgroundColor: Colors.YELLOW }]}>
-                        <Text style={!isDisabled ? {textAlign:'center',color:'#fff' } : {textAlign:'center'  } }>{isDisabled ? 'Reposer' : 'Acheter' }</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={()=> {foundItem()}} style={[styles.btn, !isFound ? {backgroundColor: Colors.DARK_GREEN } : { backgroundColor: Colors.YELLOW }]}>
-                        
-                          <Text style={!isFound ? {textAlign:'center',color:'#fff' } : {textAlign:'center'  } }>{isFound ? 'Non trouvé' : 'trouvé' }</Text>
-                    </TouchableOpacity>
+                <TouchableOpacity onPress={()=> {buyedItem()}} 
+                style={ [styles.btn, isBuyed  ? { backgroundColor: Colors.YELLOW } : { backgroundColor: Colors.DARK_GREEN }]}>
+                    <Text style={!isBuyed ? {textAlign:'center',color:'#fff' } : {textAlign:'center'  } }>
+                        {!isBuyed ? 'Acheter' : 'Reposer' }</Text>
+                </TouchableOpacity>
                
             </Animated.View>
+
             <Animated.View style={[!isOpen ? styles.item : styles.itemOpen, { transform: [{ translateX: itemTranslate }] }]} {...panResponder.panHandlers} >
                 <Text style={styles.txt}>{name}</Text>
                 <Text style={styles.txt}>{quantity} {unit}</Text>
@@ -149,7 +144,6 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'flex-start',
         justifyContent: 'center',
-        
         backgroundColor: Colors.LIGHT_GREEN,
         paddingHorizontal:20
     },
@@ -158,7 +152,7 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'flex-start',
         justifyContent: 'center',
-        paddingLeft: '50%',
+        paddingLeft: 100,
         backgroundColor: Colors.LIGHT_GREEN,
         transform: [{translateX: '50%'}],
         paddingHorizontal:20

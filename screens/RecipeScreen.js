@@ -112,7 +112,7 @@ export default function RecipeScreen({ navigation, navigation: { goBack } }) {
         <Text
           key={i}
           style={styles.H3}
-        >{`- ${data.quantity}g de ${data.ingredient}`}</Text>
+        >{`- ${data.quantity}g de ${data.ingredient.name}`}</Text>
       );
     });
 
@@ -145,7 +145,7 @@ export default function RecipeScreen({ navigation, navigation: { goBack } }) {
               name={"plus"}
               size={25}
               color={"#E7D37F"}
-              opacity={"0.5"}
+              opacity={0.5}
             />
           </TouchableOpacity>
         ) : (
