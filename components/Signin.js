@@ -52,7 +52,7 @@ function Signin({ navigation }) {
   return (
     <KeyboardAvoidingView style={styles.textContainer}>
       <Text style={styles.title}>Se connecter</Text>
-      <KeyboardAvoidingView style={styles.inputContainer}>
+      <View style={styles.inputContainer}>
         <Text style={styles.label}>Adresse email ou nom d'utilisateur</Text>
         <TextInput
           label={"Adresse email ou nom d'utilisateur"}
@@ -63,8 +63,9 @@ function Signin({ navigation }) {
           value={signin}
           maxLength={254}
         ></TextInput>
-      </KeyboardAvoidingView>
-      <KeyboardAvoidingView style={styles.inputContainer}>
+      </View>
+
+      <View style={styles.inputContainer}>
         <Text style={styles.label}>Mot de passe</Text>
         <TextInput
           label={"Mot de passe"}
@@ -97,7 +98,8 @@ function Signin({ navigation }) {
             />
           )}
         </View>
-      </KeyboardAvoidingView>
+        
+      </View>
       <TouchableOpacity
         style={styles.signinButton}
         onPress={() => handleSignin()}
