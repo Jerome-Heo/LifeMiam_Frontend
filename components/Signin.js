@@ -1,24 +1,31 @@
 import {
   View,
+  Image,
+  SafeAreaView,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import Colors from "../utilities/color";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { useDispatch } from "react-redux";
-import { useState } from "react";
 
-import { addRegime, token } from "../reducers/user";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+
+import { addRegime, token, initRegimes } from "../reducers/user";
+
 
 function Signin({ navigation }) {
+  const user = useSelector((state) => state.user.value);
 
   const URL = "https://lifemiam-backend.vercel.app";
   const dispatch = useDispatch();
-
+  //const [signin, setSignin] = useState(null);
+  //const [password, SetPassword] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
 
   const [signin, setSignin] = useState('Test');
@@ -36,16 +43,18 @@ function Signin({ navigation }) {
         if (data.result === true) {
           dispatch(token(data.token));
 
-          if (date.regime.length > 0)
+          if (data.regime.length > 0)
           {
             for(let regime of data.regime)
             {
               dispatch(addRegime(regime))
             }
           }
-
+         
+          // .length > 0 && dispatch(initRegimes(regimes.regime,...data.regime));
           setSignin("");
           SetPassword("");
+
           navigation.navigate("TabNavigator", { screen: "Search" });
         } else {
           // Display an error
