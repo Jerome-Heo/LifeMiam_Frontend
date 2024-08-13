@@ -140,15 +140,12 @@ export default function RecipeScreen({ navigation, navigation: { goBack } }) {
           <FontAwesome name={"arrow-left"} size={25} color={"#E7D37F"} />
         </TouchableOpacity>
         {!readingMode ? (
-          <TouchableOpacity
-            style={styles.disabledButtons}
-            onPress={() => addRecipeMenu()}
-          >
+          <TouchableOpacity style={styles.disabledButtons}>
             <FontAwesome
               name={"plus"}
               size={25}
               color={"#E7D37F"}
-              opacity={"0.7"}
+              opacity={"0.5"}
             />
           </TouchableOpacity>
         ) : (
@@ -264,12 +261,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   disabledButtons: {
-    backgroundColor: Colors.DARK_GREEN,
-    width: 50,
-    height: 50,
-    borderRadius: 50,
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: Colors.LIGHT_GREEN,
   },
   vignetteCont: {
     flexDirection: "row",
