@@ -29,6 +29,7 @@ function Resume() {
   const [visibleMenu, setVisibleMenu] = useState([]);
   const [currentMenuTxt, setCurrentMenuTxt] = useState([]);
   const [newMenuName, setNewMenuName] = useState("");
+  const [RecipesDisplay, setRecipesDisplay] = useState(null)
   const currentMenu = useSelector((state) => state.user.value.menu);
 
   const animatedHeight = useRef(new Animated.Value(60)).current;
@@ -66,7 +67,7 @@ function Resume() {
   // Ouvre le résumé du menu
   const handleMenuList = () => {
     const contentHeight =
-      (visibleMenu.length === 0 ? 130 : 90) +
+      (visibleMenu.length === 0 ? 130 : 100) +
       (currentMenu ? visibleMenu.length * 60 : menusResume.length * 60);
     const newHeight = isMenuListVisible
       ? 60
@@ -128,11 +129,9 @@ function Resume() {
   };
 
   //Map les recettes d'un même menu pour les afficher en colonne
-  function RecipesDisplay() {
-    console.log(visibleMenu.length);
-    console.log("visibleMenu :", visibleMenu);
+  useEffect(() => {
+  function GenerateRecipesDisplay() {
     if (visibleMenu.length === 0) {
-      console.log("je suis dans le if");
       return (
         <Text style={styles.errorMessage}>
           Vous n'avez pas de recette dans ce menu...
@@ -155,6 +154,8 @@ function Resume() {
       );
     });
   }
+  setRecipesDisplay(GenerateRecipesDisplay());
+}, [visibleMenu])
 
   // Map le menuResume pour afficher tous les menus dans le résumé
   const menusDisplay = menusResume ? (
@@ -226,7 +227,7 @@ function Resume() {
           style={styles.ScrollView}
           contentContainerStyle={styles.recipesDisplay}
         >
-          {RecipesDisplay()}
+          {RecipesDisplay}
           <View style={{ height: 25 }}></View>
         </ScrollView>
       )}
