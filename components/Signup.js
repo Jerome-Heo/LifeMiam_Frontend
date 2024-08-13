@@ -71,11 +71,11 @@ function Signup({onboarding}) {
 
 
     return (
-        <KeyboardAvoidingView style={styles.textContainer}>
+        <KeyboardAvoidingView style={styles.textContainer} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           <Text style={styles.title}>S'inscrire avec mon email</Text>
           <Text style={styles.description}></Text>
 
-          <KeyboardAvoidingView style={styles.inputContainer}>
+          <View style={styles.inputContainer}>
           <Text style={styles.label}>Adresse email</Text>
           <TextInput style={styles.input}
           label={'Adresse email'}
@@ -83,18 +83,18 @@ function Signup({onboarding}) {
           keyboardType="email-address"
           value={email}
           />
-          </KeyboardAvoidingView>
+          </View>
 
-          <KeyboardAvoidingView style={styles.inputContainer}>
+          <View style={styles.inputContainer}>
           <Text style={styles.label}>Nom d'utilisateur</Text>
           <TextInput style={styles.input}
           label={"Nom d'utilisateur"}
           onChangeText={(e) => setUsername(e)}
           value={username}
           />
-          </KeyboardAvoidingView>
+          </View>
      
-          <KeyboardAvoidingView style={styles.inputContainer}>
+          <View style={styles.inputContainer}>
        
           <Text style={styles.label}>Mot de passe</Text>
           <TextInput style={styles.input}
@@ -110,7 +110,7 @@ function Signup({onboarding}) {
             {showPassword && <FontAwesome name={'eye-slash'} style={styles.icon} size={20}  onPress={() =>{ setShowPassword(false)}}/>}
           </View>
           
-          </KeyboardAvoidingView>
+          </View>
 
           <TouchableOpacity style={styles.signupbutton} activeOpacity={0.8} onPress={()=> { handeleToSignUp()}}>
             <Text style={styles.signupbuttonText}>S'inscrire</Text>

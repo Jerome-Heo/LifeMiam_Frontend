@@ -111,28 +111,9 @@ export default function SearchScreen({ navigation }) {
   ];
   const userToken = useSelector((state) => state.user.value.token);
   // const token = "HkkfE9VmlughUTLaNifglDHuTNC5yfx5";
-  const userRegime = useSelector((state) => state.user.value.regime);
-  const [vignettesSelected, setVignettesSelected] = useState(userRegime);
-
-  // REFACTO to have one fetch URL instead of 1 for popular recipes and 1 for search
-  // const fetchPopularRecipes = () => {
-  //   fetch(`${URL}/recipes/?sortBy=popularity`)
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       setRecipes(data.data);
-  //       // setFilteredRecipes(data.data);
-  //       // console.log(data.data)
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching data:", error);
-  //     });
-  // };
-
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     fetchRecipesResults(SearchQuery);
-  //   }, 100);
-  // }, [isFocused]); // Ne déclenche qu'au focus, pas à chaque update de popularRecipes
+  const regimes = useSelector((state) => state.user.value.regime);
+  console.log(regimes)
+  const [vignettesSelected, setVignettesSelected] = useState(regimes);
 
   useEffect(() => {
     animate("fadeInLeft");
@@ -141,14 +122,9 @@ export default function SearchScreen({ navigation }) {
     }, 100);
   }, [isFocused, vignettesSelected])/*, searchTimeout*/;
 
-//   useEffect(() => {
-//     fetch(`${URL}/recipes/${RecetteID}/${token}`)
-//     .then((response) => response.json())
-//     .then((data) => {
-//         SetRecipe(data.data)
-//         setServing(data.data.default_serving)
-//     })
-// }, [RecetteID])
+  // faire un seul fetch qui récupère toutes les recettes et filtrer avec input et tags
+  // dégager le timeout
+  
 
   //requête BDD pour obtenir les recettes demandées
   const fetchRecipesResults = (query) => {
