@@ -159,11 +159,18 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
       }
 
       return (
+<<<<<<< HEAD
+        <Text
+          key={i}
+          style={styles.H3}
+        >{`- ${data.quantity}g de ${data.ingredient.name}`}</Text>
+=======
         <Text key={i} style={styles.H3}>{`- ${
           finalQuantity ? finalQuantity : data.quantity
         }${finalUnit ? finalUnit : data.ingredient?.unit} ${
           data.ingredient?.name
         }`}</Text>
+>>>>>>> ff19954444c41ff8bf44ccf905717fef91296a38
       );
     });
 
@@ -216,7 +223,11 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
               name={"plus"}
               size={25}
               color={"#E7D37F"}
+<<<<<<< HEAD
+              opacity={0.5}
+=======
               // opacity={"0.5"}
+>>>>>>> ff19954444c41ff8bf44ccf905717fef91296a38
             />
           </TouchableOpacity>
         )}
