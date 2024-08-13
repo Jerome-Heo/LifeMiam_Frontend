@@ -43,10 +43,7 @@ export default function ModalScreen({ navigation, navigation: { goBack } }) {
         .then((response) => response.json())
         .then((data) => {
           setRecipes(data.menu.menu_recipes);
-          //   dispatch(setMenu(menuId));
           //   console.log(data.menu.menu_recipes);
-          //   setVisibleMenu(data.menu.menu_recipes);
-          //   handleMenuList();
         });
     } else {
       setError("Aucunes données, êtes-vous connecté ?");
@@ -59,10 +56,12 @@ export default function ModalScreen({ navigation, navigation: { goBack } }) {
         key={i}
         style={styles.recipeCont}
         onPress={() => {
-          //   console.log("pressed", data.recipe._id) &&
+          console.log("pressed", data.serving);
+          navigation.goBack();
           navigation.navigate("Recipe", {
             RecetteID: data.recipe._id,
             readingMode: true,
+            menuServing: data.serving,
           });
         }}
       >
@@ -81,7 +80,7 @@ export default function ModalScreen({ navigation, navigation: { goBack } }) {
   });
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButtn}
@@ -97,8 +96,11 @@ export default function ModalScreen({ navigation, navigation: { goBack } }) {
         </TouchableOpacity>
         <Text style={[{ fontSize: 20 }, styles.h1]}>Choisir la recette</Text>
       </View>
+      <Text style={styles.resultText}>
+        {recipes.length} recettes dans le menu {urlParams.menuName} :
+      </Text>
       <ScrollView style={styles.recipesList}>{recipesDisplay}</ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -135,15 +137,23 @@ const styles = StyleSheet.create({
     color: "white",
     marginRight: 5,
   },
-  recipesList: {
-    backgroundColor: Colors.LIGHT_GREEN,
-    paddingTop: 30,
-  },
   h1: {
     fontWeight: "600",
     color: "white",
     paddingLeft: 50,
   },
+  resultText: {
+    marginLeft: 20,
+    marginTop: 30,
+    color: "white",
+    fontWeight: "500",
+    fontSize: 18,
+  },
+  recipesList: {
+    backgroundColor: Colors.LIGHT_GREEN,
+    paddingTop: 30,
+  },
+
   recipeCont: {
     flexDirection: "row",
     marginTop: 15,
