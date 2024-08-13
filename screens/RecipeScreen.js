@@ -23,17 +23,15 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
   const activeMenu = useSelector((state) => state.user.value.menu);
   const route = useRoute();
   const { RecetteID, menuServing } = route.params;
-  console.log(route.params);
+
   const [Recipe, SetRecipe] = useState({});
 
   // gerer le mode ReadOnly des recipes depuis le Menus
   const urlParams = route.params;
   const [readingMode, setReadingMode] = useState(menuServing);
-  console.log("readingMode", readingMode);
 
   useEffect(() => {
     setReadingMode(urlParams.readingMode);
-    // setServing(menuServing);
 
     fetch(`${URL}/recipes/${RecetteID}/${userToken}`)
       .then((response) => response.json())
@@ -112,8 +110,8 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
   const ingredient =
     Recipe.ing &&
     adjustedIngredients.map((data, i) => {
-      console.log("adjustedIngredients", adjustedIngredients);
-      console.log("recipe.ing", Recipe.ing);
+      // console.log("adjustedIngredients", adjustedIngredients);
+      // console.log("recipe.ing", Recipe.ing);
       let finalUnit = "";
       let finalQuantity;
       if (data.ingredient?.unit === "cuillères à soupe") {
