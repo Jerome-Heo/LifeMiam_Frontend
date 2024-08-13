@@ -22,9 +22,9 @@ function Resume(){
     const animatedHeight = useRef(new Animated.Value(60)).current;
     const screenHeight = Dimensions.get('window').height;
     const MAX_HEIGHT = screenHeight*0.7;
+
     //charger tous les menus d'un user
     useEffect(() => {
-        handleMenuList()
         fetch(`${URL}/menus/getMenus`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -49,6 +49,7 @@ function Resume(){
             useNativeDriver: false,
         }).start();
         setIsMenuListVisible(!isMenuListVisible)
+        console.log('visible menu : ', visibleMenu)
     }
 
     //vide le reducer menu
@@ -77,7 +78,9 @@ function Resume(){
         });
     }
     
+    //créer un menu
     const handleCreateMenu = () => {
+        if(newMenuName !== ''){
         fetch(`${URL}/menus/create`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -85,12 +88,14 @@ function Resume(){
         }).then(response => response.json())
           .then(data => {
             setNewMenuName('');
+            handleClickMenu(data.menu._id)
           });
+        }
       }
 
     //Map les recettes d'un même menu pour les afficher en colonne
     //onPress={navigation.navigate("Recipe", { RecetteID: data.recipe })} => j'ai importé la navigation mais rien n'y fait
-    const RecipesDisplay = !visibleMenu ? <Text style={styles.menuTxt}>Vous n'avez pas de recette dans ce menu...</Text> :  visibleMenu.map((data,i) => {
+    const RecipesDisplay = (visibleMenu.length === 0) ? <Text style={styles.menuTxt}>Vous n'avez pas de recette dans ce menu...</Text> :  visibleMenu.map((data,i) => {
         return(
             <View key={i} style={styles.recipeCont}>
                 <Text style={styles.menuTxt}>{`${data.recipe.name}`}</Text>
@@ -145,7 +150,7 @@ function Resume(){
         {!currentMenu ? 
         <ScrollView style={styles.ScrollView} contentContainerStyle={styles.menusDisplay}>{menusDisplay}<View style={{height: 25}}></View></ScrollView> 
         : 
-        <ScrollView style={styles.ScrollView} contentContainerStyle={styles.recipesDisplay}>{RecipesDisplay}<View style={{height: 25}}></View> </ScrollView>}
+        <ScrollView style={styles.ScrollView} contentContainerStyle={styles.recipesDisplay}>{RecipesDisplay}<View style={{height: 25}}></View></ScrollView>}
             </Animated.View>
     )
 
