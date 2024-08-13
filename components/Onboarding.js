@@ -91,27 +91,47 @@ function Onboarding({ navigation, page }) {
   return (
     <SafeAreaView style={styles.container}>
       {page == "onboarding" && (
-        <Text style={styles.title}>Complète ton profil</Text>
+        <>
+          <Text style={styles.title}>Complète ton profil</Text>
+          <Text style={styles.question}>
+            As-tu des restrictions alimentaires ?
+          </Text>
+          <Text style={styles.subtitle}>
+            Ces restrictions pourront être prises en compte pendant la
+            découverte de recettes
+          </Text>
+        </>
       )}
       {page == "profile" && (
-        <Text style={styles.title}>Modifier ton profil</Text>
+        <>
+          <Text style={styles.title}>Modifier ton profil</Text>
+          <Text style={styles.question}>
+            Vos restrictions alimentaires ({userRegime.length})
+          </Text>
+          <Text style={styles.subtitle}>
+            Ces restrictions sont être prises en compte pendant la découverte de
+            recettes
+          </Text>
+        </>
       )}
-      <Text style={styles.question}>Des restrictions alimentaires ?</Text>
+
       <View style={styles.vignetteContainer}>{regimeVignettes}</View>
-      <View style={styles.buttons}>
-        <TouchableOpacity style={styles.skip} onPress={() => handleSkip()}>
-          <Text style={styles.skipText}>Passer &gt;</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.go,
-            !userRegime.length ? disabledButton : enabledButton,
-          ]}
-          onPress={() => handleGo()}
-        >
-          <Text style={styles.goText}>Suivant</Text>
-        </TouchableOpacity>
-      </View>
+      {page == "onboarding" && (
+        <View style={styles.buttons}>
+          <TouchableOpacity style={styles.skip} onPress={() => handleSkip()}>
+            <Text style={styles.skipText}>Passer &gt;</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.go,
+              !userRegime.length ? disabledButton : enabledButton,
+            ]}
+            onPress={() => handleGo()}
+          >
+            <Text style={styles.goText}>Suivant</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -123,7 +143,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.WHITE,
     alignItems: "flex-start",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     width: windowWidth,
     height: windowHeight,
     marginVertical: 30,
@@ -134,11 +154,18 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "bold",
     paddingLeft: 25,
+    paddingBottom: 10,
   },
-  question: { color: Colors.DARK_GREEN, fontSize: 24, paddingLeft: 25 },
+  question: {
+    color: Colors.DARK_GREEN,
+    fontSize: 20,
+    paddingLeft: 25,
+    fontWeight: "600",
+  },
+  subtitle: { color: "black", fontSize: 14, paddingLeft: 25 },
   vignetteContainer: {
     width: windowWidth,
-    height: 350,
+    height: 300,
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-around",
