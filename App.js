@@ -69,11 +69,6 @@ const TabNavigator = () => {
         options={{ tabBarLabel: "Profil" }}
       />
       <Tab.Screen
-        name="Recipe"
-        component={RecipeScreen}
-        options={{ tabBarButton: () => null }}
-      />
-      <Tab.Screen
         name="List"
         component={ListScreen}
         options={{ tabBarButton: () => null }}
@@ -89,6 +84,7 @@ export default function App() {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Group>
             <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="Recipe" component={RecipeScreen} />
             <Stack.Screen name="TabNavigator" component={TabNavigator} />
           </Stack.Group>
           <Stack.Group screenOptions={{ presentation: "modal" }}>
@@ -99,8 +95,6 @@ export default function App() {
     </Provider>
   );
 }
-// screenOptions={{ presentation: "modal" }}
-// options={{ presentation: "transparentModal" }}
 
 const styles = StyleSheet.create({
   container: {
