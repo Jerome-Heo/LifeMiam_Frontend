@@ -1,4 +1,4 @@
-import { View,ScrollView,Dimensions,Image,StyleSheet ,Text,TextInput,SafeAreaView,KeyboardAvoidingView, TouchableOpacity, Animated} from "react-native";
+import { View,Keyboard,ScrollView,Dimensions,Image,StyleSheet ,Text,TextInput,SafeAreaView,KeyboardAvoidingView, TouchableOpacity, Animated} from "react-native";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector} from 'react-redux';
@@ -37,6 +37,24 @@ function Resume(){
           })
     }, [currentMenu])
 
+    //useEffect du clavier
+    useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener(
+          'keyboardDidShow',
+          () => {
+            // Fonction à exécuter quand le clavier apparaît
+            console.log('Le clavier est apparu');
+            if(isMenuListVisible){
+                handleMenuList
+            }
+          }
+        );
+        // Nettoyage des listeners quand le composant est démonté
+        return () => {
+          keyboardDidShowListener.remove();
+        };
+      }, []);
+
     // Ouvre le résumé du menu
     const handleMenuList = () => {
 
@@ -49,7 +67,6 @@ function Resume(){
             useNativeDriver: false,
         }).start();
         setIsMenuListVisible(!isMenuListVisible)
-        console.log('visible menu : ', visibleMenu)
     }
 
     //vide le reducer menu
@@ -58,7 +75,6 @@ function Resume(){
     }
 
     const goToRecipe = (id) => {
-        console.log(id)
         navigation.navigate("Recipe", { RecetteID: id });
     }
 
@@ -88,7 +104,8 @@ function Resume(){
         }).then(response => response.json())
           .then(data => {
             setNewMenuName('');
-            handleClickMenu(data.menu._id)
+            handleClickMenu(data.menu._id);
+            Keyboard.dismiss();
           });
         }
       }
