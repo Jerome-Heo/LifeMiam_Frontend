@@ -112,6 +112,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: windowWidth,
     height: windowHeight,
+    marginVertical:30
   },
 
   title: {

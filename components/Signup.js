@@ -71,7 +71,7 @@ function Signup({onboarding}) {
 
 
     return (
-        <KeyboardAvoidingView style={styles.textContainer}>
+        <KeyboardAvoidingView style={styles.textContainer} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           <Text style={styles.title}>S'inscrire avec mon email</Text>
           <Text style={styles.description}></Text>
 
