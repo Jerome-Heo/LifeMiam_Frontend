@@ -14,9 +14,6 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useDispatch, useSelector } from "react-redux";
 
 import Resume from "../components/Resume";
-import { useEffect, useState } from "react";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { useDispatch, useSelector } from "react-redux";
 
 export default function MenuScreen({ navigation }) {
   const userToken = useSelector((state) => state.user.value.token);

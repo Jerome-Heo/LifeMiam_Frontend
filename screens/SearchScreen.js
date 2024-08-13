@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Colors from "../utilities/color";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import * as Animatable from "react-native-animatable";
-import { useRoute } from '@react-navigation/native';
+import { useRoute } from "@react-navigation/native";
 const types = [
   "bounceIn",
   "bounceInDown",
@@ -67,8 +67,8 @@ export default function SearchScreen({ navigation }) {
   // const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [searchTimeout, setSearchTimeout] = useState(null);
   // const [serving, setServing] = useState(Recipe.default_serving);
-  const [Recipe, SetRecipe] = useState({})
-  const [isLoading, setIsLoading] = useState(true)
+  const [Recipe, SetRecipe] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
   const isFocused = useIsFocused();
   const activeMenu = useSelector((state) => state.user.value.menu);
   const [debounceTimeout, setDebounceTimeout] = useState(null);
@@ -80,7 +80,7 @@ export default function SearchScreen({ navigation }) {
     if (isFocused) {
       setIsLoading(true);
       setTimeout(() => {
-        fetchRecipesResults('');
+        fetchRecipesResults("");
         setIsLoading(false);
       }, 2000);
     }
@@ -89,18 +89,18 @@ export default function SearchScreen({ navigation }) {
   useEffect(() => {
     if (debounceTimeout) {
       clearTimeout(debounceTimeout);
-  }
-
-  const newTimeout = setTimeout(() => {
-    if (SearchQuery.length === 0) {
-      fetchRecipesResults('');
-    } else if (SearchQuery.length >= 3) {
-      fetchRecipesResults(SearchQuery);
     }
-  }, 1000);
 
-  setDebounceTimeout(newTimeout);
-}, [SearchQuery])
+    const newTimeout = setTimeout(() => {
+      if (SearchQuery.length === 0) {
+        fetchRecipesResults("");
+      } else if (SearchQuery.length >= 3) {
+        fetchRecipesResults(SearchQuery);
+      }
+    }, 1000);
+
+    setDebounceTimeout(newTimeout);
+  }, [SearchQuery]);
 
   const regimeList = [
     { name: "sans gluten", src: require("../assets/gluten_free.png") },
@@ -139,22 +139,19 @@ export default function SearchScreen({ navigation }) {
     setTimeout(() => {
       fetchRecipesResults(SearchQuery);
     }, 100);
-  }, [isFocused, vignettesSelected])/*, searchTimeout*/;
+  }, [isFocused, vignettesSelected]) /*, searchTimeout*/;
 
-//   useEffect(() => {
-//     fetch(`${URL}/recipes/${RecetteID}/${token}`)
-//     .then((response) => response.json())
-//     .then((data) => {
-//         SetRecipe(data.data)
-//         setServing(data.data.default_serving)
-//     })
-// }, [RecetteID])
-
- 
+  //   useEffect(() => {
+  //     fetch(`${URL}/recipes/${RecetteID}/${token}`)
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //         SetRecipe(data.data)
+  //         setServing(data.data.default_serving)
+  //     })
+  // }, [RecetteID])
 
   //requête BDD pour obtenir les recettes demandées
   const fetchRecipesResults = (query) => {
-    
     const formattedVignettes = vignettesSelected.map((e) =>
       encodeURIComponent(e)
     );
@@ -167,22 +164,22 @@ export default function SearchScreen({ navigation }) {
     fetch(fetchURL)
       .then((response) => response.json())
       .then((data) => {
-        if (data.result) {     
+        if (data.result) {
           // setFilteredRecipes(data.data);
           setRecipes(data.data);
         } else {
           setRecipes([]);
           // console.error("Aucune recette correspondante");
         }
-        setIsLoading(false)
+        setIsLoading(false);
       })
       .catch((error) => {
-        setIsLoading(false)
+        setIsLoading(false);
         console.log("Erreur lors de la récupération des résultats : ", error);
       });
   };
   if (isLoading) {
-    console.log("loading...")
+    console.log("loading...");
   }
   //timer pour aider l'utilisateur qui hésite dans sa recherche
   const handleSearch = (query) => {
@@ -192,7 +189,7 @@ export default function SearchScreen({ navigation }) {
       fetchRecipesResults(query);
     } else {
     }
-      // timer pour aider l'utilisateur qui hésite dans sa recherche
+    // timer pour aider l'utilisateur qui hésite dans sa recherche
     if (searchTimeout) {
       clearTimeout(searchTimeout);
     }
@@ -247,22 +244,22 @@ export default function SearchScreen({ navigation }) {
     );
     setRecipes(updatedRecipes); //why?
     // setFilteredRecipes(updatedRecipes);
-    navigation.navigate("Recipe", { RecetteID: id });
+    navigation.navigate("Recipe", { RecetteID: id, readingMode: false });
   };
 
   //Ajouter une recette au menu avec bouton +
-//   const addRecipeToMenu = () =>{
-//     fetch(`${URL}/menus/${activeMenu}/addRecipe`,{
-//         method: "POST",
-//         headers: { 'Content-Type': 'application/json' },
-//         body: JSON.stringify({ recipeId: route.params, serving : serving }),
-//       })
-//         .then((response) => response.json())
-//         .then((data) => {
-//           console.log(data);
-//           console.log(activeMenu)
-//         })
-// };
+  //   const addRecipeToMenu = () =>{
+  //     fetch(`${URL}/menus/${activeMenu}/addRecipe`,{
+  //         method: "POST",
+  //         headers: { 'Content-Type': 'application/json' },
+  //         body: JSON.stringify({ recipeId: route.params, serving : serving }),
+  //       })
+  //         .then((response) => response.json())
+  //         .then((data) => {
+  //           console.log(data);
+  //           console.log(activeMenu)
+  //         })
+  // };
 
   //affichage des recettes populaires avec les images cloudinary depuis la BDD
   const popularRecipes = recipes.map((element, i) => {
@@ -295,13 +292,7 @@ export default function SearchScreen({ navigation }) {
   const displayNull = () => {
     return (
       <View style={styles.emptyState}>
-        <FontAwesome
-          name={"search"}
-          
-          size={60}
-          onPress={() => {
-          }}
-        />
+        <FontAwesome name={"search"} size={60} onPress={() => {}} />
         <Text style={styles.notFound}>Aucune recette trouvée...</Text>
       </View>
     );
@@ -328,25 +319,26 @@ export default function SearchScreen({ navigation }) {
             placeholder="Rechercher..."
             value={SearchQuery}
             onChangeText={handleSearch}
-          // clearButtonMode={"unless-editing"}
+            // clearButtonMode={"unless-editing"}
           />
           {SearchQuery.length > 0 && (
-            <TouchableOpacity onPress={clearSearch} style={styles.clearButton} >
-              <Image style={styles.clearButtonIcon} source={require("../assets/clear.png")} />
+            <TouchableOpacity onPress={clearSearch} style={styles.clearButton}>
+              <Image
+                style={styles.clearButtonIcon}
+                source={require("../assets/clear.png")}
+              />
             </TouchableOpacity>
           )}
         </View>
         <View style={styles.vignetteContainer}>{regimeVignettes}</View>
         <Text style={styles.H2}>Les recettes populaires</Text>
         <ScrollView style={styles.ScrollCont}>
-        {recipes.length > 0 ? popularRecipes : displayNull()}
+          {recipes.length > 0 ? popularRecipes : displayNull()}
         </ScrollView>
       </View>
     </KeyboardAvoidingView>
   );
 }
-
-
 
 const styles = StyleSheet.create({
   container: {
@@ -359,13 +351,13 @@ const styles = StyleSheet.create({
   },
 
   searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 5,
     paddingHorizontal: 10,
-    width: '92%',
+    width: "92%",
     marginBottom: 10,
   },
 
@@ -428,8 +420,8 @@ const styles = StyleSheet.create({
 
   clearButton: {
     padding: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   clearButtonIcon: {
@@ -439,7 +431,7 @@ const styles = StyleSheet.create({
   },
 
   vignetteContainer: {
-    width: '100%',
+    width: "100%",
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-around",
@@ -482,6 +474,5 @@ const styles = StyleSheet.create({
   notFound: {
     color: "#365E32",
     fontSize: 35,
-
-  }
+  },
 });

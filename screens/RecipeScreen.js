@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 import Resume from "../components/Resume";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
-export default function RecipeScreen({ navigation: { goBack } }) {
+export default function RecipeScreen({ navigation, navigation: { goBack } }) {
   const URL = "https://lifemiam-backend.vercel.app";
   const userToken = useSelector((state) => state.user.value.token);
   // const token = '0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf';
@@ -24,7 +24,28 @@ export default function RecipeScreen({ navigation: { goBack } }) {
   const { RecetteID } = route.params;
   const [Recipe, SetRecipe] = useState({});
 
+  // gerer le mode ReadOnly des recipes depuis le Menus
+  const urlParams = route.params;
+  const [readingMode, setReadingMode] = useState(null);
+
+  // const routes = navigation.getState()?.routes;
+  // console.log(routes);
+  // const prevRoute = routes[routes.length - 2];
+
+  console.log(readingMode);
+
   useEffect(() => {
+    // if ((prevRoute.name === "TabNavigator", { screen: "MenuScreen" })) {
+    //   console.log("je viens du Menu!");
+    //   setReadingMode(true);
+    // } else if (
+    //   (prevRoute.name === "TabNavigator", { screen: "SearchScreen" })
+    // ) {
+    //   console.log("je viens de Search");
+    //   setReadingMode(false);
+    // }
+    setReadingMode(urlParams.readingMode);
+
     fetch(`${URL}/recipes/${RecetteID}/${userToken}`)
       .then((response) => response.json())
       .then((data) => {
@@ -67,6 +88,11 @@ export default function RecipeScreen({ navigation: { goBack } }) {
       .then((data) => {
         console.log(data);
       });
+  };
+
+  const handleBackBttn = () => {
+    setReadingMode(null);
+    goBack();
   };
 
   //Ajuster la quantité d'ingrédient en fonction du nombre de serving
@@ -119,7 +145,10 @@ export default function RecipeScreen({ navigation: { goBack } }) {
   return (
     <View style={styles.container}>
       <View style={styles.ButtonsCont}>
-        <TouchableOpacity style={styles.buttons} onPress={() => goBack()}>
+        <TouchableOpacity
+          style={styles.buttons}
+          onPress={() => handleBackBttn()}
+        >
           <FontAwesome name={"arrow-left"} size={25} color={"#E7D37F"} />
         </TouchableOpacity>
         <TouchableOpacity

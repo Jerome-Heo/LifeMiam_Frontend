@@ -99,6 +99,8 @@ export default function App() {
     </Provider>
   );
 }
+// screenOptions={{ presentation: "modal" }}
+// options={{ presentation: "transparentModal" }}
 
 const styles = StyleSheet.create({
   container: {
