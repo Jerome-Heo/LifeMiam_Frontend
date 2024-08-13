@@ -75,7 +75,7 @@ export default function SearchScreen({ navigation }) {
   // const {RecetteID} = route.params;
   const route = useRoute();
   const URL = "https://lifemiam-backend.vercel.app";
-  
+
   useEffect(() => {
     if (isFocused) {
       setIsLoading(true);
@@ -111,9 +111,28 @@ export default function SearchScreen({ navigation }) {
   ];
   const userToken = useSelector((state) => state.user.value.token);
   // const token = "HkkfE9VmlughUTLaNifglDHuTNC5yfx5";
-  const regimes = useSelector((state) => state.user.value.regime);
-  console.log(regimes)
-  const [vignettesSelected, setVignettesSelected] = useState(regimes);
+  const userRegime = useSelector((state) => state.user.value.regime);
+  const [vignettesSelected, setVignettesSelected] = useState(userRegime);
+
+  // REFACTO to have one fetch URL instead of 1 for popular recipes and 1 for search
+  // const fetchPopularRecipes = () => {
+  //   fetch(`${URL}/recipes/?sortBy=popularity`)
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       setRecipes(data.data);
+  //       // setFilteredRecipes(data.data);
+  //       // console.log(data.data)
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching data:", error);
+  //     });
+  // };
+
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     fetchRecipesResults(SearchQuery);
+  //   }, 100);
+  // }, [isFocused]); // Ne déclenche qu'au focus, pas à chaque update de popularRecipes
 
   useEffect(() => {
     animate("fadeInLeft");
@@ -122,16 +141,22 @@ export default function SearchScreen({ navigation }) {
     }, 100);
   }, [isFocused, vignettesSelected])/*, searchTimeout*/;
 
-  // faire un seul fetch qui récupère toutes les recettes et filtrer avec input et tags
-  // dégager le timeout
-  
+//   useEffect(() => {
+//     fetch(`${URL}/recipes/${RecetteID}/${token}`)
+//     .then((response) => response.json())
+//     .then((data) => {
+//         SetRecipe(data.data)
+//         setServing(data.data.default_serving)
+//     })
+// }, [RecetteID])
 
   //requête BDD pour obtenir les recettes demandées
   const fetchRecipesResults = (query) => {
+    
     const formattedVignettes = vignettesSelected.map((e) =>
       encodeURIComponent(e)
     );
-    console.log("formattedVignettes:", formattedVignettes);
+    // console.log("formattedVignettes:", formattedVignettes);
     // console.log("v:", vignettesSelected)
     const fetchVignettes = JSON.stringify(vignettesSelected);
     // console.log("fetchVignettes:", fetchVignettes);
@@ -140,7 +165,7 @@ export default function SearchScreen({ navigation }) {
     fetch(fetchURL)
       .then((response) => response.json())
       .then((data) => {
-        if (data.result) {
+        if (data.result) {     
           // setFilteredRecipes(data.data);
           setRecipes(data.data);
         } else {
@@ -149,7 +174,6 @@ export default function SearchScreen({ navigation }) {
         }
         setIsLoading(false)
       })
-    
       .catch((error) => {
         setIsLoading(false)
         console.log("Erreur lors de la récupération des résultats : ", error);
@@ -158,18 +182,19 @@ export default function SearchScreen({ navigation }) {
   if (isLoading) {
     console.log("loading...")
   }
-  //timer pour aider l'utilisateur qui hésite dans sa recherche
+  
   const handleSearch = (query) => {
     setSearchQuery(query);
+
     // if (searchTimeout) {
-  //     clearTimeout(searchTimeout);
-  //   }
-  //   setSearchTimeout(
-  //     setTimeout(() => {
-  //       fetchRecipesResults(query);
-  //     }, 2000)
-  //   );
-  // };
+    //   clearTimeout(searchTimeout);
+    // } 
+    // setSearchTimeout(
+    //   setTimeout(() => {
+    //     fetchRecipesResults(query);
+    //   }, 2000)
+    // );
+  };
 
   // onPress sur les Vignettes
   let isSelected;
@@ -248,7 +273,7 @@ export default function SearchScreen({ navigation }) {
             <View style={styles.PHbutton}>
               <TouchableOpacity
                 style={styles.addButton}
-                // onPress={() => addRecipeToMenu()}
+                onPress={() => addRecipeToMenu()}
               >
                 <Image source={require("../assets/smallAdd.png")}></Image>
               </TouchableOpacity>
@@ -275,20 +300,21 @@ export default function SearchScreen({ navigation }) {
     );
   };
 
-  //bouton "clear" pour effacer ce qui est écrit dans l'input
-  const clearSearch = () => {
-    setSearchQuery("");
-
-    // setFilteredRecipes([]);
-    // setRecipes([]);
-  };
-
   const loadingView = () => {
     return (
       <View style={styles.emptyState}>
         <Text style={styles.loadingText}>Loading...</Text>
       </View>
     );
+  };
+
+  //bouton "clear" pour effacer ce qui est écrit dans l'input
+  const clearSearch = () => {
+    setSearchQuery("");
+    setVignettesSelected(userRegime);
+    fetchRecipesResults('');
+    // setFilteredRecipes([]);
+    // setRecipes([]);
   };
 
   return (
@@ -320,7 +346,7 @@ export default function SearchScreen({ navigation }) {
       </View>
     </KeyboardAvoidingView>
   );
-}}
+}
 
 
 
@@ -458,8 +484,10 @@ const styles = StyleSheet.create({
   notFound: {
     color: "#365E32",
     fontSize: 35,
-},
-loadingText: {
 
-},
+  },
+
+  loadingText: {
+
+  },
 });
