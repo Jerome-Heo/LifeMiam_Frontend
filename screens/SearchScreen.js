@@ -245,7 +245,7 @@ export default function SearchScreen({ navigation }) {
             <View style={styles.PHbutton}>
               <TouchableOpacity
                 style={styles.addButton}
-                onPress={() => addRecipeToMenu()}
+                // onPress={() => addRecipeToMenu()}
               >
                 <Image source={require("../assets/smallAdd.png")}></Image>
               </TouchableOpacity>
