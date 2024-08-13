@@ -12,6 +12,7 @@ import {
 import { useEffect, useState } from "react";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useDispatch, useSelector } from "react-redux";
+import Colors from "../utilities/color";
 
 export default function MenuScreen({ navigation }) {
   const userToken = useSelector((state) => state.user.value.token);
@@ -53,8 +54,8 @@ export default function MenuScreen({ navigation }) {
     navigation.navigate("List", { menuId: id });
   };
 
-  const handleRecipeDisplay = (id) => {
-    navigation.navigate("RecipesModal", { menuId: id });
+  const handleRecipeDisplay = (id, name) => {
+    navigation.navigate("RecipesModal", { menuId: id, menuName: name });
   };
 
   //Est-ce que j'ai cliqué sur la creation de menu ?
@@ -90,7 +91,7 @@ export default function MenuScreen({ navigation }) {
   const menusDisplay =
     menus &&
     menus.map((data, i) => {
-      console.log(data);
+      console.log("menus.map", data);
       return (
         <View key={i} style={styles.menuCont}>
           <Text style={styles.H3}>{`${data.name}`}</Text>
@@ -100,15 +101,24 @@ export default function MenuScreen({ navigation }) {
                 <Text style={styles.courseTitleText}>Courses</Text>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              style={styles.PHButton}
-              onPress={() => handleRecipeDisplay(data._id)}
-            >
-              <Image
-                source={require("../assets/cooking.png")}
-                style={styles.imageCooking}
-              ></Image>
-            </TouchableOpacity>
+            {data.menu_recipes.length > 0 ? (
+              <TouchableOpacity
+                style={styles.PHButton}
+                onPress={() => handleRecipeDisplay(data._id, data.name)}
+              >
+                <Image
+                  source={require("../assets/cooking.png")}
+                  style={styles.imageCooking}
+                ></Image>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={styles.disabledPHButton}>
+                <Image
+                  source={require("../assets/cooking.png")}
+                  style={styles.imageCooking}
+                ></Image>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       );
@@ -261,8 +271,23 @@ const styles = StyleSheet.create({
   },
   PHShoppingList: {},
   PHButton: {
-    borderWidth: 1,
+    backgroundColor: Colors.DARK_GREEN,
     height: 40,
+    alignItems: "center",
+    paddingTop: 2,
+    paddingBottom: 2,
+    marginLeft: 15,
+    margin: 5,
+    borderRadius: 5,
+    width: "20%",
+  },
+  disabledPHButton: {
+    backgroundColor: Colors.DARK_GREEN,
+    opacity: 0.5,
+    height: 40,
+    alignItems: "center",
+    paddingTop: 2,
+    paddingBottom: 2,
     marginLeft: 15,
     margin: 5,
     borderRadius: 5,
@@ -270,6 +295,8 @@ const styles = StyleSheet.create({
   },
   imageCooking: {
     backgroundColor: "#365E32",
+    height: 35,
+    resizeMode: "contain",
   },
   icon: {},
 });

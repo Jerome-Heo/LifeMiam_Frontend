@@ -16,31 +16,33 @@ import Resume from "../components/Resume";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Colors from "../utilities/color";
 
-export default function RecipeScreen({ navigation, navigation: { goBack } }) {
+export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
   const URL = "https://lifemiam-backend.vercel.app";
   const userToken = useSelector((state) => state.user.value.token);
   // const token = '0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf';
   const activeMenu = useSelector((state) => state.user.value.menu);
   const route = useRoute();
-  const { RecetteID } = route.params;
+  const { RecetteID, menuServing } = route.params;
+  console.log(route.params);
   const [Recipe, SetRecipe] = useState({});
 
   // gerer le mode ReadOnly des recipes depuis le Menus
   const urlParams = route.params;
-  const [readingMode, setReadingMode] = useState(null);
-
-  console.log(readingMode);
+  const [readingMode, setReadingMode] = useState(menuServing);
+  console.log("readingMode", readingMode);
 
   useEffect(() => {
     setReadingMode(urlParams.readingMode);
+    // setServing(menuServing);
 
     fetch(`${URL}/recipes/${RecetteID}/${userToken}`)
       .then((response) => response.json())
       .then((data) => {
+        console.log(data.data);
         SetRecipe(data.data);
         setServing(data.data.default_serving);
       });
-  }, [RecetteID]);
+  }, [RecetteID, readingMode]);
 
   const [serving, setServing] = useState(Recipe.default_serving);
 
@@ -89,7 +91,9 @@ export default function RecipeScreen({ navigation, navigation: { goBack } }) {
     Recipe.ing.map((data) => {
       return {
         ...data,
-        quantity: (data.quantity / Recipe.default_serving) * serving,
+        quantity: !readingMode
+          ? Number((data.quantity / Recipe.default_serving) * serving)
+          : Number((data.quantity / Recipe.default_serving) * menuServing),
       };
     });
 
@@ -108,11 +112,35 @@ export default function RecipeScreen({ navigation, navigation: { goBack } }) {
   const ingredient =
     Recipe.ing &&
     adjustedIngredients.map((data, i) => {
+      console.log("adjustedIngredients", adjustedIngredients);
+      console.log("recipe.ing", Recipe.ing);
+      let finalUnit = "";
+      let finalQuantity;
+      if (data.ingredient?.unit === "cuillères à soupe") {
+        finalUnit = " càs de";
+      }
+      if (data.ingredient?.unit === "grammes") {
+        finalUnit = "gr de";
+      }
+      if (data.ingredient?.unit === "unités") {
+        finalUnit = " ";
+        if (data.quantity) {
+          finalQuantity = Math.ceil(data.quantity);
+        }
+      }
+      if (data.ingredient?.unit === "litres") {
+        finalUnit = "L de";
+      }
+      if (data.ingredient?.unit === "cuillères à café") {
+        finalUnit = " càc de";
+      }
+
       return (
-        <Text
-          key={i}
-          style={styles.H3}
-        >{`- ${data.quantity}g de ${data.ingredient}`}</Text>
+        <Text key={i} style={styles.H3}>{`- ${
+          finalQuantity ? finalQuantity : data.quantity
+        }${finalUnit ? finalUnit : data.ingredient?.unit} ${
+          data.ingredient?.name
+        }`}</Text>
       );
     });
 
@@ -140,20 +168,20 @@ export default function RecipeScreen({ navigation, navigation: { goBack } }) {
           <FontAwesome name={"arrow-left"} size={25} color={"#E7D37F"} />
         </TouchableOpacity>
         {!readingMode ? (
-          <TouchableOpacity style={styles.disabledButtons}>
-            <FontAwesome
-              name={"plus"}
-              size={25}
-              color={"#E7D37F"}
-              opacity={"0.5"}
-            />
-          </TouchableOpacity>
-        ) : (
           <TouchableOpacity
             style={styles.buttons}
             onPress={() => addRecipeMenu()}
           >
             <FontAwesome name={"plus"} size={25} color={"#E7D37F"} />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.disabledButtons}>
+            <FontAwesome
+              name={"plus"}
+              size={25}
+              color={"#E7D37F"}
+              // opacity={"0.5"}
+            />
           </TouchableOpacity>
         )}
       </View>
@@ -180,21 +208,33 @@ export default function RecipeScreen({ navigation, navigation: { goBack } }) {
         <View style={styles.IngrListandSelector}>
           <View style={styles.ingredientList}>{ingredient}</View>
 
-          <View style={styles.selectorCont}>
-            <TouchableOpacity
-              onPress={handleMinus}
-              style={styles.selectorButton}
-            >
-              <Text style={styles.selectors}>-</Text>
-            </TouchableOpacity>
-            <Text style={styles.H2}>{serving}</Text>
-            <TouchableOpacity
-              onPress={handlePlus}
-              style={styles.selectorButton}
-            >
-              <Text style={styles.selectors}>+</Text>
-            </TouchableOpacity>
-          </View>
+          {!readingMode ? (
+            <View style={styles.selectorCont}>
+              <TouchableOpacity
+                onPress={handleMinus}
+                style={styles.selectorButton}
+              >
+                <Text style={styles.selectors}>-</Text>
+              </TouchableOpacity>
+              <Text style={styles.H2}>{serving}</Text>
+              <TouchableOpacity
+                onPress={handlePlus}
+                style={styles.selectorButton}
+              >
+                <Text style={styles.selectors}>+</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={styles.selectorCont}>
+              <TouchableOpacity style={styles.disabledSelectorButton}>
+                <Text style={styles.selectors}>-</Text>
+              </TouchableOpacity>
+              <Text style={styles.H2}>{menuServing}</Text>
+              <TouchableOpacity style={styles.disabledSelectorButton}>
+                <Text style={styles.selectors}>+</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
 
         <View>
@@ -237,7 +277,7 @@ export default function RecipeScreen({ navigation, navigation: { goBack } }) {
 
         <View marginTop={50} />
       </ScrollView>
-      <Resume />
+      {!readingMode && <Resume />}
     </View>
   );
 }
@@ -262,6 +302,11 @@ const styles = StyleSheet.create({
   },
   disabledButtons: {
     backgroundColor: Colors.LIGHT_GREEN,
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+    alignItems: "center",
+    justifyContent: "center",
   },
   vignetteCont: {
     flexDirection: "row",
@@ -343,6 +388,17 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     width: 30,
     height: 30,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  disabledSelectorButton: {
+    backgroundColor: "#365E32",
+    opacity: 0.6,
+    borderRadius: 100,
+    width: 30,
+    height: 30,
+    justifyContent: "center",
+    alignItems: "center",
   },
   selectors: {
     fontSize: 20,
