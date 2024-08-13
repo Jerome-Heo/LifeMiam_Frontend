@@ -63,7 +63,7 @@ export default function SearchScreen({ navigation }) {
   const prop = animation.visible ? { animation: animation.type } : {};
 
   const [recipes, setRecipes] = useState([]);
-  const [SearchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   // const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [searchTimeout, setSearchTimeout] = useState(null);
   // const [serving, setServing] = useState(Recipe.default_serving);
@@ -74,6 +74,8 @@ export default function SearchScreen({ navigation }) {
   const [debounceTimeout, setDebounceTimeout] = useState(null);
 
   const [recipesData, setRecipesData] = useState([]);
+  const [recipesSearchData, setRecipesSearchData] = useState([]);
+
 
   // const {RecetteID} = route.params;
   const route = useRoute();
@@ -87,10 +89,32 @@ export default function SearchScreen({ navigation }) {
         // console.log(data.data)
       })
       .catch((error) => {
-        console.error("Error fetching data:", error);
+        console.error("Erreur fetching data:", error);
       });
   };
-  const searchResults = (query) => { }
+  const searchResults = (query) => {
+    setSearchQuery(query);
+    searchRecipesByName(searchQuery);
+
+
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+    setSearchTimeout(
+      setTimeout(() => {
+        searchResults(query);
+      }, 2000)
+    );
+  };
+
+  // DEUX FONCTIONS DE RECHERCHE
+  const searchRecipesByName = (name) => {
+    const tabFilterByName = recipesData.filter(recipeName => recipeName.name.toLowerCase().includes(name.toLowerCase()));
+    // console.log(tabFilterByName);
+    //return tabFilterByName;
+    setRecipesSearchData(tabFilterByName);
+  }
+
 
   const fetchAllRecipes = () => {
     const fetchURL = `${URL}/recipes/all`;
@@ -100,30 +124,24 @@ export default function SearchScreen({ navigation }) {
       .then((data) => {
         // console.log(data.data)
         if (data.result) {
-          // ICI on va remplir le 
+          // ICI on va remplir le tableau des recettes
           let newTabRecipes = [];
-          for(let i=0; i < data.data.length; i++) {
+          for (let i = 0; i < data.data.length; i++) {
             // console.log(data.data[i].name);
             const object = {
-              name: data.data[i].name, 
+              name: data.data[i].name,
               tags: data.data[i].tags,
               regime: data.data[i].regime,
               image: data.data[i].image,
               popularity: data.data[i].popularity,
-              
-              
-            };
+              _id: data.data[i]._id,
+             };
+             
             // console.log(object);
             newTabRecipes.push(object);
-            // NAME
-            // TAGS
-            // REGIME
-            // IMAGE
-            // POPULARITY
-
           }
           setRecipesData(newTabRecipes);
-          console.log(recipesData);
+          // console.log(recipesData);
           //setRecipes(data.data);
         } else {
           setRecipes([]);
@@ -158,15 +176,15 @@ export default function SearchScreen({ navigation }) {
     }
 
     const newTimeout = setTimeout(() => {
-      if (SearchQuery.length === 0) {
+      if (searchQuery.length === 0) {
         fetchPopularRecipes("");
-      } else if (SearchQuery.length >= 3) {
-        fetchPopularRecipes(SearchQuery);
+      } else if (searchQuery.length >= 3) {
+        fetchPopularRecipes(searchQuery);
       }
     }, 1000);
 
     setDebounceTimeout(newTimeout);
-  }, [SearchQuery]);
+  }, [searchQuery]);
 
   const regimeList = [
     { name: "sans gluten", src: require("../assets/gluten_free.png") },
@@ -183,7 +201,7 @@ export default function SearchScreen({ navigation }) {
   // Affichage des 10 recettes les plus populaires dans l'ordre décroissant
   // Sort pour Trier par popularité décroissante
   // Slice pour Prendre les 10 premiers éléments
-  // Map pour recupérer ces données dans ma constante popularRecipes
+  // Map pour récupérer ces données dans ma constante popularRecipes
   const popularRecipes = Array.isArray(recipes) ? recipesData.sort((a, b) => b.popularity - a.popularity).slice(0, 10).map((element, i) => {
     return (
       <Animatable.View key={i} style={styles.view}>
@@ -197,7 +215,24 @@ export default function SearchScreen({ navigation }) {
     );
   }) : [];
 
-  // affichage empty state si 0 resultat de recettes
+
+
+    // Affichage des 10 recettes les plus populaires dans l'ordre décroissant
+  // Sort pour Trier par popularité décroissante
+  // Slice pour Prendre les 10 premiers éléments
+  // Map pour récupérer ces données dans ma constante popularRecipes
+  const searchRecipes = Array.isArray(tabFilterByName) && tabFilterByName.map((element, i) => {
+    return (
+      <Animatable.View key={i} style={styles.view}>
+        <TouchableOpacity onPress={() => handleRecipeClick(element._id)}>
+          <View style={styles.recipes}>
+            <Image source={{ uri: element.image }} style={styles.recipeImage} />
+            <Text style={styles.H3}>{element.name}</Text>
+          </View>
+        </TouchableOpacity>
+      </Animatable.View>
+    );
+  });  // affichage empty state si 0 resultat de recettes
   const displayNull = () => {
     return (
       <View style={styles.emptyState}>
@@ -229,14 +264,14 @@ export default function SearchScreen({ navigation }) {
 
   useEffect(() => {
     setTimeout(() => {
-      searchResults(SearchQuery);
+      searchResults(searchQuery);
     }, 100);
   }, [isFocused]); // Ne déclenche qu'au focus, pas à chaque update de popularRecipes
 
   useEffect(() => {
     animate("fadeInLeft");
     setTimeout(() => {
-      fetchAllRecipes(SearchQuery);
+      fetchAllRecipes(searchQuery);
     }, 100);
   }, [isFocused, vignettesSelected]) /*, searchTimeout*/;
 
@@ -281,18 +316,18 @@ export default function SearchScreen({ navigation }) {
   //   console.log("loading...");
   // }
 
-  const handleSearch = (query) => {
-    setSearchQuery(query);
+  // const handleSearch = (query) => {
+  //   setSearchQuery(query);
 
-    if (searchTimeout) {
-      clearTimeout(searchTimeout);
-    }
-    setSearchTimeout(
-      setTimeout(() => {
-        searchResults(query);
-      }, 2000)
-    );
-  };
+  //   if (searchTimeout) {
+  //     clearTimeout(searchTimeout);
+  //   }
+  //   setSearchTimeout(
+  //     setTimeout(() => {
+  //       searchResults(query);
+  //     }, 2000)
+  //   );
+  // };
 
   // onPress sur les Vignettes
   let isSelected;
@@ -354,7 +389,7 @@ export default function SearchScreen({ navigation }) {
   //           console.log(activeMenu)
   //         })
   // };
-
+  
 
   return (
     <KeyboardAvoidingView
@@ -367,11 +402,11 @@ export default function SearchScreen({ navigation }) {
           <TextInput
             style={styles.searchBar}
             placeholder="Rechercher..."
-            value={SearchQuery}
-            onChangeText={handleSearch}
+            value={searchQuery}
+            onChangeText={searchResults}
           // clearButtonMode={"unless-editing"}
           />
-          {SearchQuery.length > 0 && (
+          {searchQuery.length > 0 && (
             <TouchableOpacity onPress={clearSearch} style={styles.clearButton}>
               <Image
                 style={styles.clearButtonIcon}
@@ -388,11 +423,13 @@ export default function SearchScreen({ navigation }) {
             : recipes.length > 0
               ? popularRecipes
               : displayNull()}
+            
+           {searchRecipesByName()} 
         </ScrollView>
       </View>
     </KeyboardAvoidingView>
-  );
-}
+  )};
+
 
 
 const styles = StyleSheet.create({
