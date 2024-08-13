@@ -9,6 +9,8 @@ import {
   TextInput,
   TouchableOpacity,
   SafeAreaView,
+  ScrollView,
+  Dimensions,
 } from "react-native";
 import Colors from "../utilities/color";
 import { useRoute } from "@react-navigation/native";
@@ -16,6 +18,9 @@ import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useIsFocused } from "@react-navigation/native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 
 export default function ModalScreen({ navigation, navigation: { goBack } }) {
   const URL = "https://lifemiam-backend.vercel.app";
@@ -55,9 +60,13 @@ export default function ModalScreen({ navigation, navigation: { goBack } }) {
         style={styles.recipeCont}
         onPress={() => {
           //   console.log("pressed", data.recipe._id) &&
-          navigation.navigate("Recipe", { RecetteID: data.recipe._id });
+          navigation.navigate("Recipe", {
+            RecetteID: data.recipe._id,
+            readingMode: true,
+          });
         }}
       >
+        <Image source={{ uri: data.recipe.image }} style={styles.recipeImage} />
         <Text style={styles.menuTxt}>{`${data.recipe.name}`}</Text>
         <TouchableOpacity>
           <FontAwesome
@@ -74,11 +83,21 @@ export default function ModalScreen({ navigation, navigation: { goBack } }) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Button onPress={() => navigation.goBack()} title="Dismiss" />
+        <TouchableOpacity
+          style={styles.backButtn}
+          onPress={() => navigation.goBack()}
+        >
+          <FontAwesome
+            name={"angle-left"}
+            style={styles.backIcon}
+            size={25}
+            color={"white"}
+          />
+          <Text style={styles.backText}>Menus</Text>
+        </TouchableOpacity>
         <Text style={[{ fontSize: 20 }, styles.h1]}>Choisir la recette</Text>
-        <Button onPress={() => {}} title="OK" />
       </View>
-      <View style={styles.recipesList}>{recipesDisplay}</View>
+      <ScrollView style={styles.recipesList}>{recipesDisplay}</ScrollView>
     </View>
   );
 }
@@ -86,33 +105,62 @@ export default function ModalScreen({ navigation, navigation: { goBack } }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: windowWidth,
     backgroundColor: Colors.LIGHT_GREEN,
   },
   header: {
     width: "100%",
     height: "8%",
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     alignItems: "center",
 
     borderBottomColor: Colors.WHITE,
-    borderBottomWidth: 2,
+    borderBottomWidth: 1,
+  },
+  backButtn: {
+    flexDirection: "row",
+    width: "20%",
+    height: 30,
+    backgroundColor: "rgba(54 94 50 / 0.6)",
+    justifyContent: "space-around",
+    alignItems: "center",
+    borderRadius: 25,
+    marginLeft: 15,
+  },
+  backIcon: {
+    marginLeft: 5,
+  },
+  backText: {
+    color: "white",
+    marginRight: 5,
+  },
+  recipesList: {
+    backgroundColor: Colors.LIGHT_GREEN,
+    paddingTop: 30,
   },
   h1: {
-    fontWeight: "bold",
-    color: Colors.DARK_GREEN,
+    fontWeight: "600",
+    color: "white",
+    paddingLeft: 50,
   },
   recipeCont: {
     flexDirection: "row",
-    marginTop: 5,
+    marginTop: 15,
     borderBottomRightRadius: 25,
     borderTopRightRadius: 25,
     backgroundColor: "#365E32",
-    height: 50,
+    height: 70,
     alignItems: "center",
     justifyContent: "space-between",
     paddingLeft: 10,
-    width: "80%",
+    width: "90%",
+  },
+  recipeImage: {
+    height: 75,
+    width: 75,
+    borderBottomLeftRadius: 30,
+    borderTopRightRadius: 30,
   },
   menuTxt: {
     color: "#E7D37F",

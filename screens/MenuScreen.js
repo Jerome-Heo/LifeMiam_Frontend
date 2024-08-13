@@ -141,7 +141,6 @@ export default function MenuScreen({ navigation }) {
       </View>
     );
 
-    
   return (
     <View style={styles.container}>
       <Text style={[styles.H1, styles.title]}>Menus</Text>
@@ -152,7 +151,6 @@ export default function MenuScreen({ navigation }) {
         />
         {display}
       </View>
-     
     </View>
   );
 }
