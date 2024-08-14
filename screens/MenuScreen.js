@@ -132,7 +132,7 @@ export default function MenuScreen({ navigation }) {
                 ></Image>
               </TouchableOpacity>
             ) : (
-              <TouchableOpacity style={styles.disabledPHButton}>
+              <TouchableOpacity style={styles.disabledPHButton} disabled={true}>
                 <Image
                   source={require("../assets/cooking.png")}
                   style={styles.imageCooking}
@@ -314,7 +314,6 @@ const styles = StyleSheet.create({
     width: "20%",
   },
   imageCooking: {
-    backgroundColor: "#365E32",
     height: 35,
     resizeMode: "contain",
   },
