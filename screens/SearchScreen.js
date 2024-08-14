@@ -10,43 +10,12 @@ import {
   TouchableOpacity,
   ScrollView,
   Pressable,
-  Dimensions,
 } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Colors from "../utilities/color";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import * as Animatable from "react-native-animatable";
-import { useRoute } from "@react-navigation/native";
-const types = [
-  "bounceIn",
-  "bounceInDown",
-  "bounceInUp",
-  "bounceInLeft",
-  "bounceInRight",
-  "fadeIn",
-  "fadeInDown",
-  "fadeInDownBig",
-  "fadeInUp",
-  "fadeInUpBig",
-  "fadeInLeft",
-  "fadeInLeftBig",
-  "fadeInRight",
-  "fadeInRightBig",
-  "lightSpeedIn",
-  "slideInDown",
-  "slideInUp",
-  "slideInLeft",
-  "slideInRight",
-  "zoomIn",
-  "zoomInDown",
-  "zoomInUp",
-  "zoomInLeft",
-  "zoomInRight",
-];
-
-const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
 
 export default function SearchScreen({ navigation }) {
   const [animation, setAnimation] = useState({
@@ -61,63 +30,66 @@ export default function SearchScreen({ navigation }) {
   };
   const prop = animation.visible ? { animation: animation.type } : {};
 
-  const [recipes, setRecipes] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchTimeout, setSearchTimeout] = useState(null);
-  const [Recipe, SetRecipe] = useState({});
+  const regimeList = [
+    { name: "sans gluten", src: require("../assets/gluten_free.png") },
+    { name: "végétalien", src: require("../assets/vegan.png") },
+    { name: "végétarien", src: require("../assets/vegetarian.png") },
+    { name: "halal", src: require("../assets/halal.png") },
+    { name: "sans lactose", src: require("../assets/lactose_free.png") },
+  ];
+  const userToken = useSelector((state) => state.user.value.token);
+  // const TEST token = "0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf";
+  const userRegime = useSelector((state) => state.user.value.regime);
+  const [vignettesSelected, setVignettesSelected] = useState(userRegime);
+
+  
   const [isLoading, setIsLoading] = useState(true);
   const isFocused = useIsFocused();
-  const activeMenu = useSelector((state) => state.user.value.menu);
   const [debounceTimeout, setDebounceTimeout] = useState(null);
-  const [recipesData, setRecipesData] = useState([]);
-  const [recipesSearchData, setRecipesSearchData] = useState([]);
-  const route = useRoute();
+  const [popularRecipes, setPopularRecipes] = useState([]);
   const URL = "https://lifemiam-backend.vercel.app";
   
-  // Affichage des 10 recettes les plus populaires dans l'ordre décroissant
-  // Sort pour Trier par popularité décroissante
-  // Slice pour Prendre les 10 premiers éléments
-  // Map pour recupérer ces données dans ma constante popularRecipes
-  const popularRecipes = Array.isArray(recipes) ? recipesData.sort((a, b) => b.popularity - a.popularity).slice(0, 10).map((element, i) => {
-    return (
-      <Animatable.View key={i} style={styles.view}>
-        <TouchableOpacity onPress={() => handleRecipeClick(element._id)}>
-          <View style={styles.recipes}>
-            <Image source={{ uri: element.image }} style={styles.recipeImage} />
-            <Text style={styles.H3}>{element.name}</Text>
-          </View>
-        </TouchableOpacity>
-      </Animatable.View>
-    );
-  }) : [];
+  const [recipesData, setRecipesData] = useState([]); // Fetch all 
+  const [recipes, setRecipes] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const fetchAllRecipes = () => {
     const fetchURL = `${URL}/recipes/all`;
-    // console.log(fetchURL);
     fetch(fetchURL)
       .then((response) => response.json())
       .then((data) => {
-        // console.log(data.data)
         if (data.result) {
           // ICI on va remplir le tableau des recettes
           let newTabRecipes = [];
           for (let i = 0; i < data.data.length; i++) {
-            // console.log(data.data[i].name);
             const object = {
+              _id: data.data[i]._id,
               name: data.data[i].name,
               tags: data.data[i].tags,
               regime: data.data[i].regime,
               image: data.data[i].image,
               popularity: data.data[i].popularity,
-              _id: data.data[i]._id,
             };
-            // console.log(object);
             newTabRecipes.push(object);
           }
           setRecipesData(newTabRecipes);
+          // On ajoute toutes les recettes dans notre useState
+          const popularRecipes = newTabRecipes.sort((a, b) => b.popularity - a.popularity).slice(0, 10).map((element, i) => {
+            return (
+              <Animatable.View key={i} style={styles.view}>
+                <TouchableOpacity onPress={() => handleRecipeClick(element._id)}>
+                  <View style={styles.recipes}>
+                    <Image source={{ uri: element.image }} style={styles.recipeImage} />
+                    <Text style={styles.H3}>{element.name}</Text>
+                  </View>
+                </TouchableOpacity>
+              </Animatable.View>
+            );
+          });
+          setPopularRecipes(popularRecipes);
           // console.log(recipesData);
         } else {
-          setRecipes([]);
+
           // console.error("Aucune recette correspondante");
         }
         setIsLoading(false);
@@ -132,33 +104,19 @@ export default function SearchScreen({ navigation }) {
     }
   };
 
-  //JE CROIS QU'ON VA FAIRE UNE RECHERCHE NORMALE SANS TIMEOUT PCQ CA FAIT TROP LONGTEMPS QUE JE SUIS DESSUS ET IL EST TARD (00h14) ET SURTOUT CA ME ***** *** ********!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  //Cordialement,
   const handleSearch = (query) => {
     setSearchQuery(query);
-
     if (debounceTimeout) {
       clearTimeout(debounceTimeout);
     }
-
-    // Retarder la recherche 
     const newTimeout = setTimeout(() => {
       if (query.length >= 3) {
-        // Filtre les recettes à partir de recipesData
         const filteredRecipes = recipesData.filter((recipe) =>
           recipe.name.toLowerCase().includes(query.toLowerCase())
         );
-        // MAJ recettes
         setRecipes(filteredRecipes);
       } else if (query.length === 0) {
-        fetch(`${URL}/recipes/all`)
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.result) {
-              // Si recherche crash => reset
-              setRecipes(recipesData);
-            }
-          })
+        setRecipes(recipesData); // Réafficher les recettes populaires si la recherche est vide
       }
     }, 500);
 
@@ -166,17 +124,6 @@ export default function SearchScreen({ navigation }) {
   };
 
 
-  const regimeList = [
-    { name: "sans gluten", src: require("../assets/gluten_free.png") },
-    { name: "végétalien", src: require("../assets/vegan.png") },
-    { name: "végétarien", src: require("../assets/vegetarian.png") },
-    { name: "halal", src: require("../assets/halal.png") },
-    { name: "sans lactose", src: require("../assets/lactose_free.png") },
-  ];
-  const userToken = useSelector((state) => state.user.value.token);
-  // const token = "HkkfE9VmlughUTLaNifglDHuTNC5yfx5";
-  const userRegime = useSelector((state) => state.user.value.regime);
-  const [vignettesSelected, setVignettesSelected] = useState(userRegime);
   const displayNull = () => {
     return (
       <View style={styles.emptyState}>
@@ -186,36 +133,24 @@ export default function SearchScreen({ navigation }) {
     );
   };
 
-  const loadingView = () => {
-    return (
-      <View style={styles.emptyState}>
-        <Text style={styles.loadingText}>Loading...</Text>
-      </View>
-    );
-  };
 
-  const popularOrSearchRecipes = recipes.length > 0 ? (
-    recipes.map((element, i) => (
-      <Animatable.View key={i} style={styles.view}>
-        <TouchableOpacity onPress={() => handleRecipeClick(element._id)}>
-          <View style={styles.recipes}>
-            <Image source={{ uri: element.image }} style={styles.recipeImage} />
-            <Text style={styles.H3}>{element.name}</Text>
-          </View>
-        </TouchableOpacity>
-      </Animatable.View>
-    ))
-  ) : (
-    displayNull()
-  );
+  const displayedRecipes = recipes.map((element, i) => (
+    <Animatable.View key={i} style={styles.view} {...prop}>
+      <TouchableOpacity onPress={() => handleRecipeClick(element._id)}>
+        <View style={styles.recipes}>
+          <Image source={{ uri: element.image }} style={styles.recipeImage} />
+          <Text style={styles.H3}>{element.name}</Text>
+        </View>
+      </TouchableOpacity>
+    </Animatable.View>
+  ));
 
-
+  
   const clearSearch = () => {
     setSearchQuery("");
     // setVignettesSelected(userRegime);
     fetchAllRecipes("");
-
-  };
+};
 
   useEffect(() => {
     animate("fadeInLeft");
@@ -224,15 +159,15 @@ export default function SearchScreen({ navigation }) {
     }, 100);
   }, [isFocused, vignettesSelected]) /*, searchTimeout*/;
 
-    //chemin de navigation vers RecipeScreen par le clic
-    const handleRecipeClick = (id) => {
-      const updatedRecipes = recipes.map((recette) =>
-        recette.id === id ? { ...recipes, clics: recette.clics + 1 } : recipes
-      );
-      setRecipes(updatedRecipes); //why?
-      // setFilteredRecipes(updatedRecipes);
-      navigation.navigate("Recipe", { RecetteID: id, readingMode: false });
-    };
+  //chemin de navigation vers RecipeScreen par le clic
+  const handleRecipeClick = (id) => {
+    const updatedRecipes = recipes.map((recette) =>
+      recette.id === id ? { ...recipes, clics: recette.clics + 1 } : recipes
+    );
+    setRecipes(updatedRecipes); //why?
+    // setFilteredRecipes(updatedRecipes);
+    navigation.navigate("Recipe", { RecetteID: id, readingMode: false });
+  };
 
 
   // onPress sur les Vignettes
@@ -268,13 +203,13 @@ export default function SearchScreen({ navigation }) {
     );
   });
 
+  //Titre conditionnel
+  const listTitle = searchQuery.length <= 2 ? "Recettes populaires" : "Résultats de votre recherche";
 
-  const listTitle = searchQuery.length <= 2 ?  "Recettes populaires" : "Résultats de votre recherche";
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
+      style={styles.container}>
       <View style={styles.titleCont}>
         <Text style={styles.H1}>Recettes</Text>
         <View style={styles.searchContainer}>
@@ -282,28 +217,22 @@ export default function SearchScreen({ navigation }) {
             style={styles.searchBar}
             placeholder="Rechercher..."
             value={searchQuery}
-            onChangeText={handleSearch}
-          // clearButtonMode={"unless-editing"}
-          />
+            onChangeText={value => handleSearch(value)} />
           {searchQuery.length > 0 && (
-            <TouchableOpacity onPress={() => setSearchQuery("")} style={styles.clearButton}>
-              <Image
-                style={styles.clearButtonIcon}
-                source={require("../assets/clear.png")}
-              />
+            <TouchableOpacity onPress={clearSearch} style={styles.clearButton}>
+              <Image style={styles.clearButtonIcon} source={require("../assets/clear.png")} />
             </TouchableOpacity>
           )}
         </View>
         <View style={styles.vignetteContainer}>{regimeVignettes}</View>
         <Text style={styles.H2}>{listTitle}</Text>
         <ScrollView style={styles.ScrollCont}>
-          {isLoading ? loadingView() : popularRecipes}
+          {recipes.length > 0 ? displayedRecipes : popularRecipes}
         </ScrollView>
       </View>
     </KeyboardAvoidingView>
   )
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -434,6 +363,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+
   icon: { width: 15, height: 15 },
 
   notFound: {
@@ -441,5 +371,4 @@ const styles = StyleSheet.create({
     fontSize: 35,
   },
 
-  loadingText: {},
 });
