@@ -224,6 +224,15 @@ export default function SearchScreen({ navigation }) {
     }, 100);
   }, [isFocused, vignettesSelected]) /*, searchTimeout*/;
 
+    //chemin de navigation vers RecipeScreen par le clic
+    const handleRecipeClick = (id) => {
+      const updatedRecipes = recipes.map((recette) =>
+        recette.id === id ? { ...recipes, clics: recette.clics + 1 } : recipes
+      );
+      setRecipes(updatedRecipes); //why?
+      // setFilteredRecipes(updatedRecipes);
+      navigation.navigate("Recipe", { RecetteID: id, readingMode: false });
+    };
 
 
   // onPress sur les Vignettes
