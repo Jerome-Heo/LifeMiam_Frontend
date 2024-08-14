@@ -27,7 +27,7 @@ function Signin({ navigation }) {
   //const [signin, setSignin] = useState(null);
   //const [password, SetPassword] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
-
+  const [displayError, setDisplayError] = useState(null);
   const [signin, setSignin] = useState('Test');
   const [password, SetPassword] = useState('test');
 
@@ -39,7 +39,7 @@ function Signin({ navigation }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         if (data.result === true) {
           dispatch(token(data.token));
 
@@ -59,6 +59,7 @@ function Signin({ navigation }) {
         } else {
           // Display an error
           console.log("Erreur avec la connexion");
+          setDisplayError(data.error);
         }
       });
   };
@@ -112,7 +113,10 @@ function Signin({ navigation }) {
           )}
         </View>
         
+        
+
       </View>
+      {displayError && <View><Text style={styles.error}>{displayError}</Text></View>}
       <TouchableOpacity
         style={styles.signinButton}
         onPress={() => handleSignin()}
@@ -120,6 +124,7 @@ function Signin({ navigation }) {
         <Text style={styles.signinButtonText}>Connexion</Text>
       </TouchableOpacity>
     </KeyboardAvoidingView>
+    
   );
 }
 
@@ -190,6 +195,13 @@ const styles = StyleSheet.create({
   },
   password: {
     color: "black",
+  },
+  error: {
+    marginTop: 10,
+
+    textAlign: "center",
+    width: "100%",
+    color: "red",
   },
 });
 
