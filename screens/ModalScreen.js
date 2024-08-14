@@ -99,7 +99,10 @@ export default function ModalScreen({ navigation, navigation: { goBack } }) {
       <Text style={styles.resultText}>
         {recipes.length} recettes dans le menu {urlParams.menuName} :
       </Text>
-      <ScrollView style={styles.recipesList}>{recipesDisplay}</ScrollView>
+      <ScrollView style={styles.recipesList}>
+        {recipesDisplay}
+        <View style={styles.emptyBox}></View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -145,13 +148,19 @@ const styles = StyleSheet.create({
   resultText: {
     marginLeft: 20,
     marginTop: 30,
+    marginBottom: 15,
     color: "white",
     fontWeight: "500",
     fontSize: 18,
   },
   recipesList: {
     backgroundColor: Colors.LIGHT_GREEN,
-    paddingTop: 30,
+    paddingTop: 5,
+    paddingBottom: 30,
+  },
+  emptyBox: {
+    height: 30,
+    backgroundColor: Colors.LIGHT_GREEN,
   },
 
   recipeCont: {

@@ -212,7 +212,7 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
             />
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity style={styles.disabledButtons}>
+          <TouchableOpacity style={styles.disabledButtons} disabled={true}>
             <FontAwesome name={"plus"} size={25} color={"#E7D37F"} />
           </TouchableOpacity>
         )}
@@ -258,11 +258,17 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
             </View>
           ) : (
             <View style={styles.selectorCont}>
-              <TouchableOpacity style={styles.disabledSelectorButton}>
+              <TouchableOpacity
+                style={styles.disabledSelectorButton}
+                disabled={true}
+              >
                 <Text style={styles.selectors}>-</Text>
               </TouchableOpacity>
               <Text style={styles.H2}>{menuServing}</Text>
-              <TouchableOpacity style={styles.disabledSelectorButton}>
+              <TouchableOpacity
+                style={styles.disabledSelectorButton}
+                disabled={true}
+              >
                 <Text style={styles.selectors}>+</Text>
               </TouchableOpacity>
             </View>
