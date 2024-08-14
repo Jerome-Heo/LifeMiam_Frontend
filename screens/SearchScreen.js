@@ -10,40 +10,12 @@ import {
   TouchableOpacity,
   ScrollView,
   Pressable,
-  Dimensions,
 } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Colors from "../utilities/color";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import * as Animatable from "react-native-animatable";
-import { useRoute } from "@react-navigation/native";
-const types = [
-  "bounceIn",
-  "bounceInDown",
-  "bounceInUp",
-  "bounceInLeft",
-  "bounceInRight",
-  "fadeIn",
-  "fadeInDown",
-  "fadeInDownBig",
-  "fadeInUp",
-  "fadeInUpBig",
-  "fadeInLeft",
-  "fadeInLeftBig",
-  "fadeInRight",
-  "fadeInRightBig",
-  "lightSpeedIn",
-  "slideInDown",
-  "slideInUp",
-  "slideInLeft",
-  "slideInRight",
-  "zoomIn",
-  "zoomInDown",
-  "zoomInUp",
-  "zoomInLeft",
-  "zoomInRight",
-];
 
 export default function SearchScreen({ navigation }) {
   const [animation, setAnimation] = useState({
@@ -70,15 +42,16 @@ export default function SearchScreen({ navigation }) {
   const userRegime = useSelector((state) => state.user.value.regime);
   const [vignettesSelected, setVignettesSelected] = useState(userRegime);
 
-  const [recipes, setRecipes] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
+  
   const [isLoading, setIsLoading] = useState(true);
   const isFocused = useIsFocused();
   const [debounceTimeout, setDebounceTimeout] = useState(null);
-  const [recipesData, setRecipesData] = useState([]);
   const [popularRecipes, setPopularRecipes] = useState([]);
   const URL = "https://lifemiam-backend.vercel.app";
-
+  
+  const [recipesData, setRecipesData] = useState([]); // Fetch all 
+  const [recipes, setRecipes] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const fetchAllRecipes = () => {
     const fetchURL = `${URL}/recipes/all`;
@@ -116,7 +89,7 @@ export default function SearchScreen({ navigation }) {
           setPopularRecipes(popularRecipes);
           // console.log(recipesData);
         } else {
-          //setRecipes([]);
+
           // console.error("Aucune recette correspondante");
         }
         setIsLoading(false);
@@ -172,13 +145,12 @@ export default function SearchScreen({ navigation }) {
     </Animatable.View>
   ));
 
-
+  
   const clearSearch = () => {
     setSearchQuery("");
     // setVignettesSelected(userRegime);
     fetchAllRecipes("");
-
-  };
+};
 
   useEffect(() => {
     animate("fadeInLeft");
