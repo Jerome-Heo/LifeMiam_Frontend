@@ -60,7 +60,6 @@ export default function MenuScreen({ navigation }) {
   };
 
   const getListInformations = (id) => {
-    
     fetch(`${URL}/shop/getlist/${id}`, {
     method: "POST",
     headers: {
@@ -122,8 +121,8 @@ export default function MenuScreen({ navigation }) {
               <TouchableOpacity onPress={() => handleShoppingList(data._id)} style={styles.PHProgressBar}>
                 <Text style={styles.courseTitleText}>Courses</Text>
               </TouchableOpacity>
-            </View>
-            <TouchableOpacity
+
+              <TouchableOpacity
               style={styles.PHButton}
               onPress={() => handleRecipeDisplay(data._id)}
             >
@@ -132,6 +131,9 @@ export default function MenuScreen({ navigation }) {
                 style={styles.imageCooking}
               ></Image>
             </TouchableOpacity>
+
+            </View>
+       
           </View>
   
       );

@@ -15,8 +15,11 @@ export const userSlice = createSlice({
       state.value.regime = action.payload;
     },
     addRegime: (state, action) => {
+     if (!state.value.regime.find((e)=> e === action.payload))
+     {
       state.value.regime.push(action.payload);
       console.log("ajouter", action.payload);
+     }
     },
     removeRegime: (state, action) => {
       state.value.regime = state.value.regime.filter(

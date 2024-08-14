@@ -65,7 +65,7 @@ export default function ListScreen({ navigation, navigation: { goBack } }) {
             setError(null);
           } else {
             // console.error(data.error);
-            setError(data.error);
+            // setError(data.error);
             dispatch(setList(null));
             setList(null);
           }

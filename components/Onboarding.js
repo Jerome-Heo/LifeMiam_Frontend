@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import {
   View,
   Image,
@@ -54,6 +54,16 @@ function Onboarding({ navigation, page }) {
     );
   });
 
+  useEffect(() => {
+
+    if(page == 'profile')
+    {
+      handleGo()
+    }
+ 
+
+  }, [userRegime]);
+
   let disabledButton = {
     backgroundColor: Colors.LIGHT_GREEN,
     opacity: 0.6,
@@ -82,8 +92,12 @@ function Onboarding({ navigation, page }) {
         .then((response) => response.json())
         .then((data) => {
           console.log("data", data);
-          data.result &&
+
+          if (page == 'onboarding')
+          {
+            data.result &&
             navigation.navigate("TabNavigator", { screen: "Search" });
+          }       
         });
     }
   };
@@ -164,15 +178,18 @@ const styles = StyleSheet.create({
   },
   subtitle: { color: "black", fontSize: 14, paddingLeft: 25 },
   vignetteContainer: {
-    width: windowWidth,
+    marginTop:50,
+    width: windowWidth/5*4,
     height: 300,
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-around",
+    alignItems:'center',
+    alignSelf:'center'
   },
 
   TagVignette: {
-    marginTop: 30,
+    marginTop: 40,
     marginHorizontal: 5,
     padding: 10,
     justifyContent: "space-between",
@@ -198,7 +215,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 100,
     width: 25,
-    height: 25,
+    aspectRatio:1/1,
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
