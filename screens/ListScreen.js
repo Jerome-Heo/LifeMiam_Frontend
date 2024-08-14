@@ -39,6 +39,7 @@ export default function ListScreen({ navigation, navigation: { goBack } }) {
   const isFocused = useIsFocused();
   const urlParams = route.params;
 
+
   useEffect(() => {
     // si la liste existe, je la récupère et la pousse en reducer
     // si elle n'existe pas , je la génère et la stock en reducer et bdd
@@ -66,11 +67,11 @@ export default function ListScreen({ navigation, navigation: { goBack } }) {
           } else {
             // console.error(data.error);
             // setError(data.error);
+           
             dispatch(setList(null));
             setList(null);
           }
         });
-
 
       if (!userList) {
         // n'existe pas , je la crée
@@ -97,6 +98,27 @@ export default function ListScreen({ navigation, navigation: { goBack } }) {
     } else {
       setError("Aucunes données, êtes-vous connecté ?");
     }
+  }, [isFocused]);
+
+  useEffect(() => {
+
+    if(!isFocused)
+    {
+      fetch(`${URL}/shop/updatelist/${idList}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            token: userToken, 
+            ingredients: userList
+        }),
+    })
+    .then(response => response.json())
+    .then(data => console.log(data));
+    }
+ 
+ 
   }, [isFocused]);
 
   let displayAll = [];
@@ -140,6 +162,10 @@ export default function ListScreen({ navigation, navigation: { goBack } }) {
       displayAll = [...displayAll, boxCategory];
     }
   }
+
+
+
+
 
   return (
     <KeyboardAvoidingView

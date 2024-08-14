@@ -93,18 +93,6 @@ export default function SwipableItem({idlist, name, quantity, unit, buyed}) {
             return e;
         });
         dispatch(setList(newList));
-        fetch(`${URL}/shop/updatelist/${idlist}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                token: userToken, 
-                ingredients: newList
-            }),
-        })
-        .then(response => response.json())
-        .then(data => console.log(data));
     };
 
     return (
