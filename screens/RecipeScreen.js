@@ -100,7 +100,7 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        setMsg(data.menu.name);
+        setMsg(data.menu.name)
         showAlert();
       });
   };
@@ -199,10 +199,9 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
         </TouchableOpacity>
         {!readingMode ? (
           <TouchableOpacity
-            style={[
-              styles.buttons,
-              { backgroundColor: !currentMenu ? "transparent" : "#365E32" },
-            ]}
+            style={[ styles.buttons,
+              {backgroundColor: !currentMenu ? "transparent" : "#365E32"} 
+             ]}
             onPress={() => addRecipeMenu()}
           >
             <FontAwesome
@@ -212,8 +211,13 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
             />
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity style={styles.disabledButtons} disabled={true}>
-            <FontAwesome name={"plus"} size={25} color={"#E7D37F"} />
+          <TouchableOpacity style={styles.disabledButtons}>
+            <FontAwesome
+              name={"plus"}
+              size={25}
+              color={"#E7D37F"}
+              // opacity={"0.5"}
+            />
           </TouchableOpacity>
         )}
       </View>
@@ -258,17 +262,11 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
             </View>
           ) : (
             <View style={styles.selectorCont}>
-              <TouchableOpacity
-                style={styles.disabledSelectorButton}
-                disabled={true}
-              >
+              <TouchableOpacity style={styles.disabledSelectorButton}>
                 <Text style={styles.selectors}>-</Text>
               </TouchableOpacity>
               <Text style={styles.H2}>{menuServing}</Text>
-              <TouchableOpacity
-                style={styles.disabledSelectorButton}
-                disabled={true}
-              >
+              <TouchableOpacity style={styles.disabledSelectorButton}>
                 <Text style={styles.selectors}>+</Text>
               </TouchableOpacity>
             </View>
