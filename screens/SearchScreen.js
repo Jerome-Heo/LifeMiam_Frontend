@@ -9,7 +9,6 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  Button,
   Pressable,
   Dimensions,
 } from "react-native";
@@ -63,44 +62,109 @@ export default function SearchScreen({ navigation }) {
   const prop = animation.visible ? { animation: animation.type } : {};
 
   const [recipes, setRecipes] = useState([]);
-  const [SearchQuery, setSearchQuery] = useState("");
-  // const [filteredRecipes, setFilteredRecipes] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchTimeout, setSearchTimeout] = useState(null);
-  // const [serving, setServing] = useState(Recipe.default_serving);
   const [Recipe, SetRecipe] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const isFocused = useIsFocused();
   const activeMenu = useSelector((state) => state.user.value.menu);
   const [debounceTimeout, setDebounceTimeout] = useState(null);
-  // const {RecetteID} = route.params;
+  const [recipesData, setRecipesData] = useState([]);
+  const [recipesSearchData, setRecipesSearchData] = useState([]);
   const route = useRoute();
   const URL = "https://lifemiam-backend.vercel.app";
+  
+  // Affichage des 10 recettes les plus populaires dans l'ordre décroissant
+  // Sort pour Trier par popularité décroissante
+  // Slice pour Prendre les 10 premiers éléments
+  // Map pour recupérer ces données dans ma constante popularRecipes
+  const popularRecipes = Array.isArray(recipes) ? recipesData.sort((a, b) => b.popularity - a.popularity).slice(0, 10).map((element, i) => {
+    return (
+      <Animatable.View key={i} style={styles.view}>
+        <TouchableOpacity onPress={() => handleRecipeClick(element._id)}>
+          <View style={styles.recipes}>
+            <Image source={{ uri: element.image }} style={styles.recipeImage} />
+            <Text style={styles.H3}>{element.name}</Text>
+          </View>
+        </TouchableOpacity>
+      </Animatable.View>
+    );
+  }) : [];
 
-  useEffect(() => {
-    if (isFocused) {
-      setIsLoading(true);
-      setTimeout(() => {
-        fetchRecipesResults("");
+  const fetchAllRecipes = () => {
+    const fetchURL = `${URL}/recipes/all`;
+    // console.log(fetchURL);
+    fetch(fetchURL)
+      .then((response) => response.json())
+      .then((data) => {
+        // console.log(data.data)
+        if (data.result) {
+          // ICI on va remplir le tableau des recettes
+          let newTabRecipes = [];
+          for (let i = 0; i < data.data.length; i++) {
+            // console.log(data.data[i].name);
+            const object = {
+              name: data.data[i].name,
+              tags: data.data[i].tags,
+              regime: data.data[i].regime,
+              image: data.data[i].image,
+              popularity: data.data[i].popularity,
+              _id: data.data[i]._id,
+            };
+            // console.log(object);
+            newTabRecipes.push(object);
+          }
+          setRecipesData(newTabRecipes);
+          // console.log(recipesData);
+        } else {
+          setRecipes([]);
+          // console.error("Aucune recette correspondante");
+        }
         setIsLoading(false);
-      }, 2000);
-    }
-  }, [isFocused]);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        console.log("Erreur lors de la récupération des résultats : ", error);
+      });
 
-  useEffect(() => {
+    if (isLoading) {
+      console.log("loading...");
+    }
+  };
+
+  //JE CROIS QU'ON VA FAIRE UNE RECHERCHE NORMALE SANS TIMEOUT PCQ CA FAIT TROP LONGTEMPS QUE JE SUIS DESSUS ET IL EST TARD (00h14) ET SURTOUT CA ME ***** *** ********!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  //Cordialement,
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+
     if (debounceTimeout) {
       clearTimeout(debounceTimeout);
     }
 
+    // Retarder la recherche 
     const newTimeout = setTimeout(() => {
-      if (SearchQuery.length === 0) {
-        fetchRecipesResults("");
-      } else if (SearchQuery.length >= 3) {
-        fetchRecipesResults(SearchQuery);
+      if (query.length >= 3) {
+        // Filtre les recettes à partir de recipesData
+        const filteredRecipes = recipesData.filter((recipe) =>
+          recipe.name.toLowerCase().includes(query.toLowerCase())
+        );
+        // MAJ recettes
+        setRecipes(filteredRecipes);
+      } else if (query.length === 0) {
+        fetch(`${URL}/recipes/all`)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.result) {
+              // Si recherche crash => reset
+              setRecipes(recipesData);
+            }
+          })
       }
-    }, 1000);
+    }, 500);
 
     setDebounceTimeout(newTimeout);
-  }, [SearchQuery]);
+  };
+
 
   const regimeList = [
     { name: "sans gluten", src: require("../assets/gluten_free.png") },
@@ -113,87 +177,54 @@ export default function SearchScreen({ navigation }) {
   // const token = "HkkfE9VmlughUTLaNifglDHuTNC5yfx5";
   const userRegime = useSelector((state) => state.user.value.regime);
   const [vignettesSelected, setVignettesSelected] = useState(userRegime);
+  const displayNull = () => {
+    return (
+      <View style={styles.emptyState}>
+        <FontAwesome name={"search"} size={60} onPress={() => { }} />
+        <Text style={styles.notFound}>Aucune recette trouvée...</Text>
+      </View>
+    );
+  };
 
-  // REFACTO to have one fetch URL instead of 1 for popular recipes and 1 for search
-  // const fetchPopularRecipes = () => {
-  //   fetch(`${URL}/recipes/?sortBy=popularity`)
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       setRecipes(data.data);
-  //       // setFilteredRecipes(data.data);
-  //       // console.log(data.data)
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching data:", error);
-  //     });
-  // };
+  const loadingView = () => {
+    return (
+      <View style={styles.emptyState}>
+        <Text style={styles.loadingText}>Loading...</Text>
+      </View>
+    );
+  };
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     fetchRecipesResults(SearchQuery);
-  //   }, 100);
-  // }, [isFocused]); // Ne déclenche qu'au focus, pas à chaque update de popularRecipes
+  const popularOrSearchRecipes = recipes.length > 0 ? (
+    recipes.map((element, i) => (
+      <Animatable.View key={i} style={styles.view}>
+        <TouchableOpacity onPress={() => handleRecipeClick(element._id)}>
+          <View style={styles.recipes}>
+            <Image source={{ uri: element.image }} style={styles.recipeImage} />
+            <Text style={styles.H3}>{element.name}</Text>
+          </View>
+        </TouchableOpacity>
+      </Animatable.View>
+    ))
+  ) : (
+    displayNull()
+  );
+
+
+  const clearSearch = () => {
+    setSearchQuery("");
+    // setVignettesSelected(userRegime);
+    fetchAllRecipes("");
+
+  };
 
   useEffect(() => {
     animate("fadeInLeft");
     setTimeout(() => {
-      fetchRecipesResults(SearchQuery);
+      fetchAllRecipes(searchQuery);
     }, 100);
   }, [isFocused, vignettesSelected]) /*, searchTimeout*/;
 
-  //   useEffect(() => {
-  //     fetch(`${URL}/recipes/${RecetteID}/${token}`)
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //         SetRecipe(data.data)
-  //         setServing(data.data.default_serving)
-  //     })
-  // }, [RecetteID])
 
-  //requête BDD pour obtenir les recettes demandées
-  const fetchRecipesResults = (query) => {
-    const formattedVignettes = vignettesSelected.map((e) =>
-      encodeURIComponent(e)
-    );
-    // console.log("formattedVignettes:", formattedVignettes);
-    // console.log("v:", vignettesSelected)
-    const fetchVignettes = JSON.stringify(vignettesSelected);
-    // console.log("fetchVignettes:", fetchVignettes);
-    const fetchURL = `${URL}/recipes/?sortBy=popularity&search=${query}&tags=${fetchVignettes}`;
-    console.log(fetchURL);
-    fetch(fetchURL)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.result) {
-          // setFilteredRecipes(data.data);
-          setRecipes(data.data);
-        } else {
-          setRecipes([]);
-          // console.error("Aucune recette correspondante");
-        }
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        console.log("Erreur lors de la récupération des résultats : ", error);
-      });
-  };
-  if (isLoading) {
-    console.log("loading...");
-  }
-
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-
-    // if (searchTimeout) {
-    //   clearTimeout(searchTimeout);
-    // }
-    // setSearchTimeout(
-    //   setTimeout(() => {
-    //     fetchRecipesResults(query);
-    //   }, 2000)
-    // );
-  };
 
   // onPress sur les Vignettes
   let isSelected;
@@ -207,8 +238,6 @@ export default function SearchScreen({ navigation }) {
     } else {
       setVignettesSelected([...vignettesSelected, name]);
     }
-    // console.log("searchQuery", SearchQuery);
-    // console.log("vignettes:", vignettesSelected);
   };
 
   // afficher les vignettes de regime, selon les regimes dans le reducer user
@@ -230,86 +259,8 @@ export default function SearchScreen({ navigation }) {
     );
   });
 
-  //
 
-  //chemin de navigation vers RecipeScreen par le clic
-  const handleRecipeClick = (id) => {
-    const updatedRecipes = recipes.map((recette) =>
-      recette.id === id ? { ...recipes, clics: recette.clics + 1 } : recipes
-    );
-    setRecipes(updatedRecipes); //why?
-    // setFilteredRecipes(updatedRecipes);
-    navigation.navigate("Recipe", { RecetteID: id, readingMode: false });
-  };
-
-  //Ajouter une recette au menu avec bouton +
-  //   const addRecipeToMenu = () =>{
-  //     fetch(`${URL}/menus/${activeMenu}/addRecipe`,{
-  //         method: "POST",
-  //         headers: { 'Content-Type': 'application/json' },
-  //         body: JSON.stringify({ recipeId: route.params, serving : serving }),
-  //       })
-  //         .then((response) => response.json())
-  //         .then((data) => {
-  //           console.log(data);
-  //           console.log(activeMenu)
-  //         })
-  // };
-
-  //affichage des recettes populaires avec les images cloudinary depuis la BDD
-  const popularRecipes = recipes.map((element, i) => {
-    // console.log(element.image)
-    return (
-      <Animatable.View key={i} style={styles.view} {...prop}>
-        <TouchableOpacity
-          key={i}
-          onPress={() => handleRecipeClick(element._id)}
-        >
-          <View style={styles.recipes}>
-            <Image source={{ uri: element.image }} style={styles.recipeImage} />
-            <Text style={styles.H3}>{element.name}</Text>
-
-            <View style={styles.PHbutton}>
-              <TouchableOpacity
-                style={styles.addButton}
-                onPress={() => addRecipeToMenu()}
-              >
-                <Image source={require("../assets/smallAdd.png")}></Image>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </TouchableOpacity>
-      </Animatable.View>
-    );
-  });
-
-  // affichage empty state si 0 resultat de recettes
-  const displayNull = () => {
-    return (
-      <View style={styles.emptyState}>
-        <FontAwesome name={"search"} size={60} onPress={() => {}} />
-        <Text style={styles.notFound}>Aucune recette trouvée...</Text>
-      </View>
-    );
-  };
-
-  const loadingView = () => {
-    return (
-      <View style={styles.emptyState}>
-        <Text style={styles.loadingText}>Loading...</Text>
-      </View>
-    );
-  };
-
-  //bouton "clear" pour effacer ce qui est écrit dans l'input
-  const clearSearch = () => {
-    setSearchQuery("");
-    setVignettesSelected(userRegime);
-    fetchRecipesResults("");
-    // setFilteredRecipes([]);
-    // setRecipes([]);
-  };
-
+  const listTitle = searchQuery.length <= 2 ?  "Recettes populaires" : "Résultats de votre recherche";
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -321,12 +272,12 @@ export default function SearchScreen({ navigation }) {
           <TextInput
             style={styles.searchBar}
             placeholder="Rechercher..."
-            value={SearchQuery}
+            value={searchQuery}
             onChangeText={handleSearch}
-            // clearButtonMode={"unless-editing"}
+          // clearButtonMode={"unless-editing"}
           />
-          {SearchQuery.length > 0 && (
-            <TouchableOpacity onPress={clearSearch} style={styles.clearButton}>
+          {searchQuery.length > 0 && (
+            <TouchableOpacity onPress={() => setSearchQuery("")} style={styles.clearButton}>
               <Image
                 style={styles.clearButtonIcon}
                 source={require("../assets/clear.png")}
@@ -335,18 +286,15 @@ export default function SearchScreen({ navigation }) {
           )}
         </View>
         <View style={styles.vignetteContainer}>{regimeVignettes}</View>
-        <Text style={styles.H2}>Les recettes populaires</Text>
+        <Text style={styles.H2}>{listTitle}</Text>
         <ScrollView style={styles.ScrollCont}>
-          {isLoading
-            ? loadingView()
-            : recipes.length > 0
-            ? popularRecipes
-            : displayNull()}
+          {isLoading ? loadingView() : popularRecipes}
         </ScrollView>
       </View>
     </KeyboardAvoidingView>
-  );
-}
+  )
+};
+
 
 const styles = StyleSheet.create({
   container: {

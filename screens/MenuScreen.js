@@ -16,6 +16,7 @@ import Colors from "../utilities/color";
 
 export default function MenuScreen({ navigation }) {
   const userToken = useSelector((state) => state.user.value.token);
+  const courselist = useSelector((state) => state.user.value.list);
   //const token = '0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf';
   const URL = "https://lifemiam-backend.vercel.app";
 
@@ -58,6 +59,25 @@ export default function MenuScreen({ navigation }) {
     navigation.navigate("RecipesModal", { menuId: id, menuName: name });
   };
 
+  const getListInformations = (id) => {
+    
+    fetch(`${URL}/shop/getlist/${id}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ token: userToken }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+   
+    return data
+ 
+    
+
+    });
+  }
+
   //Est-ce que j'ai cliqué sur la creation de menu ?
   //Affichage des boutons dédiés à la création
   const createMenuButton = isCreatingMenu ? (
@@ -91,35 +111,29 @@ export default function MenuScreen({ navigation }) {
   const menusDisplay =
     menus &&
     menus.map((data, i) => {
+      // console.log(data._id);
+      // let courseList=getListInformations(data._id)
+      // console.log(courseList);
       return (
         <View key={i} style={styles.menuCont}>
           <Text style={styles.H3}>{`${data.name}`}</Text>
           <View style={styles.PHCont}>
-            <View style={styles.PHProgressBar}>
-              <TouchableOpacity onPress={() => handleShoppingList(data._id)}>
+            
+              <TouchableOpacity onPress={() => handleShoppingList(data._id)} style={styles.PHProgressBar}>
                 <Text style={styles.courseTitleText}>Courses</Text>
               </TouchableOpacity>
             </View>
-            {data.menu_recipes.length > 0 ? (
-              <TouchableOpacity
-                style={styles.PHButton}
-                onPress={() => handleRecipeDisplay(data._id, data.name)}
-              >
-                <Image
-                  source={require("../assets/cooking.png")}
-                  style={styles.imageCooking}
-                ></Image>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity style={styles.disabledPHButton}>
-                <Image
-                  source={require("../assets/cooking.png")}
-                  style={styles.imageCooking}
-                ></Image>
-              </TouchableOpacity>
-            )}
+            <TouchableOpacity
+              style={styles.PHButton}
+              onPress={() => handleRecipeDisplay(data._id)}
+            >
+              <Image
+                source={require("../assets/cooking.png")}
+                style={styles.imageCooking}
+              ></Image>
+            </TouchableOpacity>
           </View>
-        </View>
+  
       );
     });
 

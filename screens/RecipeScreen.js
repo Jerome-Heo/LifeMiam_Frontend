@@ -8,13 +8,24 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Button,
+  LayoutAnimation,
+  UIManager,
 } from "react-native";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRoute } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import Resume from "../components/Resume";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Colors from "../utilities/color";
+
+if (Platform.OS === "android") {
+  if (UIManager.setLayoutAnimationEnabledExperimental) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+  }
+}
+
+let timeout = null;
 
 export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
   const URL = "https://lifemiam-backend.vercel.app";
@@ -23,8 +34,24 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
   const activeMenu = useSelector((state) => state.user.value.menu);
   const route = useRoute();
   const { RecetteID, menuServing } = route.params;
-
   const [Recipe, SetRecipe] = useState({});
+  const [msg, setMsg] = useState("");
+  const [alertVisible, setAlertVisible] = useState(false);
+  const currentMenu = useSelector((state) => state.user.value.menu);
+
+  const showAlert = (msg) => {
+    message = msg;
+    LayoutAnimation.easeInEaseOut();
+    setAlertVisible(true);
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+    timeout = setTimeout(() => {
+      LayoutAnimation.easeInEaseOut();
+      setAlertVisible(false);
+      setMsg("");
+    }, 1500);
+  };
 
   // gerer le mode ReadOnly des recipes depuis le Menus
   const urlParams = route.params;
@@ -36,7 +63,6 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
     fetch(`${URL}/recipes/${RecetteID}/${userToken}`)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.data);
         SetRecipe(data.data);
         setServing(data.data.default_serving);
       });
@@ -74,7 +100,8 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        setMsg(data.menu.name);
+        showAlert();
       });
   };
 
@@ -110,8 +137,6 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
   const ingredient =
     Recipe.ing &&
     adjustedIngredients.map((data, i) => {
-      // console.log("adjustedIngredients", adjustedIngredients);
-      // console.log("recipe.ing", Recipe.ing);
       let finalUnit = "";
       let finalQuantity;
       if (data.ingredient?.unit === "cuillères à soupe") {
@@ -158,6 +183,13 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
 
   return (
     <View style={styles.container}>
+      <View
+        style={[styles.alert, !alertVisible && { height: 0, marginTop: -1 }]}
+      >
+        <Text style={styles.msg} numberOfLines={5}>
+          Recette ajoutée à {msg}
+        </Text>
+      </View>
       <View style={styles.ButtonsCont}>
         <TouchableOpacity
           style={styles.buttons}
@@ -167,10 +199,17 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
         </TouchableOpacity>
         {!readingMode ? (
           <TouchableOpacity
-            style={styles.buttons}
+            style={[
+              styles.buttons,
+              { backgroundColor: !currentMenu ? "transparent" : "#365E32" },
+            ]}
             onPress={() => addRecipeMenu()}
           >
-            <FontAwesome name={"plus"} size={25} color={"#E7D37F"} />
+            <FontAwesome
+              name={currentMenu ? "plus" : ""}
+              size={25}
+              color={"#E7D37F"}
+            />
           </TouchableOpacity>
         ) : (
           <TouchableOpacity style={styles.disabledButtons}>
@@ -284,11 +323,24 @@ const styles = StyleSheet.create({
   ButtonsCont: {
     flexDirection: "row",
     position: "absolute",
-    top: 65,
+    top: 70,
     zIndex: 1,
     justifyContent: "space-between",
     paddingHorizontal: 20,
     width: "100%",
+  },
+  alert: {
+    position: "absolute",
+    top: 70,
+    backgroundColor: "#365E32",
+    width: "100%",
+    overflow: "hidden",
+    zIndex: 2,
+  },
+  msg: {
+    margin: 10,
+    marginHorizontal: 20,
+    color: "#fff",
   },
   buttons: {
     backgroundColor: "#365E32",
