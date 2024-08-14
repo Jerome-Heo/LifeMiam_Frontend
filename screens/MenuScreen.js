@@ -59,28 +59,22 @@ export default function MenuScreen({ navigation }) {
     navigation.navigate("RecipesModal", { menuId: id, menuName: name });
   };
 
-  const calculateJauge= function (menuId){
-
-    const getListInformations = async (menuId) =>
-    {
-      const response=  fetch(`${URL}/shop/getlist/${menuId}`, {
+  const calculateJauge = function (menuId) {
+    const getListInformations = async (menuId) => {
+      const response = fetch(`${URL}/shop/getlist/${menuId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ token: userToken }),
-      })
-        const datas= response.json()
-        
-        return datas;
-       
+      });
+      const datas = response.json();
+
+      return datas;
     };
 
-    getListInformations(menuId).then(data => 
-      console.log(data))
-
-  }
- 
+    getListInformations(menuId).then((data) => console.log(data));
+  };
 
   //Est-ce que j'ai cliqué sur la creation de menu ?
   //Affichage des boutons dédiés à la création
@@ -115,10 +109,7 @@ export default function MenuScreen({ navigation }) {
   const menusDisplay =
     menus &&
     menus.map((data, i) => {
-      
-      
-      
-      calculateJauge(data._id)
+      calculateJauge(data._id);
 
       return (
         <View key={i} style={styles.menuCont}>
@@ -326,6 +317,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#365E32",
     height: 35,
     resizeMode: "contain",
+  },
+  disabledIcon: {
+    opacity: 0.5,
   },
   icon: {},
 });

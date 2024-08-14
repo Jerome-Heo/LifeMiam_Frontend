@@ -152,6 +152,7 @@ const styles = StyleSheet.create({
   recipesList: {
     backgroundColor: Colors.LIGHT_GREEN,
     paddingTop: 30,
+    paddingBottom: 20,
   },
 
   recipeCont: {
