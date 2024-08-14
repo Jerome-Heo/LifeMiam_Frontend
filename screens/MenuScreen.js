@@ -13,8 +13,12 @@ import { useEffect, useState } from "react";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useDispatch, useSelector } from "react-redux";
 import Colors from "../utilities/color";
+import { setList } from "../reducers/user"
+import { useIsFocused } from "@react-navigation/native";
 
 export default function MenuScreen({ navigation }) {
+  const dispatch = useDispatch();
+
   const userToken = useSelector((state) => state.user.value.token);
   const courselist = useSelector((state) => state.user.value.list);
   //const token = '0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf';
@@ -24,6 +28,7 @@ export default function MenuScreen({ navigation }) {
   const [isCreatingMenu, setIsCreatingMenu] = useState(false);
   const [createBarTxt, setCreateBarTxt] = useState("");
   const [isMenuAdded, setIsMenuAdded] = useState(false);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     fetch(`${URL}/menus/getMenus`, {
@@ -35,7 +40,36 @@ export default function MenuScreen({ navigation }) {
       .then((data) => {
         if (Array.isArray(data)) setMenus(data);
       });
+
   }, [isMenuAdded]);
+
+  useEffect(() => {
+
+    // const getListInformations = async (menuId) =>
+    // {
+    //   const response= await fetch(`${URL}/shop/getlist/${menuId}`, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({ token: userToken }),
+    //   })
+    //     const datas= await response.json()
+        
+    //     return datas;
+       
+    // };
+  
+ 
+    //   getListInformations(menuId).then((data) => 
+    //   {
+    //     dispatch(setList([...data.data.Ingredients]));
+    //     console.log(courselist)
+    //   })
+    
+
+
+  }, [isFocused]);
 
   const handleCreateMenu = () => {
     fetch(`${URL}/menus/create`, {
@@ -59,26 +93,19 @@ export default function MenuScreen({ navigation }) {
     navigation.navigate("RecipesModal", { menuId: id, menuName: name });
   };
 
-  const calculateJauge= function (menuId){
-
-    const getListInformations = async (menuId) =>
+  const calculateJauge= (menuId) =>{
+   
+    if(courselist)
     {
-      const response=  fetch(`${URL}/shop/getlist/${menuId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token: userToken }),
-      })
-        const datas= response.json()
-        
-        return datas;
-       
-    };
-
-    getListInformations(menuId).then(data => 
-      console.log(data))
-
+      console.log('courselist',courselist)
+      let ingCounter=0
+      courselist.find((e) => e.isBuyed ? ingCounter++ : null)
+      console.log('ingCounter',ingCounter)
+      let jauge=Math.floor(100/courselist.length)*ingCounter
+      console.log((100/courselist.length)*ingCounter)
+      return jauge
+    }
+    
   }
  
 
@@ -115,11 +142,7 @@ export default function MenuScreen({ navigation }) {
   const menusDisplay =
     menus &&
     menus.map((data, i) => {
-      
-      
-      
-      calculateJauge(data._id)
-
+      const jauge=calculateJauge(data._id)
       return (
         <View key={i} style={styles.menuCont}>
           <Text style={styles.H3}>{`${data.name}`}</Text>
@@ -128,7 +151,7 @@ export default function MenuScreen({ navigation }) {
               onPress={() => handleShoppingList(data._id)}
               style={styles.PHProgressBar}
             >
-              <Text style={styles.courseTitleText}>Courses</Text>
+              <Text style={styles.courseTitleText}>Courses {jauge && `${jauge}%`}</Text>
             </TouchableOpacity>
             {data.menu_recipes.length > 0 ? (
               <TouchableOpacity
