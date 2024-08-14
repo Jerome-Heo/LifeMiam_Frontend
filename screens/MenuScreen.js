@@ -60,23 +60,18 @@ export default function MenuScreen({ navigation }) {
   };
 
   const getListInformations = (id) => {
-    
     fetch(`${URL}/shop/getlist/${id}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ token: userToken }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-   
-    return data
- 
-    
-
-    });
-  }
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ token: userToken }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        return data;
+      });
+  };
 
   //Est-ce que j'ai cliqué sur la creation de menu ?
   //Affichage des boutons dédiés à la création
@@ -118,22 +113,32 @@ export default function MenuScreen({ navigation }) {
         <View key={i} style={styles.menuCont}>
           <Text style={styles.H3}>{`${data.name}`}</Text>
           <View style={styles.PHCont}>
-            
-              <TouchableOpacity onPress={() => handleShoppingList(data._id)} style={styles.PHProgressBar}>
-                <Text style={styles.courseTitleText}>Courses</Text>
-              </TouchableOpacity>
-            </View>
             <TouchableOpacity
-              style={styles.PHButton}
-              onPress={() => handleRecipeDisplay(data._id)}
+              onPress={() => handleShoppingList(data._id)}
+              style={styles.PHProgressBar}
             >
-              <Image
-                source={require("../assets/cooking.png")}
-                style={styles.imageCooking}
-              ></Image>
+              <Text style={styles.courseTitleText}>Courses</Text>
             </TouchableOpacity>
+            {data.menu_recipes.length > 0 ? (
+              <TouchableOpacity
+                style={styles.PHButton}
+                onPress={() => handleRecipeDisplay(data._id, data.name)}
+              >
+                <Image
+                  source={require("../assets/cooking.png")}
+                  style={styles.imageCooking}
+                ></Image>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={styles.disabledPHButton}>
+                <Image
+                  source={require("../assets/cooking.png")}
+                  style={styles.imageCooking}
+                ></Image>
+              </TouchableOpacity>
+            )}
           </View>
-  
+        </View>
       );
     });
 
