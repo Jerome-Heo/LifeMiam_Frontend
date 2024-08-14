@@ -1,37 +1,37 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector,useDispatch } from "react-redux";
 import { Animated, PanResponder, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Colors from "../utilities/color";
 import { setList } from "../reducers/user";
 
-const rightButtons = ['Acheter'/*, 'Non trouvé'*/];
+const rightButtons = ['Acheter'];
 const btnWidth = 80;
 const offset = [-btnWidth * rightButtons.length, btnWidth];
 
-export default function SwipableItem({idlist,name , quantity,unit, buyed}) {
+export default function SwipableItem({idlist, name, quantity, unit, buyed}) {
 
-    const URL = "http://192.168.0.53:3000";
-    // const token = "wVL5sCx7YTgaO-fnxK5pX4mMG8JywAwQ"
+    // const URL = "http://192.168.0.53:3000";
+    const URL = "https://lifemiam-backend.vercel.app";
+
     let panValue = { x: 0, y: 0 };
-    let isOpenState = useRef(false).current;
-    const pan = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
+    let isOpenState = useRef(true).current; // Set to true initially
+    const pan = useRef(new Animated.ValueXY({ x: -btnWidth * rightButtons.length, y: 0 })).current; // Start with open position
     const itemTranslate = pan.x.interpolate({ inputRange: offset, outputRange: offset, extrapolate: 'clamp' });
     
     const userToken = useSelector((state) => state.user.value.token);
-    const [isOpen,setIsOpen]=useState(false)
-    const [isBuyed,setIsBuyed]=useState(buyed)
+    const [isOpen, setIsOpen] = useState(true); // Set to true initially
+    const [isBuyed, setIsBuyed] = useState(buyed);
     const dispatch = useDispatch();
     const userList = useSelector((state) => state.user.value.list);
-    /***********/
     
-
     const translateRightBtns = pan.x.interpolate({ inputRange: [0, rightButtons.length * btnWidth], outputRange: [0, rightButtons.length * btnWidth], extrapolate: 'clamp' });
+
     useEffect(() => {
         pan.addListener(value => {
             panValue = value;
         });
-    }, [])
+    }, []);
+
     const panResponder = useRef(
         PanResponder.create({
             onStartShouldSetPanResponder: () => false,
@@ -55,82 +55,74 @@ export default function SwipableItem({idlist,name , quantity,unit, buyed}) {
                     move(true);
                     return;
                 }
-                reset()
-
+                reset();
             },
             onPanResponderTerminate: () => {
                 reset();
             },
         }),
     ).current;
+
     const reset = () => {
         isOpenState = false;
-        setIsOpen(false)
+        setIsOpen(false);
         Animated.spring(pan, {
             toValue: { x: 0, y: 0 },
             useNativeDriver: true,
             bounciness: 0
         }).start();
-    }
+    };
+
     const move = (toLeft) => {
         isOpenState = true;
-        setIsOpen(true)
+        setIsOpen(true);
         Animated.spring(pan, {
-            toValue: { x: toLeft ? -btnWidth * rightButtons.length : btnWidth , y: 0 },
+            toValue: { x: toLeft ? -btnWidth * rightButtons.length : btnWidth, y: 0 },
             useNativeDriver: true,
             bounciness: 0
         }).start();
-    }
+    };
 
-    const buyedItem= ()=> {
-        //on clic , changer l'état dans le reducer et l'état en bdd
-            setIsBuyed(!isBuyed)
-            
-            let newList= userList.map(e => {
-                if (e.name === name) {
-                    return { ...e, isBuyed: !isBuyed };
-                }
-                return e;
-            });
-            dispatch(setList(newList));
-            console.log(userList)
-            fetch(`${URL}/shop/updatelist/${idlist}`, {
-                method: "PUT",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    token: userToken, 
-                    ingredients:newList
-                }),
-              })
-              .then(response => response.json())
-              .then((data)=> {console.log(data)})
+    const buyedItem = () => {
+        setIsBuyed(!isBuyed);
 
-            // modifier en bdd
-              
-    }
+        let newList = userList.map(e => {
+            if (e.name === name) {
+                return { ...e, isBuyed: !isBuyed };
+            }
+            return e;
+        });
+        dispatch(setList(newList));
+        fetch(`${URL}/shop/updatelist/${idlist}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                token: userToken, 
+                ingredients: newList
+            }),
+        })
+        .then(response => response.json())
+        .then(data => console.log(data));
+    };
 
     return (
         <View style={styles.container}>
-   
             <Animated.View style={[styles.btnContainer, { transform:[{ translateX: translateRightBtns }], alignSelf: 'flex-end' }]}>
-                
-                <TouchableOpacity onPress={()=> {buyedItem()}} 
-                style={ [styles.btn, isBuyed  ? { backgroundColor: Colors.YELLOW } : { backgroundColor: Colors.DARK_GREEN }]}>
+                <TouchableOpacity onPress={buyedItem} 
+                    style={ [styles.btn, isBuyed ? { backgroundColor: Colors.YELLOW } : { backgroundColor: Colors.DARK_GREEN }]}>
                     <Text style={!isBuyed ? {textAlign:'center',color:'#fff' } : {textAlign:'center'  } }>
                         {!isBuyed ? 'Acheter' : 'Reposer' }</Text>
                 </TouchableOpacity>
-               
             </Animated.View>
 
             <Animated.View style={[!isOpen ? styles.item : styles.itemOpen, { transform: [{ translateX: itemTranslate }] }]} {...panResponder.panHandlers} >
                 <Text style={styles.txt}>{name}</Text>
                 <Text style={styles.txt}>{quantity} {unit}</Text>
-                
             </Animated.View>
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({

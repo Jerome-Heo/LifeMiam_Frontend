@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { View,Image,StyleSheet ,Text,TextInput,SafeAreaView,KeyboardAvoidingView, TouchableOpacity,Platform} from "react-native";
 import Colors from '../utilities/color'
 import { useState ,useEffect} from "react";
@@ -7,25 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { token } from '../reducers/user';
 function Signup({onboarding}) {
 
-=======
-import {
-  View,
-  Image,
-  StyleSheet,
-  Text,
-  TextInput,
-  SafeAreaView,
-  KeyboardAvoidingView,
-  TouchableOpacity,
-  Platform,
-} from "react-native";
-import Colors from "../utilities/color";
-import { useState, useEffect } from "react";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { useDispatch, useSelector } from "react-redux";
-import { token } from "../reducers/user";
-function Signup({ onboarding }) {
->>>>>>> ff19954444c41ff8bf44ccf905717fef91296a38
   const dispatch = useDispatch();
 
   const [displaySignedUp, setDisplaySignedUp] = useState(null);
