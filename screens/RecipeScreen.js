@@ -395,8 +395,9 @@ const styles = StyleSheet.create({
   },
   MainImage: {
     marginTop: 50,
-    width: 400,
+    width: '100%',
     height: 300,
+    objectFit:'cover'
   },
   H1: {
     fontSize: 30,
