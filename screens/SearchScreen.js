@@ -240,8 +240,8 @@ const styles = StyleSheet.create({
   },
 
   H2: {
-   
-    fontSize: 25,
+    margin: 10,
+    fontSize: 20,
     color: "#365E32",
     fontWeight: "700",
   },
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   ScrollCont: {
-    width: "95%",
+    width: "96%",
     margin:'auto'
   },
   emptyState: {
@@ -265,19 +265,18 @@ const styles = StyleSheet.create({
   recipes: {
     borderWidth: 3,
     borderColor: "#81A263",
-    height: 60,
+    height: 50,
     flexDirection: "row",
     justifyContent: "space-between",
-    marginVertical: 10,
+    marginVertical: 15,
     borderBottomLeftRadius: 30,
     borderRadius: 10,
   },
   recipeImage: {
-    height: 45,
-    width: 70,
-    borderBottomLeftRadius: 25,
-    borderTopRightRadius: 10,
-    
+    height: 60,
+    width: 60,
+    borderBottomLeftRadius: 30,
+    borderTopRightRadius: 30,
   },
   PHbutton: {
     borderWidth: 1,
@@ -326,8 +325,6 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     minWidth: 80,
     paddingLeft: 5,
-    textTransform: "capitalize",
-    margin: "auto",
   },
   ImgVignette: {
     backgroundColor: "white",
