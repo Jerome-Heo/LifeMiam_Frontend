@@ -24,7 +24,7 @@ const windowHeight = Dimensions.get("window").height;
 function Onboarding({ navigation, page }) {
   const dispatch = useDispatch();
   const userToken = useSelector((state) => state.user.value.token);
-  //const token = "-ob9kC9qgjQ7vn9vx0s6JUGmtlUWANtv";
+  //const token = "0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf";
   const userRegime = useSelector((state) => state.user.value.regime);
   console.log(userRegime);
   const URL = "https://lifemiam-backend.vercel.app";
@@ -78,7 +78,7 @@ function Onboarding({ navigation, page }) {
 
   const handleGo = () => {
     console.log("userRegime", userRegime);
-    if (userRegime.length > 0) {
+    if (userRegime.length >= 0) {
       // const regime = userRegime.map((e) => e.replace(" ", "-"));
       fetch(`${URL}/users/update`, {
         method: "POST",
