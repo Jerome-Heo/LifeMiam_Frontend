@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  KeyboardAvoidingView,
 } from "react-native";
 import { useEffect, useState } from "react";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -43,26 +44,25 @@ export default function MenuScreen({ navigation }) {
 
   useEffect(() => {
     // console.log(menus)
-    if(menus.length != 0)
+    
+    if (menus.length !== 0 && isFocused) 
     {
       fetchJauges()
     }
     
-  }, [isFocused]);
+  }, [menus,isFocused]);
 
  
-    const fetchJauges = async () => {
-      const newJauges = {};
-      for (let i = 0; i < menus.length; i++) 
-      {
-        calculateJauge(menus[i]._id).then((jauge) => {
-          newJauges[menus[i]._id] = jauge;
-          setJauges({...jauges,[menus[i]._id] : jauge});
-          // console.log('jauges',jauges);
-        });
-       
-      }   
-    };
+  const fetchJauges = async () => {
+    const newJauges = {};
+  
+    for (let i = 0; i < menus.length; i++) {
+      const jauge = await calculateJauge(menus[i]._id);
+      newJauges[menus[i]._id] = jauge;
+    }
+  
+    setJauges(newJauges);
+  };
    
 
 
@@ -88,7 +88,7 @@ export default function MenuScreen({ navigation }) {
     navigation.navigate("RecipesModal", { menuId: id, menuName: name });
   };
 
-  const calculateJauge = async function (menuId) {
+  const calculateJauge = async (menuId) => {
     try {
       const response = await fetch(`${URL}/shop/getlist/${menuId}`, {
         method: "POST",
@@ -97,39 +97,40 @@ export default function MenuScreen({ navigation }) {
         },
         body: JSON.stringify({ token: userToken }),
       });
+  
       const data = await response.json();
+  
       if (data.result === true) {
-        // console.log("entree de données", data);
         dispatch(
           updateList({
             menuId: menuId,
             ingredients: data.data.Ingredients,
           })
         );
+  
         const oneList = courselist.find((e) => e.menuId === menuId);
-
+  
         if (oneList) {
-          // console.error('onelist',oneList.ingredients.map((e) => e.isBuyed),menuId,userToken)
           let ingCounter = 0;
-          oneList.ingredients.find((e) => {
-            e.isBuyed ? ingCounter++ : null;
+          oneList.ingredients.forEach((e) => {
+            if (e.isBuyed) ingCounter++;
           });
-          // console.log('ingcounter',ingCounter)
+  
           const jauge = Math.floor(
             (100 / oneList.ingredients.length) * ingCounter
           );
-          // console.log("jauge de", menuId, jauge);
+  
           return jauge;
         }
       }
     } catch (error) {
       // console.error("Failed to calculate jauge:", error);
     }
-    return 0; // Default value if calculation fails
+    return 0; // Valeur par défaut en cas d'échec du calcul
   };
 
   const createMenuButton = isCreatingMenu ? (
-    <View style={styles.validCont}>
+    <KeyboardAvoidingView style={styles.validCont}>
       <TextInput
         style={styles.validBar}
         onChangeText={(e) => setCreateBarTxt(e)}
@@ -142,7 +143,7 @@ export default function MenuScreen({ navigation }) {
       >
         <Image source={require("../assets/ValidMenu.png")}></Image>
       </TouchableOpacity>
-    </View>
+    </KeyboardAvoidingView>
   ) : (
     <View style={styles.contentCont}>
       <TouchableOpacity
@@ -157,7 +158,7 @@ export default function MenuScreen({ navigation }) {
   const menusDisplay =
     menus &&
     menus.map((data, i) => {
-      const jauge = jauges[data._id];
+      const jauge = jauges[data._id] ? jauges[data._id] : null;
       return (
         <View key={i} style={styles.menuCont}>
           <Text style={styles.H3}>{`${data.name}`}</Text>
@@ -166,7 +167,7 @@ export default function MenuScreen({ navigation }) {
               onPress={() => handleShoppingList(data._id)}
               style={styles.PHProgressBar}
             >
-              <Text style={styles.courseTitleText}>Courses {jauge && `${jauge}%` }</Text>
+              <Text style={styles.courseTitleText}>Courses {jauge && jauge+'%' }</Text>
             </TouchableOpacity>
             {data.menu_recipes.length > 0 ? (
               <TouchableOpacity
