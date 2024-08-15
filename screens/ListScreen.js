@@ -34,23 +34,38 @@ export default function ListScreen({ navigation, navigation: { goBack } }) {
   const [idList, setIdList] = useState(null);
   const isFocused = useIsFocused();
   const urlParams = route.params;
-  const [courseList, setCourseList] = useState([])
-  
-  let displayAll=[]
+  const [courseList, setCourseList] = useState([]);
 
-  useEffect(() => 
-  {
-    // si la liste existe, je la récupère et la pousse en reducer
-    // if (userList.find((e) => e.menuId === urlParams.menuId))
-    // {
-    //   let temporary = userList.filter((e) => e.menuId === urlParams.menuId);
-    //       setCourseList(temporary[0]);
-    //       console.log("userlist", userList);
-    // }
-   
-    if(userToken && urlParams != undefined)
-    {
-     fetch(`${URL}/shop/getlist/${urlParams.menuId}`, {
+  let displayAll = [];
+
+  useEffect(() => {
+    // récupération de la liste de courses ou génération
+    if (userToken && urlParams != undefined) {
+      fetch(`${URL}/shop/getlist/${urlParams.menuId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token: userToken }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // console.log("get list", data);
+          if (data.result) {
+            dispatch(
+              setList({
+                menuId: urlParams.menuId,
+                ingredients: data.data.Ingredients,
+              })
+            );
+            setCourseList({
+              menuId: urlParams.menuId,
+              ingredients: data.data.Ingredients,
+            });
+          } else {
+            setIdList(data.id);
+            setError(null);
+            fetch(`${URL}/shop/generate/${urlParams.menuId}`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -59,85 +74,69 @@ export default function ListScreen({ navigation, navigation: { goBack } }) {
             })
               .then((response) => response.json())
               .then((data) => {
-                // console.log(data)
+                // console.log("output generate", data);
                 if (data.result) {
-                  
                   dispatch(
                     setList({
                       menuId: urlParams.menuId,
-                      ingredients: data.data.Ingredients,
+                      ingredients: data.ingredients,
                     })
                   );
+
                   setCourseList({
                     menuId: urlParams.menuId,
                     ingredients: data.data.Ingredients,
                   });
                   setIdList(data.id);
-                  setError(null);
+                } else {
+                  dispatch(
+                    setList({
+                      menuId: urlParams.menuId,
+                      ingredients: null,
+                    })
+                  );
+
+                  setCourseList({
+                    menuId: urlParams.menuId,
+                    ingredients: null,
+                  });
                 }
-              })
+              });
+          }
+        });
     }
-    else 
-    {
-                fetch(`${URL}/shop/generate/${urlParams.menuId}`, {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({ token: userToken }),
-                })
-                  .then((response) => response.json())
-                  .then((data) => {
-                    // console.log("output generate", data);
-                    if (data.result) {
-      
-                      dispatch(
-                        setList({
-                          menuId: urlParams.menuId,
-                          ingredients: data.data.Ingredients,
-                        })
-                      );
+
+    if (courseList) {
+      let temporary = userList.filter((e) => e.menuId === urlParams.menuId);
+      setCourseList(temporary[0]);
     
-                      setCourseList({
-                        menuId: urlParams.menuId,
-                        ingredients: data.data.Ingredients,
-                      });
-                      setIdList(data.id);
-                    }
-                  })
-
-                  let temporary = userList.filter((e) => e.menuId === urlParams.menuId);
-                  setCourseList(temporary[0]);
-                  // console.log("courselist auchangement", courseList);
     }
-  },[isFocused])
+  }, [isFocused]);
 
-    // à la sortie de la page je save en bdd
-    useEffect(() => {
-      if (!isFocused) {
-        // console.log('sortie d\'ecran',courseList,'idlist',courseList.menuId)
-        fetch(`${URL}/shop/updatelist/${courseList.menuId}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            token: userToken,
-            ingredients: courseList.ingredients,
-          }),
-        })
-          .then((response) => response.json())
-          .then((data) => 
-          console.log("output update", data.data.Ingredients)
-          );
-          displayAll=[]
-      }
-    }, [isFocused]);
 
-  // console.log("courselist avant affichage", courseList);
+  // à la sortie de la page je save en bdd
+  useEffect(() => {
+    if (!isFocused) {
+      // console.log('sortie d\'ecran',courseList,'idlist',courseList.menuId)
+      fetch(`${URL}/shop/updatelist/${courseList.menuId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: userToken,
+          ingredients: courseList.ingredients,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => console.log("output update", data));
+      displayAll = [];
+    }
+  }, [isFocused]);
+
 
   const handleToggleBuyed = (ingredientName, newBuyedValue) => {
-    const updatedIngredients = courseList.ingredients.map(ingredient =>
+    const updatedIngredients = courseList.ingredients.map((ingredient) =>
       ingredient.name === ingredientName
         ? { ...ingredient, isBuyed: newBuyedValue }
         : ingredient
@@ -145,55 +144,51 @@ export default function ListScreen({ navigation, navigation: { goBack } }) {
 
     setCourseList({
       ...courseList,
-      ingredients: updatedIngredients
+      ingredients: updatedIngredients,
     });
-    // console.log('after an handle buyed click',courseList)
+
   };
 
-    if (courseList.ingredients) 
-    {
-      const categories = [];
 
-      courseList.ingredients.filter((e) =>
-        !categories.find((cat) => cat === e.category)
-          ? categories.push(e.category)
-          : null
+  if (courseList.ingredients) {
+    const categories = [];
+
+    courseList.ingredients.filter((e) =>
+      !categories.find((cat) => cat === e.category)
+        ? categories.push(e.category)
+        : null
+    );
+
+    categories.sort();
+
+    for (let category of categories) {
+      let displayList = courseList.ingredients.map((ing, i) =>
+        ing.category == category ? (
+          <SwipableItem
+            menuId={urlParams.menuId}
+            key={i}
+            idlist={idList}
+            name={ing.name}
+            quantity={ing.quantity}
+            unit={ing.unit}
+            buyed={ing.isBuyed}
+            onToggleBuyed={handleToggleBuyed}
+          />
+        ) : null
       );
 
-      categories.sort();
-      // console.log('categories',categories)
-      // console.log('ici la la',courseList)
-      for (let category of categories) 
-      {
-        let displayList = courseList.ingredients.map((ing, i) =>
-
-          ing.category == category ? (
-            <SwipableItem
-              menuId={urlParams.menuId}
-              key={i}
-              idlist={idList}
-              name={ing.name}
-              quantity={ing.quantity}
-              unit={ing.unit}
-              buyed={ing.isBuyed}
-              onToggleBuyed={handleToggleBuyed}
-            />
-          ) : null
-        );
-        // console.log('displaylist',displayList)
-        let boxCategory = (
-          <View key={category} style={styles.boxCategory}>
-            <View key={category} style={styles.categorieTitle}>
-              <Text style={styles.categorieTitleText}>{category}</Text>
-            </View>
-            {displayList}
+      let boxCategory = (
+        <View key={category} style={styles.boxCategory}>
+          <View key={category} style={styles.categorieTitle}>
+            <Text style={styles.categorieTitleText}>{category}</Text>
           </View>
-        );
+          {displayList}
+        </View>
+      );
 
-        displayAll=[...displayAll, boxCategory]
-       
-      }
+      displayAll = [...displayAll, boxCategory];
     }
+  }
 
   return (
     <KeyboardAvoidingView
@@ -206,7 +201,6 @@ export default function ListScreen({ navigation, navigation: { goBack } }) {
         </TouchableOpacity>
 
         <Text style={styles.H1}>Liste de courses</Text>
-        
       </View>
 
       {error && (
@@ -247,7 +241,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   H1: {
-    marginLeft:30,
+    marginLeft: 30,
     fontSize: 30,
     color: "#365E32",
     fontWeight: "700",
