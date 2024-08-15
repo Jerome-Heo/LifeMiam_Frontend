@@ -37,21 +37,22 @@ export default function SearchScreen({ navigation }) {
     { name: "halal", src: require("../assets/halal.png") },
     { name: "sans lactose", src: require("../assets/lactose_free.png") },
   ];
-  const userToken = useSelector((state) => state.user.value.token);
-  // const TEST token = "0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf";
   const userRegime = useSelector((state) => state.user.value.regime);
   const [vignettesSelected, setVignettesSelected] = useState(userRegime);
-
-  
   const [isLoading, setIsLoading] = useState(true);
   const isFocused = useIsFocused();
   const [debounceTimeout, setDebounceTimeout] = useState(null);
-  const [popularRecipes, setPopularRecipes] = useState([]);
   const URL = "https://lifemiam-backend.vercel.app";
-  
-  const [recipesData, setRecipesData] = useState([]); // Fetch all 
-  const [recipes, setRecipes] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [popularRecipes, setPopularRecipes] = useState([]);
+  const [recipesData, setRecipesData] = useState([]); // useState toutes les recettes récupérer
+  const [recipes, setRecipes] = useState([]); // useState du resultat de la recherche
+  const [searchQuery, setSearchQuery] = useState(""); // useState du champs de recherche
+
+  useEffect(() => {
+    setTimeout(() => {
+      handleSearch(searchQuery);
+    }, 100);
+  }, [isFocused]);
 
   const fetchAllRecipes = () => {
     const fetchURL = `${URL}/recipes/all`;
@@ -72,8 +73,11 @@ export default function SearchScreen({ navigation }) {
             };
             newTabRecipes.push(object);
           }
-          setRecipesData(newTabRecipes);
-          // On ajoute toutes les recettes dans notre useState
+          setRecipesData(newTabRecipes); // On ajoute toutes les recettes dans notre useState
+
+          // Sort: on ordonne par plus populaire au moins populaire
+          // Slice: on ne prend que les 10 premiers résultats
+          // Map: on récupère nos 10 résultats pour remplir nos composants
           const popularRecipes = newTabRecipes.sort((a, b) => b.popularity - a.popularity).slice(0, 10).map((element, i) => {
             return (
               <Animatable.View key={i} style={styles.view}>
@@ -87,7 +91,6 @@ export default function SearchScreen({ navigation }) {
             );
           });
           setPopularRecipes(popularRecipes);
-          // console.log(recipesData);
         } else {
 
           // console.error("Aucune recette correspondante");
@@ -100,7 +103,7 @@ export default function SearchScreen({ navigation }) {
       });
 
     if (isLoading) {
-      console.log("loading...");
+      console.log("Chargement...");
     }
   };
 
@@ -112,11 +115,13 @@ export default function SearchScreen({ navigation }) {
     const newTimeout = setTimeout(() => {
       if (query.length >= 3) {
         const filteredRecipes = recipesData.filter((recipe) =>
-          recipe.name.toLowerCase().includes(query.toLowerCase())
+          recipe.name.toLowerCase().includes(query.toLowerCase()) &&
+        (vignettesSelected.length === 0 || vignettesSelected.some((element) => recipe.tags.includes(element)))
+        
         );
         setRecipes(filteredRecipes);
       } else if (query.length === 0) {
-        setRecipes(recipesData); // Réafficher les recettes populaires si la recherche est vide
+        setRecipes(recipesData); 
       }
     }, 500);
 
@@ -124,40 +129,42 @@ export default function SearchScreen({ navigation }) {
   };
 
 
-  const displayNull = () => {
-    return (
-      <View style={styles.emptyState}>
-        <FontAwesome name={"search"} size={60} onPress={() => { }} />
-        <Text style={styles.notFound}>Aucune recette trouvée...</Text>
-      </View>
-    );
-  };
+  // On récupère la liste de nos éléments de notre useState
+  const displayedRecipes = recipes.length > 0 ? (
+    recipes.map((element, i) => (
+      <Animatable.View key={i} style={styles.view} {...prop}>
+        <TouchableOpacity onPress={() => handleRecipeClick(element._id)}>
+          <View style={styles.recipes}>
+            <Image source={{ uri: element.image }} style={styles.recipeImage} />
+            <Text style={styles.H3}>{element.name}</Text>
+          </View>
+        </TouchableOpacity>
+      </Animatable.View>
+    ))
+  ) : (
+    <View style={styles.emptyState}>
+    <FontAwesome name={"search"} size={60} onPress={() => { }} />
+    <Text style={styles.notFound}>Aucune recette trouvée...</Text>
+  </View>
+  );
 
-
-  const displayedRecipes = recipes.map((element, i) => (
-    <Animatable.View key={i} style={styles.view} {...prop}>
-      <TouchableOpacity onPress={() => handleRecipeClick(element._id)}>
-        <View style={styles.recipes}>
-          <Image source={{ uri: element.image }} style={styles.recipeImage} />
-          <Text style={styles.H3}>{element.name}</Text>
-        </View>
-      </TouchableOpacity>
-    </Animatable.View>
-  ));
-
-  
+  // A TERIRER ?? NON!
   const clearSearch = () => {
     setSearchQuery("");
     // setVignettesSelected(userRegime);
-    fetchAllRecipes("");
+    setRecipes(recipesData);
 };
 
-  useEffect(() => {
+useEffect(() => {
+  if (isFocused) {
     animate("fadeInLeft");
-    setTimeout(() => {
-      fetchAllRecipes(searchQuery);
-    }, 100);
-  }, [isFocused, vignettesSelected]) /*, searchTimeout*/;
+    fetchAllRecipes();
+    console.log("UserRegime : " + userRegime);
+    setSearchQuery(""); // Réinitialiser la barre de recherche
+    setVignettesSelected(userRegime); // Réinitialiser les vignettes sélectionnées
+    console.log("Vignette: " + vignettesSelected);
+  }
+}, [isFocused]);
 
   //chemin de navigation vers RecipeScreen par le clic
   const handleRecipeClick = (id) => {
@@ -181,6 +188,7 @@ export default function SearchScreen({ navigation }) {
       );
     } else {
       setVignettesSelected([...vignettesSelected, name]);
+      handleSearch(searchQuery);
     }
   };
 
@@ -196,9 +204,9 @@ export default function SearchScreen({ navigation }) {
         style={[styles.TagVignette, isSelected && styles.TagVignetteSelected]}
       >
         <Text style={styles.TxtVignette}>{vi.name}</Text>
-        <View style={styles.ImgVignette}>
+        {/*<View style={styles.ImgVignette}>
           <Image style={styles.icon} source={vi.src} />
-        </View>
+        </View>*/}
       </Pressable>
     );
   });
@@ -227,7 +235,7 @@ export default function SearchScreen({ navigation }) {
         <View style={styles.vignetteContainer}>{regimeVignettes}</View>
         <Text style={styles.H2}>{listTitle}</Text>
         <ScrollView style={styles.ScrollCont}>
-          {recipes.length > 0 ? displayedRecipes : popularRecipes}
+          {searchQuery.length > 0 ? displayedRecipes : popularRecipes}
         </ScrollView>
       </View>
     </KeyboardAvoidingView>

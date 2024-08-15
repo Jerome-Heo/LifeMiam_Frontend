@@ -100,7 +100,7 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        setMsg(data.menu.name);
+        setMsg(data.menu.name)
         showAlert();
       });
   };
@@ -199,10 +199,9 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
         </TouchableOpacity>
         {!readingMode ? (
           <TouchableOpacity
-            style={[
-              styles.buttons,
-              { backgroundColor: !currentMenu ? "transparent" : "#365E32" },
-            ]}
+            style={[ styles.buttons,
+              {backgroundColor: !currentMenu ? "transparent" : "#365E32"} 
+             ]}
             onPress={() => addRecipeMenu()}
           >
             <FontAwesome
@@ -213,7 +212,12 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
           </TouchableOpacity>
         ) : (
           <TouchableOpacity style={styles.disabledButtons}>
-            <FontAwesome name={"plus"} size={25} color={"#E7D37F"} />
+            <FontAwesome
+              name={"plus"}
+              size={25}
+              color={"#E7D37F"}
+              // opacity={"0.5"}
+            />
           </TouchableOpacity>
         )}
       </View>

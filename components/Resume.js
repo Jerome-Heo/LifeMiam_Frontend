@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setMenu, clearMenu } from "../reducers/user";
 import { useNavigation } from "@react-navigation/native";
 
-function Resume() {
+function Resume({ recettes }) {
   const URL = "https://lifemiam-backend.vercel.app";
   const userToken = useSelector((state) => state.user.value.token);
   const navigation = useNavigation();
@@ -27,7 +27,6 @@ function Resume() {
   const [isMenuListVisible, setIsMenuListVisible] = useState(false);
   const [menusResume, setMenusResume] = useState([]);
   const [visibleMenu, setVisibleMenu] = useState([]);
-  const [currentMenuTxt, setCurrentMenuTxt] = useState([]);
   const [newMenuName, setNewMenuName] = useState("");
   const [RecipesDisplay, setRecipesDisplay] = useState(null)
   const currentMenu = useSelector((state) => state.user.value.menu);
@@ -48,6 +47,8 @@ function Resume() {
         if (Array.isArray(data)) setMenusResume(data);
       });
   }, [currentMenu]);
+
+  
 
   //useEffect du clavier
   useEffect(() => {
@@ -104,12 +105,17 @@ function Resume() {
     })
       .then((response) => response.json())
       .then((data) => {
-        dispatch(setMenu(menuId));
+        dispatch(setMenu(data.menu));
         setVisibleMenu(data.menu.menu_recipes);
-        setCurrentMenuTxt(data.menu.name);
-        handleMenuList();
+        isMenuListVisible && handleMenuList();
       });
   };
+
+  //fetch à l'initialisation (faites pas ça chez vous
+  // c'est pour le bien de la vidéo)
+  useEffect(() => {
+    currentMenu && handleClickMenu(currentMenu._id)
+  }, [])
 
   //créer un menu
   const handleCreateMenu = () => {
@@ -204,7 +210,7 @@ function Resume() {
             placeholderTextColor={"white"}
           ></TextInput>
         ) : (
-          <Text style={styles.resumeText}>{currentMenuTxt}</Text>
+          <Text style={styles.resumeText}>{currentMenu.name}</Text>
         )}
         <TouchableOpacity style={styles.button} onPress={() => backAddMenu()}>
           <FontAwesome

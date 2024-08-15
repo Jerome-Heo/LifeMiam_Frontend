@@ -63,33 +63,34 @@ export default function HomeScreen({ navigation }) {
   //j'ai ajouté un bouton ARROW RIGHT de sagouin pour skip le signin/up
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.testContainer}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => handleGoBack()}
-        >
-          <FontAwesome name={"arrow-left"} style={styles.icon} size={40} />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() =>
-            navigation.navigate("TabNavigator", { screen: "List" })
-          }
-        >
-          <Text>Go to Liste de courses</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.backButton} onPress={() => handleGo()}>
-          <FontAwesome name={"arrow-right"} style={styles.icon} size={40} />
-        </TouchableOpacity>
+      <View style={styles.backCont}>
+        {displayComponent == "signin" && (
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => handleGoBack()}
+          >
+            <FontAwesome name={"arrow-left"} style={styles.icon} size={40} />
+          </TouchableOpacity>
+        )}
+        {displayComponent == "signup" && (
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => handleGoBack()}
+          >
+            <FontAwesome name={"arrow-left"} style={styles.icon} size={40} />
+          </TouchableOpacity>
+        )}
       </View>
 
-      <View style={styles.logoContainer}>
-        <Image style={styles.logoImg} source={require("../assets/logo.png")} />
-      </View>
+      {displayComponent !== "onboarding" && (
+        <View style={styles.logoContainer}>
+          <Image
+            style={styles.logoImg}
+            source={require("../assets/logo.png")}
+          />
+        </View>
+      )}
 
-      {/* <TouchableOpacity style={styles.go} onPress={() => handleGo()}><Text style={styles.textButt}>Go To Search</Text></TouchableOpacity> */}
       {!displayComponent && displayNull}
       {displayComponent == "signin" && <Signin navigation={navigation} />}
       {displayComponent == "signup" && (
@@ -109,18 +110,29 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     height: "50%",
   },
-  testContainer: {
-    flexDirection: "row",
-    alignItems: "space-between",
-    justifyContent: "center",
+  siteTitle: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: Colors.DARK_GREEN,
   },
   container: {
     flex: 1,
     backgroundColor: Colors.WHITE,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-around",
     paddingTop: "10%",
     width: "100%",
+  },
+  backCont: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+  },
+  backButton: {
+    padding: 20,
+  },
+  icon: {
+    color: Colors.DARK_GREEN,
   },
 
   go: {
