@@ -273,6 +273,7 @@ const styles = StyleSheet.create({
     marginVertical: 15,
     borderBottomLeftRadius: 30,
     borderRadius: 10,
+    overflow:'hidden'
   },
   recipeImage: {
     height: 47,

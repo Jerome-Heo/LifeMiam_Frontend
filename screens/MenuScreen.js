@@ -48,7 +48,7 @@ export default function MenuScreen({ navigation }) {
       fetchJauges()
     }
     
-  }, [courselist,menus]);
+  }, [isFocused]);
 
  
     const fetchJauges = async () => {
