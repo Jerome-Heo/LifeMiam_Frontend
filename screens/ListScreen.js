@@ -1,13 +1,10 @@
 import {
   View,
-  Image,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
-  FlatList,
   ScrollView,
 } from "react-native";
 import { useState, useEffect } from "react";
@@ -16,8 +13,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useRoute } from "@react-navigation/native";
 import { useSelector, useDispatch } from "react-redux";
 import { useIsFocused } from "@react-navigation/native";
-import { setList } from "../reducers/user";
-
+import { setList } from "../reducers/lists";
 import SwipableItem from "../components/SwipeableElement";
 
 export default function ListScreen({ navigation, navigation: { goBack } }) {
@@ -31,141 +27,173 @@ export default function ListScreen({ navigation, navigation: { goBack } }) {
   // const URL = "http://192.168.0.53:3000";
   // const token = "wVL5sCx7YTgaO-fnxK5pX4mMG8JywAwQ"
   const route = useRoute();
-  // const [list, setList] = useState([]);
   const [error, setError] = useState("");
   const userToken = useSelector((state) => state.user.value.token);
-  const userList = useSelector((state) => state.user.value.list);
+  const userList = useSelector((state) => state.lists.value);
+
   const [idList, setIdList] = useState(null);
   const isFocused = useIsFocused();
   const urlParams = route.params;
+  const [courseList, setCourseList] = useState([])
+  
+  let displayAll=[]
 
-
-  useEffect(() => {
+  useEffect(() => 
+  {
     // si la liste existe, je la récupère et la pousse en reducer
-    // si elle n'existe pas , je la génère et la stock en reducer et bdd
-    // sur les action isbuyed et isfound , je mets à jour le reducer et la bdd
-
-    if (userToken && urlParams != undefined) 
+    // if (userList.find((e) => e.menuId === urlParams.menuId))
+    // {
+    //   let temporary = userList.filter((e) => e.menuId === urlParams.menuId);
+    //       setCourseList(temporary[0]);
+    //       console.log("userlist", userList);
+    // }
+   
+    if(userToken && urlParams != undefined)
     {
-      // une liste existe en bdd ou en reducer ?
-      fetch(`${URL}/shop/getlist/${urlParams.menuId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token: userToken }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.result) {
-            // console.log(data);
-            // setList(data.data.Ingredients)
-            dispatch(setList([...data.data.Ingredients]));
-            //  console.log(data)
-            setIdList(data.id)
-            setError(null);
-          } else {
-            // console.error(data.error);
-            // setError(data.error);
-           
-            dispatch(setList(null));
-            setList(null);
-          }
-        });
+     fetch(`${URL}/shop/getlist/${urlParams.menuId}`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ token: userToken }),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                // console.log(data)
+                if (data.result) {
+                  
+                  dispatch(
+                    setList({
+                      menuId: urlParams.menuId,
+                      ingredients: data.data.Ingredients,
+                    })
+                  );
+                  setCourseList({
+                    menuId: urlParams.menuId,
+                    ingredients: data.data.Ingredients,
+                  });
+                  setIdList(data.id);
+                  setError(null);
+                }
+              })
+    }
+    else 
+    {
+                fetch(`${URL}/shop/generate/${urlParams.menuId}`, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ token: userToken }),
+                })
+                  .then((response) => response.json())
+                  .then((data) => {
+                    // console.log("output generate", data);
+                    if (data.result) {
+      
+                      dispatch(
+                        setList({
+                          menuId: urlParams.menuId,
+                          ingredients: data.data.Ingredients,
+                        })
+                      );
+    
+                      setCourseList({
+                        menuId: urlParams.menuId,
+                        ingredients: data.data.Ingredients,
+                      });
+                      setIdList(data.id);
+                    }
+                  })
 
-      if (!userList) {
-        // n'existe pas , je la crée
-        fetch(`${URL}/shop/generate/${urlParams.menuId}`, {
-          method: "POST",
+                  let temporary = userList.filter((e) => e.menuId === urlParams.menuId);
+                  setCourseList(temporary[0]);
+                  // console.log("courselist auchangement", courseList);
+    }
+  },[isFocused])
+
+    // à la sortie de la page je save en bdd
+    useEffect(() => {
+      if (!isFocused) {
+        // console.log('sortie d\'ecran',courseList,'idlist',courseList.menuId)
+        fetch(`${URL}/shop/updatelist/${courseList.menuId}`, {
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ token: userToken }),
+          body: JSON.stringify({
+            token: userToken,
+            ingredients: courseList.ingredients,
+          }),
         })
           .then((response) => response.json())
-          .then((data) => {
-            // console.log(data);
-            if (data.result) {
-              // setList(data.data);
-              dispatch(setList([...data.data]));
-              setIdList(data.id)
-
-            } else {
-              console.error("Aucun ingrédient correspondant");
-            }
-          });
+          .then((data) => 
+          console.log("output update", data.data.Ingredients)
+          );
+          displayAll=[]
       }
-    } else {
-      setError("Aucunes données, êtes-vous connecté ?");
-    }
-  }, [isFocused]);
+    }, [isFocused]);
 
-  useEffect(() => {
+  // console.log("courselist avant affichage", courseList);
 
-    if(!isFocused)
-    {
-      fetch(`${URL}/shop/updatelist/${idList}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            token: userToken, 
-            ingredients: userList
-        }),
-    })
-    .then(response => response.json())
-    .then(data => console.log(data));
-    }
- 
- 
-  }, [isFocused]);
-
-  let displayAll = [];
-
-  if (userList) {
-    const categories = [];
-    userList.filter((e) =>
-      !categories.find((cat) => cat === e.category)
-        ? categories.push(e.category)
-        : null
+  const handleToggleBuyed = (ingredientName, newBuyedValue) => {
+    const updatedIngredients = courseList.ingredients.map(ingredient =>
+      ingredient.name === ingredientName
+        ? { ...ingredient, isBuyed: newBuyedValue }
+        : ingredient
     );
 
-    categories.sort();
-    // console.log(categories)
+    setCourseList({
+      ...courseList,
+      ingredients: updatedIngredients
+    });
+    // console.log('after an handle buyed click',courseList)
+  };
 
-    for (let category of categories) {
-      let displayList = userList.map(
-        (ing, i) =>
+    if (courseList.ingredients) 
+    {
+      const categories = [];
+
+      courseList.ingredients.filter((e) =>
+        !categories.find((cat) => cat === e.category)
+          ? categories.push(e.category)
+          : null
+      );
+
+      categories.sort();
+      // console.log('categories',categories)
+      // console.log('ici la la',courseList)
+      for (let category of categories) 
+      {
+        let displayList = courseList.ingredients.map((ing, i) =>
+
           ing.category == category ? (
             <SwipableItem
+              menuId={urlParams.menuId}
               key={i}
               idlist={idList}
               name={ing.name}
               quantity={ing.quantity}
               unit={ing.unit}
               buyed={ing.isBuyed}
+              onToggleBuyed={handleToggleBuyed}
             />
           ) : null
-        // <View key={i} style={styles.ingElement}>
-        //   <Text style={styles.ingElementText}>{ing.name} {ing.quantity} {ing.unit}</Text>
-        // </View> : null
-      );
-      let boxCategory = (
-        <View key={category} style={styles.boxCategory}>
-          <View key={category} style={styles.categorieTitle}>
-            <Text style={styles.categorieTitleText}>{category}</Text>
+        );
+        // console.log('displaylist',displayList)
+        let boxCategory = (
+          <View key={category} style={styles.boxCategory}>
+            <View key={category} style={styles.categorieTitle}>
+              <Text style={styles.categorieTitleText}>{category}</Text>
+            </View>
+            {displayList}
           </View>
-          {displayList}
-        </View>
-      );
-      displayAll = [...displayAll, boxCategory];
+        );
+
+        displayAll=[...displayAll, boxCategory]
+       
+      }
     }
-  }
-
-
-
-
 
   return (
     <KeyboardAvoidingView
@@ -178,14 +206,7 @@ export default function ListScreen({ navigation, navigation: { goBack } }) {
         </TouchableOpacity>
 
         <Text style={styles.H1}>Liste de courses</Text>
-
-        <TouchableOpacity activeOpacity={0.6}>
-          <FontAwesome
-            name={"sort-amount-desc"}
-            style={styles.iconSort}
-            size={30}
-          />
-        </TouchableOpacity>
+        
       </View>
 
       {error && (
@@ -219,13 +240,14 @@ const styles = StyleSheet.create({
   titleCont: {
     marginTop: 50,
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     flexDirection: "row",
     paddingHorizontal: 10,
     width: "95%",
     marginBottom: 20,
   },
   H1: {
+    marginLeft:30,
     fontSize: 30,
     color: "#365E32",
     fontWeight: "700",

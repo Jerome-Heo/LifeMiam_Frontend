@@ -8,6 +8,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import user from "./reducers/user";
+import lists from "./reducers/lists";
 
 import HomeScreen from "./screens/HomeScreen";
 import MenuScreen from "./screens/MenuScreen";
@@ -18,7 +19,7 @@ import ListScreen from "./screens/ListScreen"; //je les mets dans le doute
 import ModalScreen from "./screens/ModalScreen";
 
 const store = configureStore({
-  reducer: { user },
+  reducer: { user,lists },
 });
 
 const Stack = createNativeStackNavigator();
