@@ -239,8 +239,8 @@ const styles = StyleSheet.create({
   },
 
   H2: {
-    margin: 10,
-    fontSize: 20,
+   
+    fontSize: 25,
     color: "#365E32",
     fontWeight: "700",
   },
@@ -271,10 +271,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   recipeImage: {
-    height: 60,
-    width: 60,
-    borderBottomLeftRadius: 30,
-    borderTopRightRadius: 30,
+    height: 45,
+    width: 70,
+    borderBottomLeftRadius: 25,
+    borderTopRightRadius: 10,
+    
   },
   PHbutton: {
     borderWidth: 1,
@@ -323,6 +324,8 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     minWidth: 80,
     paddingLeft: 5,
+    textTransform: "capitalize",
+    margin: "auto",
   },
   ImgVignette: {
     backgroundColor: "white",
