@@ -39,10 +39,10 @@ export default function MenuScreen({ navigation }) {
         if (Array.isArray(data)) setMenus(data);
        
       });
-  }, [isMenuAdded]);
+  }, [isMenuAdded,isFocused]);
 
   useEffect(() => {
-    console.log(menus)
+    // console.log(menus)
     if(menus.length != 0)
     {
       fetchJauges()
@@ -58,7 +58,7 @@ export default function MenuScreen({ navigation }) {
         calculateJauge(menus[i]._id).then((jauge) => {
           newJauges[menus[i]._id] = jauge;
           setJauges({...jauges,[menus[i]._id] : jauge});
-          console.log('jauges',jauge);
+          // console.log('jauges',jauges);
         });
        
       }   
