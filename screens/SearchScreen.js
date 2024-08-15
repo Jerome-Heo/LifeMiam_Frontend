@@ -41,18 +41,10 @@ export default function SearchScreen({ navigation }) {
   const [vignettesSelected, setVignettesSelected] = useState(userRegime);
   const [isLoading, setIsLoading] = useState(true);
   const isFocused = useIsFocused();
-  const [debounceTimeout, setDebounceTimeout] = useState(null);
   const URL = "https://lifemiam-backend.vercel.app";
-  const [popularRecipes, setPopularRecipes] = useState([]);
   const [recipesData, setRecipesData] = useState([]); // useState toutes les recettes récupérer
-  const [recipes, setRecipes] = useState([]); // useState du resultat de la recherche
   const [searchQuery, setSearchQuery] = useState(""); // useState du champs de recherche
 
-  useEffect(() => {
-    setTimeout(() => {
-      handleSearch(searchQuery);
-    }, 100);
-  }, [isFocused]);
 
   const fetchAllRecipes = () => {
     const fetchURL = `${URL}/recipes/all`;
@@ -78,22 +70,10 @@ export default function SearchScreen({ navigation }) {
           // Sort: on ordonne par plus populaire au moins populaire
           // Slice: on ne prend que les 10 premiers résultats
           // Map: on récupère nos 10 résultats pour remplir nos composants
-          const popularRecipes = newTabRecipes.sort((a, b) => b.popularity - a.popularity).slice(0, 10).map((element, i) => {
-            return (
-              <Animatable.View key={i} style={styles.view}>
-                <TouchableOpacity onPress={() => handleRecipeClick(element._id)}>
-                  <View style={styles.recipes}>
-                    <Image source={{ uri: element.image }} style={styles.recipeImage} />
-                    <Text style={styles.H3}>{element.name}</Text>
-                  </View>
-                </TouchableOpacity>
-              </Animatable.View>
-            );
-          });
-          setPopularRecipes(popularRecipes);
+          const popularRecipes = newTabRecipes
+
         } else {
 
-          // console.error("Aucune recette correspondante");
         }
         setIsLoading(false);
       })
@@ -109,29 +89,19 @@ export default function SearchScreen({ navigation }) {
 
   const handleSearch = (query) => {
     setSearchQuery(query);
-    if (debounceTimeout) {
-      clearTimeout(debounceTimeout);
-    }
-    const newTimeout = setTimeout(() => {
-      if (query.length >= 3) {
-        const filteredRecipes = recipesData.filter((recipe) =>
-          recipe.name.toLowerCase().includes(query.toLowerCase()) &&
-        (vignettesSelected.length === 0 || vignettesSelected.some((element) => recipe.tags.includes(element)))
-        
-        );
-        setRecipes(filteredRecipes);
-      } else if (query.length === 0) {
-        setRecipes(recipesData); 
-      }
-    }, 500);
-
-    setDebounceTimeout(newTimeout);
   };
-
+  let recipesResult = []
+  recipesResult = recipesData.filter((recipe) =>
+    vignettesSelected.length === 0 || vignettesSelected.every((element) => recipe.tags.includes(element)));
+  if (searchQuery.length >= 3) {
+    recipesResult = recipesResult.filter((recipe) =>
+      recipe.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  }
+  recipesResult = recipesResult.sort((a, b) => b.popularity - a.popularity).slice(0, 10)
 
   // On récupère la liste de nos éléments de notre useState
-  const displayedRecipes = recipes.length > 0 ? (
-    recipes.map((element, i) => (
+  const displayedRecipes = recipesResult.length > 0 ? (
+    recipesResult.map((element, i) => (
       <Animatable.View key={i} style={styles.view} {...prop}>
         <TouchableOpacity onPress={() => handleRecipeClick(element._id)}>
           <View style={styles.recipes}>
@@ -143,36 +113,30 @@ export default function SearchScreen({ navigation }) {
     ))
   ) : (
     <View style={styles.emptyState}>
-    <FontAwesome name={"search"} size={60} onPress={() => { }} />
-    <Text style={styles.notFound}>Aucune recette trouvée...</Text>
-  </View>
+      <FontAwesome name={"search"} size={60} onPress={() => { }} />
+      <Text style={styles.notFound}>Aucune recette trouvée...</Text>
+    </View>
   );
 
   // A TERIRER ?? NON!
   const clearSearch = () => {
     setSearchQuery("");
     // setVignettesSelected(userRegime);
-    setRecipes(recipesData);
-};
+  };
 
-useEffect(() => {
-  if (isFocused) {
-    animate("fadeInLeft");
-    fetchAllRecipes();
-    console.log("UserRegime : " + userRegime);
-    setSearchQuery(""); // Réinitialiser la barre de recherche
-    setVignettesSelected(userRegime); // Réinitialiser les vignettes sélectionnées
-    console.log("Vignette: " + vignettesSelected);
-  }
-}, [isFocused]);
+  useEffect(() => {
+    if (isFocused) {
+      animate("fadeInLeft");
+      fetchAllRecipes();
+      console.log("UserRegime : " + userRegime);
+      setSearchQuery(""); // Réinitialiser la barre de recherche
+      setVignettesSelected(userRegime); // Réinitialiser les vignettes sélectionnées
+      console.log("Vignette: " + vignettesSelected);
+    }
+  }, [isFocused]);
 
   //chemin de navigation vers RecipeScreen par le clic
   const handleRecipeClick = (id) => {
-    const updatedRecipes = recipes.map((recette) =>
-      recette.id === id ? { ...recipes, clics: recette.clics + 1 } : recipes
-    );
-    setRecipes(updatedRecipes); //why?
-    // setFilteredRecipes(updatedRecipes);
     navigation.navigate("Recipe", { RecetteID: id, readingMode: false });
   };
 
@@ -188,7 +152,6 @@ useEffect(() => {
       );
     } else {
       setVignettesSelected([...vignettesSelected, name]);
-      handleSearch(searchQuery);
     }
   };
 
@@ -235,7 +198,7 @@ useEffect(() => {
         <View style={styles.vignetteContainer}>{regimeVignettes}</View>
         <Text style={styles.H2}>{listTitle}</Text>
         <ScrollView style={styles.ScrollCont}>
-          {searchQuery.length > 0 ? displayedRecipes : popularRecipes}
+          {isLoading ? <Text>Loading...</Text> : displayedRecipes}
         </ScrollView>
       </View>
     </KeyboardAvoidingView>
