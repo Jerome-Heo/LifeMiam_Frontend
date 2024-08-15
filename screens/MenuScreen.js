@@ -123,7 +123,7 @@ export default function MenuScreen({ navigation }) {
         }
       }
     } catch (error) {
-      console.error("Failed to calculate jauge:", error);
+      // console.error("Failed to calculate jauge:", error);
     }
     return 0; // Default value if calculation fails
   };

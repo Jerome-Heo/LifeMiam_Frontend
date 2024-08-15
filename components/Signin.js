@@ -27,8 +27,8 @@ function Signin({ navigation }) {
   //const [password, SetPassword] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [displayError, setDisplayError] = useState(null);
-  const [signin, setSignin] = useState("");
-  const [password, SetPassword] = useState("");
+  const [signin, setSignin] = useState("Leserpat");
+  const [password, SetPassword] = useState("Al020910!!");
 
   const handleSignin = () => {
     fetch(`${URL}/users/signin`, {
