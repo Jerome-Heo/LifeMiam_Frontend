@@ -78,7 +78,7 @@ export default function RecipeScreen({ navigation: { goBack } }) {
       return (
         <View key={i} style={styles.TagVignette}>
           <Text style={styles.TxtVignette}>{data}</Text>
-          <View style={styles.ImgVignette}></View>
+          {/* <View style={styles.ImgVignette}></View> */}
         </View>
       );
     });
@@ -368,7 +368,7 @@ const styles = StyleSheet.create({
     marginTop: 3,
     marginHorizontal: 5,
     padding: 10,
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
     backgroundColor: "#81A263",
