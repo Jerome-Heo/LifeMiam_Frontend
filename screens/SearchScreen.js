@@ -328,6 +328,7 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     minWidth: 80,
     paddingLeft: 5,
+    textTransform: "capitalize",
   },
   ImgVignette: {
     backgroundColor: "white",
