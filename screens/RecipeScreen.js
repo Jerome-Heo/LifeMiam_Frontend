@@ -37,6 +37,7 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
   const [Recipe, SetRecipe] = useState({});
   const [msg, setMsg] = useState("");
   const [alertVisible, setAlertVisible] = useState(false);
+  const [updateRecipes, setUpdateRecipes] = useState(false);
   const currentMenu = useSelector((state) => state.user.value.menu);
 
   const showAlert = (msg) => {
@@ -102,6 +103,7 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
       .then((data) => {
         setMsg(data.menu.name)
         showAlert();
+        setUpdateRecipes(!updateRecipes)
       });
   };
 
@@ -313,7 +315,7 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
 
         <View marginTop={50} />
       </ScrollView>
-      {!readingMode && <Resume />}
+      {!readingMode && <Resume update={updateRecipes}/>}
     </View>
   );
 }

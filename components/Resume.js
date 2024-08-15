@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setMenu, clearMenu } from "../reducers/user";
 import { useNavigation } from "@react-navigation/native";
 
-function Resume({ recettes }) {
+function Resume({ updateRecipes }) {
   const URL = "https://lifemiam-backend.vercel.app";
   const userToken = useSelector((state) => state.user.value.token);
   const navigation = useNavigation();
@@ -47,8 +47,6 @@ function Resume({ recettes }) {
         if (Array.isArray(data)) setMenusResume(data);
       });
   }, [currentMenu]);
-
-  
 
   //useEffect du clavier
   useEffect(() => {
@@ -116,6 +114,14 @@ function Resume({ recettes }) {
   useEffect(() => {
     currentMenu && handleClickMenu(currentMenu._id)
   }, [])
+
+
+//fetch au click sur une recette(ça non plus faut pas le
+// faire c'est honteux.)
+  useEffect(() => {
+    handleClickMenu()
+  },[updateRecipes])
+
 
   //créer un menu
   const handleCreateMenu = () => {
