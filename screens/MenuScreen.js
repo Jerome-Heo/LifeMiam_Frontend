@@ -166,7 +166,7 @@ export default function MenuScreen({ navigation }) {
               onPress={() => handleShoppingList(data._id)}
               style={styles.PHProgressBar}
             >
-              <Text style={styles.courseTitleText}>Courses {jauge}%</Text>
+              <Text style={styles.courseTitleText}>Courses {jauge && `${jauge}%` }</Text>
             </TouchableOpacity>
             {data.menu_recipes.length > 0 ? (
               <TouchableOpacity
@@ -275,6 +275,8 @@ const styles = StyleSheet.create({
 
   courseTitleText: {
     fontSize: 26,
+    color:Colors.YELLOW,
+    fontWeight:'300'
   },
   logoImg: {
     width: 300,
@@ -333,6 +335,7 @@ const styles = StyleSheet.create({
     width: "65%",
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor:Colors.DARK_GREEN
   },
   PHShoppingList: {},
   PHButton: {
