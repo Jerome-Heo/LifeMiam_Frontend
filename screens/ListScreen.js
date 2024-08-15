@@ -106,11 +106,11 @@ export default function ListScreen({ navigation, navigation: { goBack } }) {
         });
     }
 
-    if (courseList) {
-      let temporary = userList.filter((e) => e.menuId === urlParams.menuId);
-      setCourseList(temporary[0]);
     
-    }
+      // let temporary = userList.filter((e) => e.menuId === urlParams.menuId);
+      // setCourseList(temporary[0]);
+    
+    
   }, [isFocused]);
 
 

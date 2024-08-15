@@ -48,7 +48,7 @@ export default function MenuScreen({ navigation }) {
       fetchJauges()
     }
     
-  }, [courselist,menus]);
+  }, [isFocused]);
 
  
     const fetchJauges = async () => {
@@ -123,7 +123,7 @@ export default function MenuScreen({ navigation }) {
         }
       }
     } catch (error) {
-      console.error("Failed to calculate jauge:", error);
+      // console.error("Failed to calculate jauge:", error);
     }
     return 0; // Default value if calculation fails
   };
@@ -157,7 +157,7 @@ export default function MenuScreen({ navigation }) {
   const menusDisplay =
     menus &&
     menus.map((data, i) => {
-      const jauge = jauges[data._id] || 0;
+      const jauge = jauges[data._id];
       return (
         <View key={i} style={styles.menuCont}>
           <Text style={styles.H3}>{`${data.name}`}</Text>
@@ -239,7 +239,8 @@ const styles = StyleSheet.create({
   contentCont: {
     alignItems: "center",
     position:'relative',
-    minHeight:'100%'
+   
+
   },
   title: {
     marginTop: 50,
@@ -299,8 +300,8 @@ const styles = StyleSheet.create({
   
   createMenuAlign: {
     width: "98%",
-    position: "absolute",
-    bottom:-150 ,
+    // position: "absolute",
+    // bottom:-150 ,
     left: 3,
    
   },
