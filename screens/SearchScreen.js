@@ -183,6 +183,7 @@ export default function SearchScreen({ navigation }) {
       style={styles.container}>
       <View style={styles.titleCont}>
         <Text style={styles.H1}>Recettes</Text>
+      </View>
         <View style={styles.searchContainer}>
           <TextInput
             style={styles.searchBar}
@@ -200,7 +201,7 @@ export default function SearchScreen({ navigation }) {
         <ScrollView style={styles.ScrollCont}>
           {isLoading ? <Text style={styles.load}>Loading...</Text> : displayedRecipes}
         </ScrollView>
-      </View>
+      
     </KeyboardAvoidingView>
   )
 };
@@ -252,7 +253,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   ScrollCont: {
-    width: "96%",
+    width: "95%",
+    margin:'auto'
   },
   emptyState: {
     flexDirection: "column",
@@ -263,7 +265,7 @@ const styles = StyleSheet.create({
   recipes: {
     borderWidth: 3,
     borderColor: "#81A263",
-    height: 50,
+    height: 60,
     flexDirection: "row",
     justifyContent: "space-between",
     marginVertical: 10,
