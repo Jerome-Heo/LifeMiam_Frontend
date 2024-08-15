@@ -225,9 +225,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     width: "92%",
     marginBottom: 10,
+    marginLeft: 15,
   },
 
   searchBar: {
+    margin: "auto",
     flex: 1,
     height: 40,
     paddingHorizontal: 10,
@@ -273,8 +275,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   recipeImage: {
-    height: 60,
-    width: 60,
+    height: 47,
+    width: 75,
     borderBottomLeftRadius: 30,
     borderTopRightRadius: 30,
   },
