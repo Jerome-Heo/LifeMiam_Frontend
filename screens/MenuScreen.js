@@ -48,7 +48,7 @@ export default function MenuScreen({ navigation }) {
       fetchJauges()
     }
     
-  }, [menus]);
+  }, [courselist,menus]);
 
  
     const fetchJauges = async () => {
@@ -219,11 +219,11 @@ export default function MenuScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={[styles.H1, styles.title]}>Menus</Text>
-      <View style={styles.contentCont}>
-        <TextInput
+      <View style={styles.contentContNewMenu}>
+        {/* <TextInput
           style={styles.searchBar}
           placeholder="Rechercher un menu..."
-        />
+        /> */}
         {display}
       </View>
     </View>
@@ -234,9 +234,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
+    
   },
   contentCont: {
     alignItems: "center",
+    position:'relative',
+    minHeight:'100%'
   },
   title: {
     marginTop: 50,
@@ -284,18 +287,22 @@ const styles = StyleSheet.create({
   },
   createMenu: {
     height: 70,
-    width: "100%",
+    width: "80%",
     backgroundColor: "#365E32",
     alignItems: "center",
     justifyContent: "center",
     margin: 20,
     borderRadius: 50,
+    position:'relative'
+ 
   },
+  
   createMenuAlign: {
     width: "98%",
     position: "absolute",
-    top: "95%",
+    bottom:-150 ,
     left: 3,
+   
   },
   createMenuTxt: {
     fontSize: 20,
