@@ -27,7 +27,7 @@ if (Platform.OS === "android") {
 
 let timeout = null;
 
-export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
+export default function RecipeScreen({ navigation: { goBack } }) {
   const URL = "https://lifemiam-backend.vercel.app";
   const userToken = useSelector((state) => state.user.value.token);
   // const token = '0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf';
@@ -37,6 +37,7 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
   const [Recipe, SetRecipe] = useState({});
   const [msg, setMsg] = useState("");
   const [alertVisible, setAlertVisible] = useState(false);
+  const [updateRecipes, setUpdateRecipes] = useState(false);
   const currentMenu = useSelector((state) => state.user.value.menu);
 
   const showAlert = (msg) => {
@@ -93,7 +94,7 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
 
   //Ajouter une recette
   const addRecipeMenu = () => {
-    fetch(`${URL}/menus/${activeMenu}/addRecipe`, {
+    fetch(`${URL}/menus/${activeMenu._id}/addRecipe`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ recipeId: RecetteID, serving: serving }),
@@ -102,6 +103,7 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
       .then((data) => {
         setMsg(data.menu.name)
         showAlert();
+        setUpdateRecipes(!updateRecipes)
       });
   };
 
@@ -313,7 +315,7 @@ export default function RecipeScreen({ navigattion, navigation: { goBack } }) {
 
         <View marginTop={50} />
       </ScrollView>
-      {!readingMode && <Resume />}
+      {!readingMode && <Resume update={updateRecipes}/>}
     </View>
   );
 }
