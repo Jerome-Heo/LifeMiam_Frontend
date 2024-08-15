@@ -20,7 +20,7 @@ export default function MenuScreen({ navigation }) {
   const userToken = useSelector((state) => state.user.value.token);
   const courselist = useSelector((state) => state.lists.value);
   const URL = "https://lifemiam-backend.vercel.app";
-
+  // const URL = "http://192.168.0.53:3000";
   const [menus, setMenus] = useState([]);
   const [isCreatingMenu, setIsCreatingMenu] = useState(false);
   const [createBarTxt, setCreateBarTxt] = useState("");
@@ -37,21 +37,34 @@ export default function MenuScreen({ navigation }) {
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) setMenus(data);
+       
       });
   }, [isMenuAdded]);
 
   useEffect(() => {
+    console.log(menus)
+    if(menus.length != 0)
+    {
+      fetchJauges()
+    }
+    
+  }, [menus]);
+
+ 
     const fetchJauges = async () => {
       const newJauges = {};
-      for (let i = 0; i < menus.length; i++) {
-        const jauge = await calculateJauge(menus[i]._id);
-        newJauges[menus[i]._id] = jauge;
-      }
-      setJauges(newJauges);
+      for (let i = 0; i < menus.length; i++) 
+      {
+        calculateJauge(menus[i]._id).then((jauge) => {
+          newJauges[menus[i]._id] = jauge;
+          setJauges({...jauges,[menus[i]._id] : jauge});
+          console.log('jauges',jauge);
+        });
+       
+      }   
     };
+   
 
-    fetchJauges();
-  }, [menus]);
 
   const handleCreateMenu = () => {
     fetch(`${URL}/menus/create`, {
@@ -86,6 +99,7 @@ export default function MenuScreen({ navigation }) {
       });
       const data = await response.json();
       if (data.result === true) {
+        // console.log("entree de données", data);
         dispatch(
           updateList({
             menuId: menuId,
@@ -93,12 +107,18 @@ export default function MenuScreen({ navigation }) {
           })
         );
         const oneList = courselist.find((e) => e.menuId === menuId);
+
         if (oneList) {
+          // console.error('onelist',oneList.ingredients.map((e) => e.isBuyed),menuId,userToken)
           let ingCounter = 0;
-          oneList.ingredients.forEach((e) => {
-            if (e.isBuyed) ingCounter++;
+          oneList.ingredients.find((e) => {
+            e.isBuyed ? ingCounter++ : null;
           });
-          const jauge = Math.floor((100 / oneList.ingredients.length) * ingCounter);
+          // console.log('ingcounter',ingCounter)
+          const jauge = Math.floor(
+            (100 / oneList.ingredients.length) * ingCounter
+          );
+          // console.log("jauge de", menuId, jauge);
           return jauge;
         }
       }

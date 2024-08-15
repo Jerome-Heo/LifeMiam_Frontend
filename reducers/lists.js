@@ -16,26 +16,18 @@ export const listsSlice = createSlice({
     },
     updateList: (state, action) => {
       const index=state.value.findIndex((e)=> e.menuId === action.payload.menuId)
-      if(index > 0)
+      // console.log('index in reducer',index)
+      if(index >= 0)
       {
-        console.log('dispatched')
+        // console.log('dispatched')
         state.value[index]=action.payload
       }
       else
       {
+        // console.log('dispatched by push')
         state.value.push(action.payload)
       }
-    },
-    updateOneElementOfList: (state, action) => {
-      // const list=state.value.find((element) => element.find((e) => e.name === action.payload.name))
-      // const index=state.value.findIndex((e)=> e.menuId === action.payload.menuId && e.ingredients.find((element) => element.name == action.payload.name))
-      
-      console.log('here',list)
-      // {menuId:menuid ,id:id ,isbuyed:!isBuyed}
- 
-    },
-    
-
+    }
   },
 });
 

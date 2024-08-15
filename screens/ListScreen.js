@@ -13,7 +13,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useRoute } from "@react-navigation/native";
 import { useSelector, useDispatch } from "react-redux";
 import { useIsFocused } from "@react-navigation/native";
-import { setList } from "../reducers/lists";
+import { setList,updateList } from "../reducers/lists";
 import SwipableItem from "../components/SwipeableElement";
 
 export default function ListScreen({ navigation, navigation: { goBack } }) {
@@ -40,6 +40,7 @@ export default function ListScreen({ navigation, navigation: { goBack } }) {
 
   useEffect(() => 
   {
+    
     // si la liste existe, je la récupère et la pousse en reducer
     // if (userList.find((e) => e.menuId === urlParams.menuId))
     // {
@@ -128,9 +129,16 @@ export default function ListScreen({ navigation, navigation: { goBack } }) {
         })
           .then((response) => response.json())
           .then((data) => 
-          console.log("output update", data.data.Ingredients)
+          console.log("output update", data)
           );
           displayAll=[]
+// console.log('courselist on isfocused false', courseList.menuId,courseList.ingredients)
+          dispatch(
+            updateList({
+              menuId: courseList.menuId,
+              ingredients: courseList.ingredients,
+            })
+          );
       }
     }, [isFocused]);
 
