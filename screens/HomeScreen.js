@@ -63,7 +63,7 @@ export default function HomeScreen({ navigation }) {
   //j'ai ajouté un bouton ARROW RIGHT de sagouin pour skip le signin/up
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.backCont}>
+      
         {displayComponent == "signin" && (
           <TouchableOpacity
             style={styles.backButton}
@@ -80,7 +80,7 @@ export default function HomeScreen({ navigation }) {
             <FontAwesome name={"arrow-left"} style={styles.icon} size={40} />
           </TouchableOpacity>
         )}
-      </View>
+      
 
       {displayComponent !== "onboarding" && (
         <View style={styles.logoContainer}>
@@ -122,13 +122,14 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     paddingTop: "10%",
     width: "100%",
+    position:'relative'
+    
   },
-  backCont: {
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "flex-start",
-  },
+
   backButton: {
+    position:'absolute',
+    top:20,
+    left:0,
     padding: 20,
   },
   icon: {
