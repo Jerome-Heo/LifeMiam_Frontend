@@ -113,7 +113,7 @@ export default function SearchScreen({ navigation }) {
     ))
   ) : (
     <View style={styles.emptyState}>
-      <FontAwesome name={"search"} size={60} onPress={() => { }} />
+      <FontAwesome name={"search"} color={"#365E32"} size={60} onPress={() => { }} />
       <Text style={styles.notFound}>Aucune recette trouvée...</Text>
     </View>
   );
@@ -270,9 +270,10 @@ const styles = StyleSheet.create({
     height: 50,
     flexDirection: "row",
     justifyContent: "space-between",
-    marginVertical: 15,
+    marginVertical: 10,
     borderBottomLeftRadius: 30,
     borderRadius: 10,
+    overflow: "hidden"
   },
   recipeImage: {
     height: 47,
