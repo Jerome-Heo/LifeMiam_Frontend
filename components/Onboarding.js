@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Image,
@@ -55,13 +55,9 @@ function Onboarding({ navigation, page }) {
   });
 
   useEffect(() => {
-
-    if(page == 'profile')
-    {
-      handleGo()
+    if (page == "profile") {
+      handleGo();
     }
- 
-
   }, [userRegime]);
 
   let disabledButton = {
@@ -93,11 +89,10 @@ function Onboarding({ navigation, page }) {
         .then((data) => {
           console.log("data", data);
 
-          if (page == 'onboarding')
-          {
+          if (page == "onboarding") {
             data.result &&
-            navigation.navigate("TabNavigator", { screen: "Search" });
-          }       
+              navigation.navigate("TabNavigator", { screen: "Search" });
+          }
         });
     }
   };
@@ -123,7 +118,7 @@ function Onboarding({ navigation, page }) {
             Vos restrictions alimentaires ({userRegime.length})
           </Text>
           <Text style={styles.subtitle}>
-            Ces restrictions sont être prises en compte pendant la découverte de
+            Ces restrictions sont prises en compte pendant la découverte de
             recettes
           </Text>
         </>
@@ -178,14 +173,14 @@ const styles = StyleSheet.create({
   },
   subtitle: { color: "black", fontSize: 14, paddingLeft: 25 },
   vignetteContainer: {
-    marginTop:50,
-    width: windowWidth/5*4,
+    marginTop: 50,
+    width: (windowWidth / 5) * 4,
     height: 300,
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-around",
-    alignItems:'center',
-    alignSelf:'center'
+    alignItems: "center",
+    alignSelf: "center",
   },
 
   TagVignette: {
@@ -215,7 +210,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 100,
     width: 25,
-    aspectRatio:1/1,
+    aspectRatio: 1 / 1,
     flex: 1,
     justifyContent: "center",
     alignItems: "center",

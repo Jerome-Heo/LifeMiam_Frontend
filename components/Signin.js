@@ -18,7 +18,6 @@ import { useEffect, useState } from "react";
 
 import { addRegime, token, initRegimes } from "../reducers/user";
 
-
 function Signin({ navigation }) {
   const user = useSelector((state) => state.user.value);
 
@@ -28,8 +27,8 @@ function Signin({ navigation }) {
   //const [password, SetPassword] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [displayError, setDisplayError] = useState(null);
-  const [signin, setSignin] = useState('Test');
-  const [password, SetPassword] = useState('test');
+  const [signin, setSignin] = useState("Test");
+  const [password, SetPassword] = useState("test");
 
   const handleSignin = () => {
     fetch(`${URL}/users/signin`, {
@@ -43,14 +42,12 @@ function Signin({ navigation }) {
         if (data.result === true) {
           dispatch(token(data.token));
 
-          if (data.regime.length > 0)
-          {
-            for(let regime of data.regime)
-            {
-              dispatch(addRegime(regime))
+          if (data.regime.length > 0) {
+            for (let regime of data.regime) {
+              dispatch(addRegime(regime));
             }
           }
-         
+
           // .length > 0 && dispatch(initRegimes(regimes.regime,...data.regime));
           setSignin("");
           SetPassword("");
@@ -64,7 +61,10 @@ function Signin({ navigation }) {
       });
   };
   return (
-    <KeyboardAvoidingView style={styles.textContainer} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
+    <KeyboardAvoidingView
+      style={styles.textContainer}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <Text style={styles.title}>Se connecter</Text>
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Adresse email ou nom d'utilisateur</Text>
@@ -112,11 +112,12 @@ function Signin({ navigation }) {
             />
           )}
         </View>
-        
-        
-
       </View>
-      {displayError && <View><Text style={styles.error}>{displayError}</Text></View>}
+      {displayError && (
+        <View>
+          <Text style={styles.error}>{displayError}</Text>
+        </View>
+      )}
       <TouchableOpacity
         style={styles.signinButton}
         onPress={() => handleSignin()}
@@ -124,7 +125,6 @@ function Signin({ navigation }) {
         <Text style={styles.signinButtonText}>Connexion</Text>
       </TouchableOpacity>
     </KeyboardAvoidingView>
-    
   );
 }
 
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     position: "relative",
-    borderWidth: 1,
+    // borderWidth: 1,
     width: "80%",
     marginTop: 15,
     marginBottom: 15,
@@ -163,6 +163,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     color: "black",
     borderWidth: 1,
+    borderRadius: 8,
     borderColor: Colors.DARK_GREEN,
     paddingHorizontal: 10,
   },
