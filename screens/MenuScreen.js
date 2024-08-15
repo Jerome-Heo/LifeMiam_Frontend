@@ -1,8 +1,6 @@
 import {
   View,
   Image,
-  KeyboardAvoidingView,
-  Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -13,17 +11,22 @@ import { useEffect, useState } from "react";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useDispatch, useSelector } from "react-redux";
 import Colors from "../utilities/color";
+import { updateList } from "../reducers/lists";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function MenuScreen({ navigation }) {
+  const dispatch = useDispatch();
+
   const userToken = useSelector((state) => state.user.value.token);
-  const courselist = useSelector((state) => state.user.value.list);
-  //const token = '0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf';
+  const courselist = useSelector((state) => state.lists.value);
   const URL = "https://lifemiam-backend.vercel.app";
 
   const [menus, setMenus] = useState([]);
   const [isCreatingMenu, setIsCreatingMenu] = useState(false);
   const [createBarTxt, setCreateBarTxt] = useState("");
   const [isMenuAdded, setIsMenuAdded] = useState(false);
+  const [jauges, setJauges] = useState({});
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     fetch(`${URL}/menus/getMenus`, {
@@ -36,6 +39,19 @@ export default function MenuScreen({ navigation }) {
         if (Array.isArray(data)) setMenus(data);
       });
   }, [isMenuAdded]);
+
+  useEffect(() => {
+    const fetchJauges = async () => {
+      const newJauges = {};
+      for (let i = 0; i < menus.length; i++) {
+        const jauge = await calculateJauge(menus[i]._id);
+        newJauges[menus[i]._id] = jauge;
+      }
+      setJauges(newJauges);
+    };
+
+    fetchJauges();
+  }, [menus]);
 
   const handleCreateMenu = () => {
     fetch(`${URL}/menus/create`, {
@@ -59,25 +75,39 @@ export default function MenuScreen({ navigation }) {
     navigation.navigate("RecipesModal", { menuId: id, menuName: name });
   };
 
-  const calculateJauge = function (menuId) {
-    const getListInformations = async (menuId) => {
-      const response = fetch(`${URL}/shop/getlist/${menuId}`, {
+  const calculateJauge = async function (menuId) {
+    try {
+      const response = await fetch(`${URL}/shop/getlist/${menuId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ token: userToken }),
       });
-      const datas = response.json();
-
-      return datas;
-    };
-
-    getListInformations(menuId).then((data) => console.log(data));
+      const data = await response.json();
+      if (data.result === true) {
+        dispatch(
+          updateList({
+            menuId: menuId,
+            ingredients: data.data.Ingredients,
+          })
+        );
+        const oneList = courselist.find((e) => e.menuId === menuId);
+        if (oneList) {
+          let ingCounter = 0;
+          oneList.ingredients.forEach((e) => {
+            if (e.isBuyed) ingCounter++;
+          });
+          const jauge = Math.floor((100 / oneList.ingredients.length) * ingCounter);
+          return jauge;
+        }
+      }
+    } catch (error) {
+      console.error("Failed to calculate jauge:", error);
+    }
+    return 0; // Default value if calculation fails
   };
 
-  //Est-ce que j'ai cliqué sur la creation de menu ?
-  //Affichage des boutons dédiés à la création
   const createMenuButton = isCreatingMenu ? (
     <View style={styles.validCont}>
       <TextInput
@@ -104,13 +134,10 @@ export default function MenuScreen({ navigation }) {
     </View>
   );
 
-  // Est-ce que j'ai fetch ?
-  //J'affiche les différents menus en une colonne
   const menusDisplay =
     menus &&
     menus.map((data, i) => {
-      calculateJauge(data._id);
-
+      const jauge = jauges[data._id] || 0;
       return (
         <View key={i} style={styles.menuCont}>
           <Text style={styles.H3}>{`${data.name}`}</Text>
@@ -119,7 +146,7 @@ export default function MenuScreen({ navigation }) {
               onPress={() => handleShoppingList(data._id)}
               style={styles.PHProgressBar}
             >
-              <Text style={styles.courseTitleText}>Courses</Text>
+              <Text style={styles.courseTitleText}>Courses {jauge}%</Text>
             </TouchableOpacity>
             {data.menu_recipes.length > 0 ? (
               <TouchableOpacity
@@ -135,7 +162,7 @@ export default function MenuScreen({ navigation }) {
               <TouchableOpacity style={styles.disabledPHButton} disabled={true}>
                 <Image
                   source={require("../assets/cooking.png")}
-                  style={styles.imageCooking}
+                  style={[styles.imageCooking, styles.disabledIcon]}
                 ></Image>
               </TouchableOpacity>
             )}
@@ -144,8 +171,6 @@ export default function MenuScreen({ navigation }) {
       );
     });
 
-  //Est-ce que j'ai fetch ?
-  //Je modifier l'affichage global de la page
   const display =
     menus.length > 0 ? (
       <View style={styles.fetchMenusCont}>
