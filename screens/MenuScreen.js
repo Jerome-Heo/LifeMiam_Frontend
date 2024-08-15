@@ -239,7 +239,8 @@ const styles = StyleSheet.create({
   contentCont: {
     alignItems: "center",
     position:'relative',
-    minHeight:'100%'
+   
+
   },
   title: {
     marginTop: 50,
@@ -299,8 +300,8 @@ const styles = StyleSheet.create({
   
   createMenuAlign: {
     width: "98%",
-    position: "absolute",
-    bottom:-150 ,
+    // position: "absolute",
+    // bottom:-150 ,
     left: 3,
    
   },
