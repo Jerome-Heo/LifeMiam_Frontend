@@ -394,10 +394,10 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   MainImage: {
-    marginTop: 50,
-    width: '100%',
-    aspectRatio:1/1,
-    resizeMode: 'contain',
+    marginTop: 50,    
+    width: '100%',    
+    aspectRatio:1/1,    
+    resizeMode: 'contain', 
   },
   H1: {
     fontSize: 30,

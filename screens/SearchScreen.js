@@ -198,7 +198,7 @@ export default function SearchScreen({ navigation }) {
         <View style={styles.vignetteContainer}>{regimeVignettes}</View>
         <Text style={styles.H2}>{listTitle}</Text>
         <ScrollView style={styles.ScrollCont}>
-          {isLoading ? <Text>Loading...</Text> : displayedRecipes}
+          {isLoading ? <Text style={styles.load}>Loading...</Text> : displayedRecipes}
         </ScrollView>
       </View>
     </KeyboardAvoidingView>
@@ -245,11 +245,11 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   H3: {
-    marginLeft: 15,
-    margin: 5,
+    margin: "auto",
     fontSize: 15,
     color: "#365E32",
     fontWeight: "700",
+    textAlign: "center",
   },
   ScrollCont: {
     width: "96%",
@@ -261,11 +261,10 @@ const styles = StyleSheet.create({
     marginTop: 100,
   },
   recipes: {
-    borderWidth: 2,
+    borderWidth: 3,
     borderColor: "#81A263",
     height: 50,
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "space-between",
     marginVertical: 10,
     borderBottomLeftRadius: 30,
@@ -340,6 +339,13 @@ const styles = StyleSheet.create({
   notFound: {
     color: "#365E32",
     fontSize: 35,
+  },
+
+  load: {
+    color: "#365E32",
+    fontSize: 50,
+    alignSelf: "center",
+    marginTop: 250,
   },
 
 });
