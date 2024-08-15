@@ -209,8 +209,8 @@ function Resume({ update }) {
         </TouchableOpacity>
         {!currentMenu ? (
           <TextInput
-            style={styles.resumeText}
-            placeholder="Choisir/créer..."
+            style={styles.inputTxt}
+            placeholder="Créer un menu..."
             value={newMenuName}
             onChangeText={(e) => setNewMenuName(e)}
             placeholderTextColor={"white"}
@@ -287,6 +287,18 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     textAlign: "center",
     textAlignVertical: "center",
+  },
+  inputTxt: {
+    width: "65%",
+    height: "70%",
+    color: "white",
+    fontSize: 20,
+    fontWeight: "700",
+    textAlign: "center",
+    textAlignVertical: "bottom",
+    paddingBottom: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: "white",
   },
   menusDisplay: {
     width: "100%",
