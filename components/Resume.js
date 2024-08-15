@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setMenu, clearMenu } from "../reducers/user";
 import { useNavigation } from "@react-navigation/native";
 
-function Resume({ updateRecipes }) {
+function Resume({ update }) {
   const URL = "https://lifemiam-backend.vercel.app";
   const userToken = useSelector((state) => state.user.value.token);
   const navigation = useNavigation();
@@ -119,8 +119,8 @@ function Resume({ updateRecipes }) {
 //fetch au click sur une recette(ça non plus faut pas le
 // faire c'est honteux.)
   useEffect(() => {
-    handleClickMenu()
-  },[updateRecipes])
+    currentMenu && handleClickMenu(currentMenu._id)
+  },[update])
 
 
   //créer un menu
@@ -246,7 +246,7 @@ function Resume({ updateRecipes }) {
     </Animated.View>
   );
 
-  return <View style={styles.mainCont}>{Container}</View>;
+  return <KeyboardAvoidingView style={styles.mainCont}>{Container}</KeyboardAvoidingView>;
 }
 
 const styles = StyleSheet.create({
