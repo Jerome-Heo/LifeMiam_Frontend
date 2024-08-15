@@ -157,7 +157,7 @@ export default function MenuScreen({ navigation }) {
   const menusDisplay =
     menus &&
     menus.map((data, i) => {
-      const jauge = jauges[data._id] || 0;
+      const jauge = jauges[data._id];
       return (
         <View key={i} style={styles.menuCont}>
           <Text style={styles.H3}>{`${data.name}`}</Text>
