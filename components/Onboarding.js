@@ -55,7 +55,8 @@ function Onboarding({ navigation, page }) {
   });
 
   useEffect(() => {
-    if (page == "profile") {
+    if (page == "profile") 
+    {
       handleGo();
     }
   }, [userRegime]);
@@ -89,7 +90,8 @@ function Onboarding({ navigation, page }) {
         .then((data) => {
           console.log("data", data);
 
-          if (page == "onboarding") {
+          if (page == "onboarding") 
+          {
             data.result &&
               navigation.navigate("TabNavigator", { screen: "Search" });
           }

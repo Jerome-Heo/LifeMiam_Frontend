@@ -13,12 +13,24 @@ import {
 import Signin from "../components/Signin";
 import Signup from "../components/Signup";
 import Onboarding from "../components/Onboarding";
-import { useState } from "react";
+import { useState ,useEffect} from "react";
 import Colors from "../utilities/color";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { useIsFocused } from "@react-navigation/native";
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen({ navigation }) 
+{
   const [displayComponent, setDisplayComponent] = useState(null);
+
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if(!isFocused)
+    {
+      setDisplayComponent(null)
+    }
+  
+  },[isFocused])
 
   const handleGoBack = () => {
     setDisplayComponent(null);
