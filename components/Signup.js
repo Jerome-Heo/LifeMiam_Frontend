@@ -15,7 +15,7 @@ function Signup({onboarding}) {
   const [password, setPassword] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
 
-  const URL = "https://lifemiam-backend.vercel.app";
+  const URL = "https://life-miam-backend.vercel.app/";
   // const URL = 'http://192.168.0.53:3000'
 
   useEffect(() => {

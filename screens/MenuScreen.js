@@ -20,7 +20,7 @@ export default function MenuScreen({ navigation }) {
 
   const userToken = useSelector((state) => state.user.value.token);
   const courselist = useSelector((state) => state.lists.value);
-  const URL = "https://lifemiam-backend.vercel.app";
+  const URL = "https://life-miam-backend.vercel.app/";
   // const URL = "http://192.168.0.53:3000";
   const [menus, setMenus] = useState([]);
   const [isCreatingMenu, setIsCreatingMenu] = useState(false);

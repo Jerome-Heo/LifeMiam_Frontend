@@ -27,7 +27,7 @@ function Onboarding({ navigation, page }) {
   //const token = "0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf";
   const userRegime = useSelector((state) => state.user.value.regime);
   console.log(userRegime);
-  const URL = "https://lifemiam-backend.vercel.app";
+  const URL = "https://life-miam-backend.vercel.app/";
 
   const regimeList = [
     { name: "sans gluten", src: require("../assets/gluten_free.png") },

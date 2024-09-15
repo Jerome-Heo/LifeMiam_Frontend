@@ -28,7 +28,7 @@ if (Platform.OS === "android") {
 let timeout = null;
 
 export default function RecipeScreen({ navigation: { goBack } }) {
-  const URL = "https://lifemiam-backend.vercel.app";
+  const URL = "https://life-miam-backend.vercel.app/";
   const userToken = useSelector((state) => state.user.value.token);
   // const token = '0T_J7O73PtSOoUiD5Ntm_PNoFKKH5iOf';
   const activeMenu = useSelector((state) => state.user.value.menu);

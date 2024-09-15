@@ -19,7 +19,7 @@ import { setMenu, clearMenu } from "../reducers/user";
 import { useNavigation } from "@react-navigation/native";
 
 function Resume({ update }) {
-  const URL = "https://lifemiam-backend.vercel.app";
+  const URL = "https://life-miam-backend.vercel.app/";
   const userToken = useSelector((state) => state.user.value.token);
   const navigation = useNavigation();
   const dispatch = useDispatch();

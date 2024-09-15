@@ -21,7 +21,7 @@ import { addRegime, token, initRegimes } from "../reducers/user";
 function Signin({ navigation }) {
   const user = useSelector((state) => state.user.value);
 
-  const URL = "https://lifemiam-backend.vercel.app";
+  const URL = "https://life-miam-backend.vercel.app/";
   const dispatch = useDispatch();
   //const [signin, setSignin] = useState(null);
   //const [password, SetPassword] = useState(null);

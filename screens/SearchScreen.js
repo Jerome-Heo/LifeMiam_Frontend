@@ -41,7 +41,7 @@ export default function SearchScreen({ navigation }) {
   const [vignettesSelected, setVignettesSelected] = useState(userRegime);
   const [isLoading, setIsLoading] = useState(true);
   const isFocused = useIsFocused();
-  const URL = "https://lifemiam-backend.vercel.app";
+  const URL = "https://life-miam-backend.vercel.app/";
   const [recipesData, setRecipesData] = useState([]); // useState toutes les recettes récupérer
   const [searchQuery, setSearchQuery] = useState(""); // useState du champs de recherche
 

@@ -23,7 +23,7 @@ const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 export default function ModalScreen({ navigation, navigation: { goBack } }) {
-  const URL = "https://lifemiam-backend.vercel.app";
+  const URL = "https://life-miam-backend.vercel.app/";
   const dispatch = useDispatch();
   const userToken = useSelector((state) => state.user.value.token);
   const isFocused = useIsFocused();

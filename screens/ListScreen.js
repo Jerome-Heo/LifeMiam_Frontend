@@ -23,7 +23,7 @@ export default function ListScreen({ navigation, navigation: { goBack } }) {
   // filtre le tableau datas.data et extraire les catégories et supprimer les doublons
   // parcourir le tableau des catégories
   // faire le map d'affichage
-  const URL = "https://lifemiam-backend.vercel.app";
+  const URL = "https://life-miam-backend.vercel.app/";
   // const URL = "http://192.168.0.53:3000";
   // const token = "wVL5sCx7YTgaO-fnxK5pX4mMG8JywAwQ"
   const route = useRoute();

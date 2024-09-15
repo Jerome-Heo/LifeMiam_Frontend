@@ -12,7 +12,7 @@ export default function SwipableItem({name, quantity, unit, buyed,onToggleBuyed}
 {
 
     // const URL = "http://192.168.0.53:3000";
-    const URL = "https://lifemiam-backend.vercel.app";
+    const URL = "https://life-miam-backend.vercel.app/";
 
     let panValue = { x: 0, y: 0 };
     let isOpenState = useRef(true).current; // Set to true initially
